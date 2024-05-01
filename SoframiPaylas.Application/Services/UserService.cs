@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Google.Cloud.Firestore;
+using SoframiPaylas.Application.DTOs;
 using SoframiPaylas.Application.Interfaces;
 using SoframiPaylas.Domain.Entities;
 using SoframiPaylas.Infrastructure.Interfaces;
@@ -16,9 +17,10 @@ namespace SoframiPaylas.Application.Services
         {
             _userRepository = userRepository;
         }
-        public async Task<User> GetUser()
+        public async Task<IEnumerable<UserDto>> GetAllUserAsync()
         {
-            return await _userRepository.GetUserAsync();
+            var users = await _userRepository.GetAllUserAsync();
+            return users.Select(u => new UserDto { FullName = u.FullName, Email = u.Email, IsHost = u.IsHost, About = u.About, ProfilePicture = u.ProfilePicture });
         }
     }
 }

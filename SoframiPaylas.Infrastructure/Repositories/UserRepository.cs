@@ -18,35 +18,31 @@ namespace SoframiPaylas.Infrastructure.Repositories
         {
             _service = service;
         }
-        public async Task<User> GetUserAsync()
+        public async Task<IEnumerable<User>> GetAllUserAsync()
         {
+            CollectionReference usersRef = _service.GetDb().Collection("Users");
+            QuerySnapshot snapshot = await usersRef.GetSnapshotAsync();
 
-
-            try
+            List<User> users = new List<User>();
+            foreach (DocumentSnapshot document in snapshot.Documents)
             {
-                string documentId = "tJoP8UsKxVpRAnCuORqY"; // Belge ID'si
-                if (string.IsNullOrEmpty(documentId))
-                    throw new ArgumentException("Document ID cannot be null or empty.");
-
-                DocumentReference docRef = _service.GetDb().Collection("Users").Document(documentId);
-                DocumentSnapshot snapshot = await docRef.GetSnapshotAsync();
-
-                if (snapshot.Exists)
+                if (document.Exists)
                 {
-                    User user = new User { FullName = snapshot.GetValue<string>("fullname") };
-                    return user;
-                }
-                else
-                {
-                    throw new InvalidOperationException("No user found with the specified document ID.");
+                    Dictionary<string, object> userDict = document.ToDictionary();
+                    var user = new User
+                    {
+                        UserID = userDict["userID"].ToString(),
+                        Email = userDict["email"].ToString(),
+                        FullName = userDict["fullname"].ToString(),
+                        IsHost = (bool)userDict["isHost"],
+                        PasswordHash = userDict["passwordHash"].ToString(),
+                        ProfilePicture = userDict["profilePicture"].ToString(),
+                        About = userDict["about"].ToString()
+                    };
+                    users.Add(user);
                 }
             }
-
-            catch (Exception ex)
-            {
-                // Diğer genel hatalar için loglama
-                throw new Exception("An error occurred.", ex);
-            }
+            return users;
         }
     }
 }

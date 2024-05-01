@@ -8,6 +8,6 @@ namespace SoframiPaylas.Infrastructure.Interfaces
 {
     public interface IUserRepository
     {
-        Task<User> GetUserAsync();
+        Task<IEnumerable<User>> GetAllUserAsync();
     }
 }

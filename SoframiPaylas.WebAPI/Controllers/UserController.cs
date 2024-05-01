@@ -20,10 +20,10 @@ namespace SoframiPaylas.WebAPI.Controllers
             _userService = userService;
         }
         [HttpGet("users")]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetAllUserAsync()
         {
-
-            return Ok(await _userService.GetUser());
+            var users = await _userService.GetAllUserAsync();
+            return Ok(users);
         }
 
 
