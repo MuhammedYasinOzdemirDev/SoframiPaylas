@@ -10,25 +10,25 @@ namespace SoframiPaylas.Domain.Entities
     [FirestoreData]
     public class User
     {
-        [JsonPropertyName("userID")]
+        [FirestoreProperty("userID")]
         public string UserID { get; set; }
 
-        [JsonPropertyName("email")]
+        [FirestoreProperty("email")]
         public string Email { get; set; }
 
-        [JsonPropertyName("fullname")]
+        [FirestoreProperty("fullname")]
         public string FullName { get; set; }
 
-        [JsonPropertyName("isHost")]
+        [FirestoreProperty("isHost")]
         public bool IsHost { get; set; }
 
-        [JsonPropertyName("passwordHash")]
+        [FirestoreProperty("passwordHash")]
         public string PasswordHash { get; set; }
 
-        [JsonPropertyName("profilePicture")]
+        [FirestoreProperty("profilePicture")]
         public string ProfilePicture { get; set; }
 
-        [JsonPropertyName("about")]
+        [FirestoreProperty("about")]
         public string About { get; set; }
     }
 }

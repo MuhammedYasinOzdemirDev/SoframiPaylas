@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SoframiPaylas.Application.DTOs;
 using SoframiPaylas.Application.Interfaces;
 
 namespace SoframiPaylas.WebAPI.Controllers
@@ -23,10 +24,13 @@ namespace SoframiPaylas.WebAPI.Controllers
         public async Task<IActionResult> GetAllUserAsync()
         {
             var users = await _userService.GetAllUserAsync();
-
+            if (users == null)
+            {
+                return BadRequest("Users not found.");
+            }
             return Ok(users);
         }
-        [HttpGet("users/{userId}")]
+        [HttpGet("users/{userId}", Name = "GetUserById")]
         public async Task<IActionResult> GetUserByIdAsync(string userId)
         {
             var user = await _userService.GetUserByIdAsync(userId);
@@ -35,6 +39,18 @@ namespace SoframiPaylas.WebAPI.Controllers
                 return NotFound();
             }
             return Ok(user);
+        }
+        [HttpPost("user")]
+        public async Task<IActionResult> CreateUser([FromBody] CreateUserDto userDto)
+        {
+            var userId = await _userService.CreateUserAsync(userDto);
+
+            if (userId == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(userId);
         }
 
 

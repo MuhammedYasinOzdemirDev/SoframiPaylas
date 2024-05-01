@@ -17,6 +17,21 @@ namespace SoframiPaylas.Application.Services
         {
             _userRepository = userRepository;
         }
+
+        public async Task<string> CreateUserAsync(CreateUserDto userDto)
+        {
+            var user = new User
+            {
+                Email = userDto.Email,
+                FullName = userDto.FullName,
+                ProfilePicture = userDto.ProfilePicture,
+                IsHost = userDto.IsHost,
+                About = userDto.About,
+                PasswordHash = userDto.PasswordHash
+            };
+            return await _userRepository.CreateUserAsync(user);
+        }
+
         public async Task<IEnumerable<UserDto>> GetAllUserAsync()
         {
             var users = await _userRepository.GetAllUserAsync();

@@ -10,5 +10,6 @@ namespace SoframiPaylas.Infrastructure.Interfaces
     {
         Task<IEnumerable<User>> GetAllUserAsync();
         Task<User> GetUserByIdAsync(string userId);
+        Task<string> CreateUserAsync(User user);
     }
 }

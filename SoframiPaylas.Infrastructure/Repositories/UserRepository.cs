@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Firebase.Database;
 using Google.Cloud.Firestore;
@@ -18,8 +19,26 @@ namespace SoframiPaylas.Infrastructure.Repositories
         {
             _service = service;
         }
+
+
+        public async Task<string> CreateUserAsync(User user)
+
+        {
+
+            string userId = Guid.NewGuid().ToString();
+            user.UserID = userId;
+            await _service.GetDb().Collection("Users").Document(userId).SetAsync(user);
+
+            return userId;
+        }
+
         public async Task<IEnumerable<User>> GetAllUserAsync()
         {
+            if (_service == null || _service.GetDb() == null)
+            {
+                throw new InvalidOperationException("Database service is not initialized properly.");
+            }
+
             CollectionReference usersRef = _service.GetDb().Collection("Users");
             QuerySnapshot snapshot = await usersRef.GetSnapshotAsync();
 
@@ -32,13 +51,13 @@ namespace SoframiPaylas.Infrastructure.Repositories
                     Dictionary<string, object> userDict = document.ToDictionary();
                     var user = new User
                     {
-                        UserID = userDict["userID"].ToString(),
-                        Email = userDict["email"].ToString(),
-                        FullName = userDict["fullname"].ToString(),
-                        IsHost = (bool)userDict["isHost"],
-                        PasswordHash = userDict["passwordHash"].ToString(),
-                        ProfilePicture = userDict["profilePicture"].ToString(),
-                        About = userDict["about"].ToString()
+                        UserID = userDict.ContainsKey("userID") ? userDict["userID"].ToString() : null,
+                        Email = userDict.ContainsKey("email") ? userDict["email"].ToString() : null,
+                        FullName = userDict.ContainsKey("fullname") ? userDict["fullname"].ToString() : null,
+                        IsHost = userDict.ContainsKey("isHost") ? (bool)userDict["isHost"] : false,
+                        PasswordHash = userDict.ContainsKey("passwordHash") ? userDict["passwordHash"].ToString() : null,
+                        ProfilePicture = userDict.ContainsKey("profilePicture") ? userDict["profilePicture"].ToString() : null,
+                        About = userDict.ContainsKey("about") ? userDict["about"].ToString() : null
                     };
                     users.Add(user);
                 }
