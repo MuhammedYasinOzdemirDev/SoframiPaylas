@@ -2,7 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SoframiPaylas.Domain\SoframiPaylas.Domain.csproj" />
-    <ProjectReference Include="SoframiPaylas.Application.csproj" />
+  
   </ItemGroup>
 
   <PropertyGroup>

@@ -5,6 +5,10 @@
     <ProjectReference Include="..\SoframiPaylas.Application\SoframiPaylas.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="FirebaseAdmin" Version="2.4.1" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
