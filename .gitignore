@@ -1,0 +1,52 @@
+# Binaries
+bin/
+obj/
+
+# Visual Studio Code'nun dosya ve klasörleri
+.vscode/
+
+# Visual Studio'nun dosya ve klasörleri
+*.suo
+*.user
+*.sln.docstates
+
+# NuGet tarafından oluşturulan dosyalar
+packages/
+*.nupkg
+*.paket.references
+
+# Resharper'ın dosya ve klasörleri
+_ReSharper*/
+*.resharper
+*.resharper.user
+
+# JetBrains Rider'ın dosya ve klasörleri
+.idea/
+
+# Node.js tarafından oluşturulan dosyalar
+node_modules/
+
+# Paketler için kayıt dosyaları
+*.lock.json
+package-lock.json
+yarn.lock
+
+# Geçici dosyalar
+*.tmp
+*.log
+*.bak
+*.cache
+
+# Derleme ve dağıtım dosyaları
+*.dll
+*.exe
+*.pdb
+*.dll.config
+*.cache
+*.log
+
+# macOS'ten oluşturulan dosyalar
+.DS_Store
+
+# Windows'tan oluşturulan dosyalar
+Thumbs.db
