@@ -19,6 +19,14 @@ namespace SoframiPaylas.WebAPI.Controllers
         {
             _postservice = postService;
         }
+        [HttpGet("posts")]
+        public async Task<IActionResult> GetAllPostAsync()
+        {
+            var posts = await _postservice.GetAllPostAsync();
+            if (posts == null)
+                return NotFound("Post not found");
+            return Ok(posts);
+        }
 
 
     }
