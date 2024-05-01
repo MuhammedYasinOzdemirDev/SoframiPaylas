@@ -5,30 +5,25 @@ using System.Threading.Tasks;
 using Firebase.Database;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
+using Google.Cloud.Firestore;
 
 namespace SoframiPaylas.Infrastructure.Data.Service
 {
     public class FirebaseService
     {
-        private FirebaseApp _app;
-        private FirebaseClient _client;
+        private readonly FirestoreDb db;
+
+        string pathToYourJson = "C:\\Users\\User\\Desktop\\SoframiPaylas\\SoframiPaylas.Infrastructure\\Data\\Config\\sofrani-paylas-firebase.json";
+
 
         public FirebaseService()
         {
-            if (FirebaseApp.DefaultInstance == null)
-            {
-                _app = FirebaseApp.Create(new AppOptions()
-                {
-                    Credential = GoogleCredential.FromFile("path/to/your/firebase-service-account-file.json")
-                });
-            }
-
-            _client = new FirebaseClient("https://your-firebase-database-url.firebaseio.com/");
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", pathToYourJson);
+            db = FirestoreDb.Create("sofrani-paylas");
         }
-
-        public FirebaseClient GetClient()
+        public FirestoreDb GetDb()
         {
-            return _client;
+            return db;
         }
     }
 }

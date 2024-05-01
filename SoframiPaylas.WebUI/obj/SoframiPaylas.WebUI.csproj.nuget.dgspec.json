@@ -34,6 +34,9 @@
             "projectReferences": {
               "C:\\Users\\User\\Desktop\\SoframiPaylas\\SoframiPaylas.Domain\\SoframiPaylas.Domain.csproj": {
                 "projectPath": "C:\\Users\\User\\Desktop\\SoframiPaylas\\SoframiPaylas.Domain\\SoframiPaylas.Domain.csproj"
+              },
+              "C:\\Users\\User\\Desktop\\SoframiPaylas\\SoframiPaylas.Infrastructure\\SoframiPaylas.Infrastructure.csproj": {
+                "projectPath": "C:\\Users\\User\\Desktop\\SoframiPaylas\\SoframiPaylas.Infrastructure\\SoframiPaylas.Infrastructure.csproj"
               }
             }
           }
@@ -116,6 +119,12 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "Google.Cloud.Firestore": {
+              "target": "Package",
+              "version": "[3.6.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -164,9 +173,6 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\User\\Desktop\\SoframiPaylas\\SoframiPaylas.Application\\SoframiPaylas.Application.csproj": {
-                "projectPath": "C:\\Users\\User\\Desktop\\SoframiPaylas\\SoframiPaylas.Application\\SoframiPaylas.Application.csproj"
-              },
               "C:\\Users\\User\\Desktop\\SoframiPaylas\\SoframiPaylas.Domain\\SoframiPaylas.Domain.csproj": {
                 "projectPath": "C:\\Users\\User\\Desktop\\SoframiPaylas\\SoframiPaylas.Domain\\SoframiPaylas.Domain.csproj"
               }
@@ -199,6 +205,10 @@
             "Google.Apis.Auth": {
               "target": "Package",
               "version": "[1.68.0, )"
+            },
+            "Google.Cloud.Firestore": {
+              "target": "Package",
+              "version": "[3.6.0, )"
             }
           },
           "imports": [

@@ -2,13 +2,14 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SoframiPaylas.Domain\SoframiPaylas.Domain.csproj" />
-    <ProjectReference Include="..\SoframiPaylas.Application\SoframiPaylas.Application.csproj" />
+  
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Firebase.Database" Version="1.0.0" />
     <PackageReference Include="FirebaseAdmin" Version="2.4.1" />
     <PackageReference Include="Google.Apis.Auth" Version="1.68.0" />
+    <PackageReference Include="Google.Cloud.Firestore" Version="3.6.0" />
   </ItemGroup>
 
   <PropertyGroup>
