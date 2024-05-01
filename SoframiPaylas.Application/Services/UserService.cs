@@ -32,6 +32,11 @@ namespace SoframiPaylas.Application.Services
             return await _userRepository.CreateUserAsync(user);
         }
 
+        public async Task DeleteUserAsync(string userId)
+        {
+            await _userRepository.DeleteUserAsync(userId);
+        }
+
         public async Task<IEnumerable<UserDto>> GetAllUserAsync()
         {
             var users = await _userRepository.GetAllUserAsync();

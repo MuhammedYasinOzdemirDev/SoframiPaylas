@@ -58,7 +58,12 @@ namespace SoframiPaylas.WebAPI.Controllers
             await _userService.UpdateUserAsync(userDto, userId);
             return Ok();
         }
-
+        [HttpDelete("user/{userId}")]
+        public async Task<IActionResult> DeleteUser(string userId)
+        {
+            await _userService.DeleteUserAsync(userId);
+            return NoContent();
+        }
 
     }
 }

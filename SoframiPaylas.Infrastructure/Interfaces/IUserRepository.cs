@@ -12,5 +12,6 @@ namespace SoframiPaylas.Infrastructure.Interfaces
         Task<User> GetUserByIdAsync(string userId);
         Task<string> CreateUserAsync(User user);
         Task UpdateUserAsync(User user, string userId);
+        Task DeleteUserAsync(string userId);
     }
 }
