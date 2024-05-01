@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace SoframiPaylas.Application.DTOs
 {
-    public class CreateUserDto
+    public class UpdateUserDto
     {
-
+        public string UserID { get; set; }
         public string? Email { get; set; }
 
         public string? FullName { get; set; }

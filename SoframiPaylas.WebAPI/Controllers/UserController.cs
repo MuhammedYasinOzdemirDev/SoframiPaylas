@@ -52,6 +52,12 @@ namespace SoframiPaylas.WebAPI.Controllers
 
             return Ok(userId);
         }
+        [HttpPut("user/{userId}")]
+        public async Task<IActionResult> UpdateUser(string userId, [FromBody] UpdateUserDto userDto)
+        {
+            await _userService.UpdateUserAsync(userDto, userId);
+            return Ok();
+        }
 
 
     }

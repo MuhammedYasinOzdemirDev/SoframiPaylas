@@ -95,5 +95,18 @@ namespace SoframiPaylas.Infrastructure.Repositories
 
         }
 
+        public async Task UpdateUserAsync(User user, string userId)
+        {
+            if (user == null)
+                throw new ArgumentNullException(nameof(user), "User object must not be null.");
+
+            if (string.IsNullOrEmpty(user.UserID))
+                throw new ArgumentException("User ID must not be null or empty.", nameof(user.UserID));
+
+            DocumentReference userRef = _service.GetDb().Collection("Users").Document(user.UserID);
+
+            // Firestore ile kullanıcı verilerini güncelleme
+            await userRef.SetAsync(user, SetOptions.MergeAll);
+        }
     }
 }

@@ -49,5 +49,20 @@ namespace SoframiPaylas.Application.Services
                 About = user.About
             };
         }
+
+        public async Task UpdateUserAsync(UpdateUserDto userDto, string userId)
+        {
+            var user = new User
+            {
+                UserID = userId,
+                Email = userDto.Email,
+                FullName = userDto.FullName,
+                ProfilePicture = userDto.ProfilePicture,
+                PasswordHash = userDto.PasswordHash,
+                IsHost = userDto.IsHost,
+                About = userDto.About
+            };
+            await _userRepository.UpdateUserAsync(user, userId);
+        }
     }
 }
