@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SoframiPaylas.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+865744bd5dfe5429201f5e9ae4853ad398abe327")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+da5f56f2c42b05e815d9224830719a6351d06e30")]
 [assembly: System.Reflection.AssemblyProductAttribute("SoframiPaylas.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SoframiPaylas.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
