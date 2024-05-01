@@ -9,7 +9,7 @@ obj/
 *.suo
 *.user
 *.sln.docstates
-
+*.AssemblyInfo
 # NuGet tarafından oluşturulan dosyalar
 packages/
 *.nupkg
