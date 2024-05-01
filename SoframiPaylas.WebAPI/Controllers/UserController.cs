@@ -23,7 +23,18 @@ namespace SoframiPaylas.WebAPI.Controllers
         public async Task<IActionResult> GetAllUserAsync()
         {
             var users = await _userService.GetAllUserAsync();
+
             return Ok(users);
+        }
+        [HttpGet("users/{userId}")]
+        public async Task<IActionResult> GetUserByIdAsync(string userId)
+        {
+            var user = await _userService.GetUserByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return Ok(user);
         }
 
 

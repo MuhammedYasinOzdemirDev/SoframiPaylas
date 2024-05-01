@@ -22,5 +22,17 @@ namespace SoframiPaylas.Application.Services
             var users = await _userRepository.GetAllUserAsync();
             return users.Select(u => new UserDto { FullName = u.FullName, Email = u.Email, IsHost = u.IsHost, About = u.About, ProfilePicture = u.ProfilePicture });
         }
+        public async Task<UserDto> GetUserByIdAsync(string userId)
+        {
+            var user = await _userRepository.GetUserByIdAsync(userId);
+            return new UserDto
+            {
+                Email = user.Email,
+                FullName = user.FullName,
+                ProfilePicture = user.ProfilePicture,
+                IsHost = user.IsHost,
+                About = user.About
+            };
+        }
     }
 }

@@ -9,5 +9,6 @@ namespace SoframiPaylas.Infrastructure.Interfaces
     public interface IUserRepository
     {
         Task<IEnumerable<User>> GetAllUserAsync();
+        Task<User> GetUserByIdAsync(string userId);
     }
 }
