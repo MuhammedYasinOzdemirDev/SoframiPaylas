@@ -50,3 +50,7 @@ yarn.lock
 
 # Windows'tan oluşturulan dosyalar
 Thumbs.db
+
+# ozel dosyalar
+
+sofrani-paylas-firebase.json
