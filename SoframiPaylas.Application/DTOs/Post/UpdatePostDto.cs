@@ -2,28 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Google.Cloud.Firestore;
 
-namespace SoframiPaylas.Domain.Entities
+namespace SoframiPaylas.Application.DTOs.Post
 {
-    [FirestoreData]
-    public class Post
+    public class UpdatePostDto
     {
-        [FirestoreProperty("PostId")]
         public int PostID { get; set; }
-        [FirestoreProperty("userID")]
         public int UserID { get; set; }
-        [FirestoreProperty("Title")]
         public string Title { get; set; }
-        [FirestoreProperty("Description")]
         public string Description { get; set; }
-        [FirestoreProperty("Date")]
         public DateTime Date { get; set; }
-        [FirestoreProperty("Participants")]
         public int Participants { get; set; }
-        [FirestoreProperty("Images")]
         public string Images { get; set; }
-        [FirestoreProperty("Status")]
         public string Status { get; set; }
     }
 }
