@@ -18,7 +18,7 @@ namespace SoframiPaylas.Domain.Entities
         [FirestoreProperty("Description")]
         public string Description { get; set; }
         [FirestoreProperty("Date")]
-        public DateTime Date { get; set; }
+        public Timestamp Date { get; set; }
         [FirestoreProperty("Participants")]
         public int Participants { get; set; }
         [FirestoreProperty("Images")]

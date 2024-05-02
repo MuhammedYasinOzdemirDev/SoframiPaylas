@@ -17,6 +17,16 @@ namespace SoframiPaylas.Infrastructure.Repositories
             _service = service;
         }
 
+        public async Task<string> CreatePostAsync(Post post)
+        {
+            string postId = Guid.NewGuid().ToString();
+            post.PostID = postId;
+
+            await _service.GetDb().Collection("Posts").Document(postId).SetAsync(post);
+
+            return postId;
+        }
+
         public async Task<List<Post>> GetAllPostsAsync()
         {
             if (_service == null || _service.GetDb() == null)
@@ -30,14 +40,14 @@ namespace SoframiPaylas.Infrastructure.Repositories
 
                 if (document.Exists)
                 {
-                    Dictionary<string, object> postDict = new Dictionary<string, object>();
+                    Dictionary<string, object> postDict = document.ToDictionary();
                     var post = new Post
                     {
                         PostID = postDict.ContainsKey("PostId") ? postDict["PostId"].ToString() : null,
                         UserID = postDict.ContainsKey("userID") ? postDict["userID"].ToString() : null,
                         Title = postDict.ContainsKey("Title") ? postDict["Title"].ToString() : null,
                         Description = postDict.ContainsKey("Description") ? postDict["Description"].ToString() : null,
-                        Date = postDict.ContainsKey("Date") ? DateTime.Parse(postDict["Date"].ToString()) : DateTime.MinValue,
+                        Date = postDict.ContainsKey("Date") && postDict["Date"] is Timestamp ? (Timestamp)postDict["Date"] : Timestamp.FromDateTime(DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc)),
                         Participants = postDict.ContainsKey("Participants") ? Convert.ToInt32(postDict["Participants"]) : 0,
                         Images = postDict.ContainsKey("Images") ? postDict["Images"].ToString() : null,
                         Status = postDict.ContainsKey("Status") ? postDict["Status"].ToString() : null
@@ -72,7 +82,7 @@ namespace SoframiPaylas.Infrastructure.Repositories
                 UserID = postDict.ContainsKey("userID") ? postDict["userID"].ToString() : null,
                 Title = postDict.ContainsKey("Title") ? postDict["Title"].ToString() : null,
                 Description = postDict.ContainsKey("Description") ? postDict["Description"].ToString() : null,
-                Date = postDict.ContainsKey("Date") ? DateTime.Parse(postDict["Date"].ToString()) : DateTime.MinValue,
+                Date = postDict.ContainsKey("Date") && postDict["Date"] is Timestamp ? (Timestamp)postDict["Date"] : Timestamp.FromDateTime(DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc)),
                 Participants = postDict.ContainsKey("Participants") ? Convert.ToInt32(postDict["Participants"]) : 0,
                 Images = postDict.ContainsKey("Images") ? postDict["Images"].ToString() : null,
                 Status = postDict.ContainsKey("Status") ? postDict["Status"].ToString() : null

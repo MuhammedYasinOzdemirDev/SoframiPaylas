@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SoframiPaylas.Application.DTOs.Post;
 using SoframiPaylas.Application.Interfaces;
 
 namespace SoframiPaylas.WebAPI.Controllers
@@ -35,7 +36,14 @@ namespace SoframiPaylas.WebAPI.Controllers
                 return NotFound("Post not found");
             return Ok(post);
         }
-
+        [HttpPost("post")]
+        public async Task<IActionResult> CreatePost([FromBody] CreatePostDto postDto)
+        {
+            var postId = await _postservice.CreatePostAsync(postDto);
+            if (postId == null)
+                return BadRequest();
+            return Ok(postId);
+        }
 
     }
 }
