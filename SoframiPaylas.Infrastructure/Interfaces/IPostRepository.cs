@@ -9,5 +9,6 @@ namespace SoframiPaylas.Infrastructure.Interfaces
     public interface IPostRepository
     {
         Task<List<Post>> GetAllPostsAsync();
+        Task<Post> GetPostByIdAsync(string id);
     }
 }

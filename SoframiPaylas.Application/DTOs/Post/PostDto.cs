@@ -7,7 +7,7 @@ namespace SoframiPaylas.Application.DTOs.Post
 {
     public class PostDto
     {
-        public int UserID { get; set; }
+        public string UserID { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public int Participants { get; set; }

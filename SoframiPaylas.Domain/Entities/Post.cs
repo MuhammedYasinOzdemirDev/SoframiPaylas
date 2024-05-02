@@ -10,9 +10,9 @@ namespace SoframiPaylas.Domain.Entities
     public class Post
     {
         [FirestoreProperty("PostId")]
-        public int PostID { get; set; }
+        public string PostID { get; set; }
         [FirestoreProperty("userID")]
-        public int UserID { get; set; }
+        public string UserID { get; set; }
         [FirestoreProperty("Title")]
         public string Title { get; set; }
         [FirestoreProperty("Description")]

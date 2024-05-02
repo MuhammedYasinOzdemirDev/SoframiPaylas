@@ -9,5 +9,6 @@ namespace SoframiPaylas.Application.Interfaces
     public interface IPostService
     {
         Task<IEnumerable<PostDto>> GetAllPostAsync();
+        Task<PostDto> GetPostByIdAsync(string userId);
     }
 }
