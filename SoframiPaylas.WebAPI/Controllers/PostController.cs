@@ -50,6 +50,12 @@ namespace SoframiPaylas.WebAPI.Controllers
             await _postservice.UpdatePostAsync(postDto, postId);
             return Ok();
         }
+        [HttpDelete("post")]
+        public async Task<IActionResult> DeletePost(string postId)
+        {
+            await _postservice.DeletePostAsync(postId);
+            return Ok();
+        }
 
     }
 }

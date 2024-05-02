@@ -34,6 +34,11 @@ namespace SoframiPaylas.Application.Services
             return await _postrepository.CreatePostAsync(post);
         }
 
+        public async Task DeletePostAsync(string postId)
+        {
+            await _postrepository.DeletePostAsync(postId);
+        }
+
         public async Task<IEnumerable<PostDto>> GetAllPostAsync()
         {
             var posts = await _postrepository.GetAllPostsAsync();

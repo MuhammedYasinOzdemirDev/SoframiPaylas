@@ -27,6 +27,17 @@ namespace SoframiPaylas.Infrastructure.Repositories
             return postId;
         }
 
+        public async Task DeletePostAsync(string postId)
+        {
+            if (string.IsNullOrEmpty(postId))
+                throw new ArgumentException("Post ID cannot be null or empty.", nameof(postId));
+
+            DocumentReference postRef = _service.GetDb().Collection("Posts").Document(postId);
+
+            // Firestore'dan belirtilen kullanıcıyı silme
+            await postRef.DeleteAsync();
+        }
+
         public async Task<List<Post>> GetAllPostsAsync()
         {
             if (_service == null || _service.GetDb() == null)

@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SoframiPaylas.Domain.Entities
+namespace SoframiPaylas.Application.Interfaces
 {
-    public class test
+    public class IEventService
     {
-        public string veri { get; set; }
-
-
+        
     }
 }
