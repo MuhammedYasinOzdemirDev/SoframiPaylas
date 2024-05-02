@@ -44,6 +44,12 @@ namespace SoframiPaylas.WebAPI.Controllers
                 return BadRequest();
             return Ok(postId);
         }
+        [HttpPut("post")]
+        public async Task<IActionResult> UpdatePost([FromBody] UpdatePostDto postDto, string postId)
+        {
+            await _postservice.UpdatePostAsync(postDto, postId);
+            return Ok();
+        }
 
     }
 }

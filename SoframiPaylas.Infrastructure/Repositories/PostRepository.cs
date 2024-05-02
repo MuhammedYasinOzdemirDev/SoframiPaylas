@@ -88,5 +88,16 @@ namespace SoframiPaylas.Infrastructure.Repositories
                 Status = postDict.ContainsKey("Status") ? postDict["Status"].ToString() : null
             };
         }
+
+        public async Task UpdatePostAsync(Post post, string postId)
+        {
+            if (post == null)
+                throw new ArgumentNullException(nameof(post), "Post object must not be null.");
+            if (string.IsNullOrEmpty(postId))
+                throw new ArgumentException("Post ID must not be null or empty.", nameof(postId));
+
+            DocumentReference postReference = _service.GetDb().Collection("Posts").Document(postId);
+            await postReference.SetAsync(post, SetOptions.MergeAll);
+        }
     }
 }

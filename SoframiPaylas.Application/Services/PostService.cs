@@ -58,5 +58,21 @@ namespace SoframiPaylas.Application.Services
                 FormattedDate = post.Date.ToDateTime().ToString("o")
             };
         }
+
+        public async Task UpdatePostAsync(UpdatePostDto postDto, string postId)
+        {
+            var post = new Post
+            {
+                PostID = postId,
+                UserID = postDto.UserID,
+                Title = postDto.Title,
+                Description = postDto.Description,
+                Date = postDto.Date,
+                Participants = postDto.Participants,
+                Images = postDto.Images,
+                Status = postDto.Status
+            };
+            await _postrepository.UpdatePostAsync(post, postId);
+        }
     }
 }
