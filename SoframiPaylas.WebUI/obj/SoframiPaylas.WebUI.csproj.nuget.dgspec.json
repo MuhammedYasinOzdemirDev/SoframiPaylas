@@ -267,9 +267,6 @@
             "projectReferences": {
               "C:\\Users\\User\\Desktop\\SoframiPaylas\\SoframiPaylas.Application\\SoframiPaylas.Application.csproj": {
                 "projectPath": "C:\\Users\\User\\Desktop\\SoframiPaylas\\SoframiPaylas.Application\\SoframiPaylas.Application.csproj"
-              },
-              "C:\\Users\\User\\Desktop\\SoframiPaylas\\SoframiPaylas.Infrastructure\\SoframiPaylas.Infrastructure.csproj": {
-                "projectPath": "C:\\Users\\User\\Desktop\\SoframiPaylas\\SoframiPaylas.Infrastructure\\SoframiPaylas.Infrastructure.csproj"
               }
             }
           }

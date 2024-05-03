@@ -1521,8 +1521,7 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
-      "SoframiPaylas.Application >= 1.0.0",
-      "SoframiPaylas.Infrastructure >= 1.0.0"
+      "SoframiPaylas.Application >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -1559,9 +1558,6 @@
           "projectReferences": {
             "C:\\Users\\User\\Desktop\\SoframiPaylas\\SoframiPaylas.Application\\SoframiPaylas.Application.csproj": {
               "projectPath": "C:\\Users\\User\\Desktop\\SoframiPaylas\\SoframiPaylas.Application\\SoframiPaylas.Application.csproj"
-            },
-            "C:\\Users\\User\\Desktop\\SoframiPaylas\\SoframiPaylas.Infrastructure\\SoframiPaylas.Infrastructure.csproj": {
-              "projectPath": "C:\\Users\\User\\Desktop\\SoframiPaylas\\SoframiPaylas.Infrastructure\\SoframiPaylas.Infrastructure.csproj"
             }
           }
         }

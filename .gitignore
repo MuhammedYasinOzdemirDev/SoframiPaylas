@@ -25,7 +25,8 @@ _ReSharper*/
 
 # Node.js tarafından oluşturulan dosyalar
 node_modules/
-
+#statik dosyalar
+wwwroot/
 # Paketler için kayıt dosyaları
 *.lock.json
 package-lock.json

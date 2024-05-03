@@ -1,0 +1,24 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [{
+    "library": "bootstrap@5.3.3",
+    "destination": "wwwroot/lib/bootstrap"
+  },
+  {
+    "library": "jquery@3.7.1",
+    "destination": "wwwroot/lib/jquery"
+  },
+  {
+    "library": "popper.js@2.11.8",
+    "destination": "wwwroot/lib/popper"
+  },
+  {
+    "library": "bootstrap-icons@1.11.3",
+    "destination": "wwwroot/lib/bootstrap-icon"
+  },
+  {
+    "library": "sweetalert2@11.10.8",
+    "destination": "wwwroot/lib/sweetalert2"
+  }]
+}
