@@ -20,7 +20,6 @@ namespace SoframiPaylas.Infrastructure.Repositories
         public async Task<string> CreatePostAsync(Post post)
         {
             string postId = Guid.NewGuid().ToString();
-            post.PostID = postId;
 
             await _service.GetDb().Collection("Posts").Document(postId).SetAsync(post);
 
@@ -54,7 +53,6 @@ namespace SoframiPaylas.Infrastructure.Repositories
                     Dictionary<string, object> postDict = document.ToDictionary();
                     var post = new Post
                     {
-                        PostID = postDict.ContainsKey("PostId") ? postDict["PostId"].ToString() : null,
                         UserID = postDict.ContainsKey("userID") ? postDict["userID"].ToString() : null,
                         Title = postDict.ContainsKey("Title") ? postDict["Title"].ToString() : null,
                         Description = postDict.ContainsKey("Description") ? postDict["Description"].ToString() : null,
@@ -89,7 +87,6 @@ namespace SoframiPaylas.Infrastructure.Repositories
             Dictionary<string, object> postDict = document.ToDictionary();
             return new Post
             {
-                PostID = postDict.ContainsKey("PostId") ? postDict["PostId"].ToString() : null,
                 UserID = postDict.ContainsKey("userID") ? postDict["userID"].ToString() : null,
                 Title = postDict.ContainsKey("Title") ? postDict["Title"].ToString() : null,
                 Description = postDict.ContainsKey("Description") ? postDict["Description"].ToString() : null,

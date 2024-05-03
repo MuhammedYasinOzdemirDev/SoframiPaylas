@@ -9,7 +9,7 @@ namespace SoframiPaylas.Application.DTOs.Event
     public class EventDto
     {
 
-        public int HostID { get; set; }
+        public string HostID { get; set; }
         public string Title { get; set; }
 
         public string Description { get; set; }

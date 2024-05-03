@@ -26,7 +26,6 @@ namespace SoframiPaylas.Infrastructure.Repositories
         {
 
             string userId = Guid.NewGuid().ToString();
-            user.UserID = userId;
             await _service.GetDb().Collection("Users").Document(userId).SetAsync(user);
 
             return userId;
@@ -51,7 +50,6 @@ namespace SoframiPaylas.Infrastructure.Repositories
                     Dictionary<string, object> userDict = document.ToDictionary();
                     var user = new User
                     {
-                        UserID = userDict.ContainsKey("userID") ? userDict["userID"].ToString() : null,
                         Email = userDict.ContainsKey("email") ? userDict["email"].ToString() : null,
                         FullName = userDict.ContainsKey("fullname") ? userDict["fullname"].ToString() : null,
                         IsHost = userDict.ContainsKey("isHost") ? (bool)userDict["isHost"] : false,
@@ -100,10 +98,9 @@ namespace SoframiPaylas.Infrastructure.Repositories
             if (user == null)
                 throw new ArgumentNullException(nameof(user), "User object must not be null.");
 
-            if (string.IsNullOrEmpty(user.UserID))
-                throw new ArgumentException("User ID must not be null or empty.", nameof(user.UserID));
 
-            DocumentReference userRef = _service.GetDb().Collection("Users").Document(user.UserID);
+
+            DocumentReference userRef = _service.GetDb().Collection("Users").Document(userId);
 
             // Firestore ile kullanıcı verilerini güncelleme
             await userRef.SetAsync(user, SetOptions.MergeAll);

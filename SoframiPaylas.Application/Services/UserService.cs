@@ -59,7 +59,6 @@ namespace SoframiPaylas.Application.Services
         {
             var user = new User
             {
-                UserID = userId,
                 Email = userDto.Email,
                 FullName = userDto.FullName,
                 ProfilePicture = userDto.ProfilePicture,

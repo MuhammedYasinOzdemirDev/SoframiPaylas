@@ -9,21 +9,19 @@ namespace SoframiPaylas.Domain.Entities
     [FirestoreData]
     public class Post
     {
-        [FirestoreProperty("PostId")]
-        public string PostID { get; set; }
         [FirestoreProperty("userID")]
         public string UserID { get; set; }
-        [FirestoreProperty("Title")]
+        [FirestoreProperty("title")]
         public string Title { get; set; }
-        [FirestoreProperty("Description")]
+        [FirestoreProperty("description")]
         public string Description { get; set; }
-        [FirestoreProperty("Date")]
+        [FirestoreProperty("date")]
         public Timestamp Date { get; set; }
-        [FirestoreProperty("Participants")]
+        [FirestoreProperty("participants")]
         public int Participants { get; set; }
-        [FirestoreProperty("Images")]
+        [FirestoreProperty("ımages")]
         public string Images { get; set; }
-        [FirestoreProperty("Status")]
+        [FirestoreProperty("status")]
         public string Status { get; set; }
     }
 }

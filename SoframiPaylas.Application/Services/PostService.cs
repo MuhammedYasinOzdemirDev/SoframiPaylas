@@ -68,7 +68,6 @@ namespace SoframiPaylas.Application.Services
         {
             var post = new Post
             {
-                PostID = postId,
                 UserID = postDto.UserID,
                 Title = postDto.Title,
                 Description = postDto.Description,

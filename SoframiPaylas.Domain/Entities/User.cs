@@ -10,13 +10,11 @@ namespace SoframiPaylas.Domain.Entities
     [FirestoreData]
     public class User
     {
-        [FirestoreProperty("userID")]
-        public string UserID { get; set; }
 
         [FirestoreProperty("email")]
         public string Email { get; set; }
 
-        [FirestoreProperty("fullname")]
+        [FirestoreProperty("fullName")]
         public string FullName { get; set; }
 
         [FirestoreProperty("isHost")]
