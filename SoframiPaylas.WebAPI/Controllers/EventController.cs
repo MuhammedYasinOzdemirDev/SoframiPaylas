@@ -45,5 +45,12 @@ namespace SoframiPaylas.WebAPI
                 return BadRequest();
             return Ok(eventId);
         }
+
+        [HttpPut("event/{eventID}")]
+        public async Task<IActionResult> UpdateEventById([FromBody] UpdateEventDto eventDto, string eventID)
+        {
+            await _service.UpdateEventAsync(eventID, eventDto);
+            return Ok();
+        }
     }
 }

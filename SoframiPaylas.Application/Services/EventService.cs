@@ -75,5 +75,23 @@ namespace SoframiPaylas.Application.Services
                 EventStatus = e.EventStatus
             };
         }
+
+        public async Task UpdateEventAsync(string id, UpdateEventDto eventDto)
+        {
+            var eventItem = new Event
+            {
+                HostID = eventDto.HostID,
+                Title = eventDto.Title,
+                Description = eventDto.Description,
+                Location = eventDto.Location,
+                Date = eventDto.Date,
+                Time = eventDto.Time,
+                ParticipantIDs = eventDto.ParticipantIDs,
+                MaxParticipants = eventDto.MaxParticipants,
+                Images = eventDto.Images,
+                EventStatus = eventDto.EventStatus
+            };
+            await _eventRepository.UpdateEventAsync(id, eventItem);
+        }
     }
 }

@@ -7,7 +7,6 @@ namespace SoframiPaylas.Application.DTOs
 {
     public class UpdateUserDto
     {
-        public string UserID { get; set; }
         public string? Email { get; set; }
 
         public string? FullName { get; set; }

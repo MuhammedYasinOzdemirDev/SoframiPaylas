@@ -92,5 +92,16 @@ namespace SoframiPaylas.Infrastructure.Repositories
                 EventStatus = eventDict.ContainsKey("eventStatus") ? Convert.ToBoolean(eventDict["eventStatus"]) : false,
             };
         }
+
+        public async Task UpdateEventAsync(string id, Event eventItem)
+        {
+            if (eventItem == null)
+                throw new ArgumentNullException(nameof(eventItem), "Post object must not be null.");
+            if (string.IsNullOrEmpty(id))
+                throw new ArgumentException("Event ID must not be null or empty.", nameof(id));
+
+            DocumentReference eventReference = _service.GetDb().Collection("Events").Document(id);
+            await eventReference.SetAsync(eventItem, SetOptions.MergeAll);
+        }
     }
 }
