@@ -36,6 +36,15 @@ namespace SoframiPaylas.Application.Mappings
 
             // Post -> UpdatePostDto
             CreateMap<Post, UpdatePostDto>().ReverseMap();
+
+            // Event <-> EventDto
+            CreateMap<Event, EventDto>().ReverseMap();
+
+            // Event -> CreateEventDto
+            CreateMap<Event, CreateEventDto>().ReverseMap();
+
+            // Event -> UpdateEventDto
+            CreateMap<Event, UpdateEventDto>().ReverseMap();
         }
     }
 }

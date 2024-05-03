@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SoframiPaylas.WebAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+512c111ec803759a4da152a0adb23b3a2460b7f7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+df3fd73bac238d55c7a1ca072e817bd11e7cd1e1")]
 [assembly: System.Reflection.AssemblyProductAttribute("SoframiPaylas.WebAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SoframiPaylas.WebAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

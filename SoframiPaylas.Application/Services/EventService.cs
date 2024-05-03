@@ -23,43 +23,25 @@ namespace SoframiPaylas.Application.Services
 
         public async Task<string> CreateEventAsync(CreateEventDto eventDto)
         {
-            Event eventt = new Event
-            {
-                HostID = eventDto.HostID,
-                Title = eventDto.Title,
-                Description = eventDto.Description,
-                Location = eventDto.Location,
-                Date = eventDto.Date,
-                Time = eventDto.Time,
-                ParticipantIDs = eventDto.ParticipantIDs,
-                MaxParticipants = eventDto.MaxParticipants,
-                Images = eventDto.Images,
-                EventStatus = eventDto.EventStatus
-            };
-            return await _eventRepository.CreateEventAsync(eventt);
+            var eventItem = _mapper.Map<Event>(eventDto);
+            return await _eventRepository.CreateEventAsync(eventItem);
         }
 
         public async Task DeleteEventAsync(string id)
         {
+            var eventItem = await _eventRepository.GetEventByIdAsync(id);
+            if (eventItem == null)
+            {
+                throw new Exception("Event not found.");
+            }
+
             await _eventRepository.DeleteEventAsync(id);
         }
 
         public async Task<IEnumerable<EventDto>> GetAllEventsAsync()
         {
             var events = await _eventRepository.GetEventAllAsync();
-            return events.Select(e => new EventDto
-            {
-                HostID = e.HostID,
-                Title = e.Title,
-                Description = e.Description,
-                Location = e.Location,
-                Date = e.Date,
-                Time = e.Time,
-                ParticipantIDs = e.ParticipantIDs,
-                MaxParticipants = e.MaxParticipants,
-                Images = e.Images,
-                EventStatus = e.EventStatus
-            });
+            return events.Select(e => _mapper.Map<EventDto>(e));
         }
 
         public async Task<EventDto> GetEventByIdAsync(string id)
@@ -69,36 +51,17 @@ namespace SoframiPaylas.Application.Services
             {
                 throw new KeyNotFoundException($"No event found with ID {id}");
             }
-            return new EventDto
-            {
-                HostID = e.HostID,
-                Title = e.Title,
-                Description = e.Description,
-                Location = e.Location,
-                Date = e.Date,
-                Time = e.Time,
-                ParticipantIDs = e.ParticipantIDs,
-                MaxParticipants = e.MaxParticipants,
-                Images = e.Images,
-                EventStatus = e.EventStatus
-            };
+            return _mapper.Map<EventDto>(e);
         }
 
         public async Task UpdateEventAsync(string id, UpdateEventDto eventDto)
         {
-            var eventItem = new Event
+            var eventItem = await _eventRepository.GetEventByIdAsync(id);
+            if (eventItem == null)
             {
-                HostID = eventDto.HostID,
-                Title = eventDto.Title,
-                Description = eventDto.Description,
-                Location = eventDto.Location,
-                Date = eventDto.Date,
-                Time = eventDto.Time,
-                ParticipantIDs = eventDto.ParticipantIDs,
-                MaxParticipants = eventDto.MaxParticipants,
-                Images = eventDto.Images,
-                EventStatus = eventDto.EventStatus
-            };
+                throw new Exception("Event not found.");
+            }
+            _mapper.Map(eventDto, eventItem);
             await _eventRepository.UpdateEventAsync(id, eventItem);
         }
     }
