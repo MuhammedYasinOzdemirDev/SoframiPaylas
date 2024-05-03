@@ -11,5 +11,6 @@ namespace SoframiPaylas.Application.Interfaces
     {
         Task<string> CreateEventAsync(CreateEventDto eventDto);
         Task<IEnumerable<EventDto>> GetAllEventsAsync();
+        Task<EventDto> GetEventByIdAsync(string id);
     }
 }

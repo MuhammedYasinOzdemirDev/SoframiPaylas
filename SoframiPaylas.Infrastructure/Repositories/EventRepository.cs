@@ -59,5 +59,38 @@ namespace SoframiPaylas.Infrastructure.Repositories
 
             return events;
         }
+
+        public async Task<Event> GetEventByIdAsync(string id)
+        {
+            if (_service == null || _service.GetDb() == null)
+            {
+                throw new InvalidOperationException("Database service is not initialized.");
+            }
+            DocumentReference eventRef = _service.GetDb().Collection("Events").Document(id);
+            DocumentSnapshot snapshot = await eventRef.GetSnapshotAsync();
+
+
+            if (!snapshot.Exists)
+            {
+                return null;
+            }
+
+            Dictionary<string, object> eventDict = snapshot.ToDictionary();
+            return new Event
+            {
+                HostID = eventDict.ContainsKey("hostID") ? eventDict["hostID"]?.ToString() : null,
+                Title = eventDict.ContainsKey("title") ? eventDict["title"]?.ToString() : null,
+                Description = eventDict.ContainsKey("description") ? eventDict["description"]?.ToString() : null,
+                Location = eventDict.ContainsKey("location") && eventDict["location"] is GeoPoint ? (GeoPoint)eventDict["location"] : new GeoPoint(0, 0),
+                Date = eventDict.ContainsKey("date") && eventDict["date"] is Timestamp ? (Timestamp)eventDict["date"] : Timestamp.FromDateTime(DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc)),
+                Time = eventDict.ContainsKey("time") ? eventDict["time"]?.ToString() : null,
+                ParticipantIDs = eventDict.ContainsKey("participantIDs") && eventDict["participantIDs"] is List<object>
+                ? ((List<object>)eventDict["participantIDs"]).Cast<string>().ToList()
+                : new List<string>(),
+                MaxParticipants = eventDict.ContainsKey("maxParticipants") ? Convert.ToInt32(eventDict["maxParticipants"]) : 0,
+                Images = eventDict.ContainsKey("images") ? eventDict["images"]?.ToString() : null,
+                EventStatus = eventDict.ContainsKey("eventStatus") ? Convert.ToBoolean(eventDict["eventStatus"]) : false,
+            };
+        }
     }
 }

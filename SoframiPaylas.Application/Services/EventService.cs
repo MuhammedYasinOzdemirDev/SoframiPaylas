@@ -50,8 +50,30 @@ namespace SoframiPaylas.Application.Services
                 ParticipantIDs = e.ParticipantIDs,
                 MaxParticipants = e.MaxParticipants,
                 Images = e.Images,
-                EventStatus = e.EventStatus,
+                EventStatus = e.EventStatus
             });
+        }
+
+        public async Task<EventDto> GetEventByIdAsync(string id)
+        {
+            var e = await _eventRepository.GetEventByIdAsync(id);
+            if (e == null)
+            {
+                throw new KeyNotFoundException($"No event found with ID {id}");
+            }
+            return new EventDto
+            {
+                HostID = e.HostID,
+                Title = e.Title,
+                Description = e.Description,
+                Location = e.Location,
+                Date = e.Date,
+                Time = e.Time,
+                ParticipantIDs = e.ParticipantIDs,
+                MaxParticipants = e.MaxParticipants,
+                Images = e.Images,
+                EventStatus = e.EventStatus
+            };
         }
     }
 }
