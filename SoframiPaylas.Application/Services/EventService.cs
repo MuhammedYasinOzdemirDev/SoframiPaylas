@@ -36,6 +36,11 @@ namespace SoframiPaylas.Application.Services
             return await _eventRepository.CreateEventAsync(eventt);
         }
 
+        public async Task DeleteEventAsync(string id)
+        {
+            await _eventRepository.DeleteEventAsync(id);
+        }
+
         public async Task<IEnumerable<EventDto>> GetAllEventsAsync()
         {
             var events = await _eventRepository.GetEventAllAsync();

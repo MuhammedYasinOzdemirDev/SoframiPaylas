@@ -52,5 +52,11 @@ namespace SoframiPaylas.WebAPI
             await _service.UpdateEventAsync(eventID, eventDto);
             return Ok();
         }
+        [HttpDelete("event/{eventID}")]
+        public async Task<IActionResult> DeleteEventById(string eventID)
+        {
+            await _service.DeleteEventAsync(eventID);
+            return Ok();
+        }
     }
 }

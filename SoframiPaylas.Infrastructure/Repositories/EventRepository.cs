@@ -24,6 +24,18 @@ namespace SoframiPaylas.Infrastructure.Repositories
             return eventId;
         }
 
+        public async Task DeleteEventAsync(string id)
+        {
+
+            if (string.IsNullOrEmpty(id))
+                throw new ArgumentException("Eveny ID cannot be null or empty.", nameof(id));
+
+            DocumentReference eventRef = _service.GetDb().Collection("Events").Document(id);
+
+            // Firestore'dan belirtilen kullanıcıyı silme
+            await eventRef.DeleteAsync();
+        }
+
         public async Task<List<Event>> GetEventAllAsync()
         {
             if (_service == null || _service.GetDb() == null)

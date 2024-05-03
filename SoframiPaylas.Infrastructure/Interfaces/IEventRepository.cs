@@ -12,6 +12,7 @@ namespace SoframiPaylas.Infrastructure.Interfaces
         Task<List<Event>> GetEventAllAsync();
         Task<Event> GetEventByIdAsync(string id);
         Task UpdateEventAsync(string id, Event Event);
+        Task DeleteEventAsync(string id);
 
     }
 }
