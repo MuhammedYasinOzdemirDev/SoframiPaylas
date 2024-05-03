@@ -18,6 +18,17 @@ namespace SoframiPaylas.WebAPI
         {
             _service = service;
         }
+        [HttpGet("events")]
+        public async Task<IActionResult> GetAllEvents()
+        {
+            var events = await _service.GetAllEventsAsync();
+            if (events == null)
+            {
+                return NotFound();
+            }
+            return Ok(events);
+        }
+
         [HttpPost("event")]
         public async Task<IActionResult> CreateEvent([FromBody] CreateEventDto eventDto)
         {

@@ -15,7 +15,7 @@ namespace SoframiPaylas.Application.DTOs.Event
 
         public string Description { get; set; }
 
-        public string Location { get; set; }
+        public GeoPoint Location { get; set; }
 
         public Timestamp Date { get; set; }
 
@@ -25,6 +25,6 @@ namespace SoframiPaylas.Application.DTOs.Event
         public int MaxParticipants { get; set; }
 
         public string Images { get; set; }
-        public string EventStatus { get; set; }
+        public bool EventStatus { get; set; }
     }
 }

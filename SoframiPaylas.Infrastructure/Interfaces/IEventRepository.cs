@@ -9,5 +9,6 @@ namespace SoframiPaylas.Infrastructure.Interfaces
     public interface IEventRepository
     {
         Task<string> CreateEventAsync(Event Event);
+        Task<List<Event>> GetEventAllAsync();
     }
 }
