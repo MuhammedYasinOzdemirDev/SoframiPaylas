@@ -73,18 +73,19 @@ namespace SoframiPaylas.Infrastructure.Repositories
             {
                 throw new InvalidOperationException("Database service is not initialized.");
             }
-            Query query = _service.GetDb().Collection("Posts").WhereEqualTo("PostId", id);
-            QuerySnapshot snapshot = await query.GetSnapshotAsync();
+
+            DocumentReference eventRef = _service.GetDb().Collection("Posts").Document(id);
+            DocumentSnapshot snapshot = await eventRef.GetSnapshotAsync();
 
 
-            DocumentSnapshot document = snapshot.Documents[0];
 
-            if (!document.Exists)
+
+            if (!snapshot.Exists)
             {
                 return null;  // Eğer belge yoksa null döner
             }
 
-            Dictionary<string, object> postDict = document.ToDictionary();
+            Dictionary<string, object> postDict = snapshot.ToDictionary();
             return new Post
             {
                 UserID = postDict.ContainsKey("userID") ? postDict["userID"].ToString() : null,

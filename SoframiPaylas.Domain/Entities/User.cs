@@ -20,8 +20,6 @@ namespace SoframiPaylas.Domain.Entities
         [FirestoreProperty("isHost")]
         public bool IsHost { get; set; }
 
-        [FirestoreProperty("passwordHash")]
-        public string PasswordHash { get; set; }
 
         [FirestoreProperty("profilePicture")]
         public string ProfilePicture { get; set; }

@@ -51,9 +51,8 @@ namespace SoframiPaylas.Infrastructure.Repositories
                     var user = new User
                     {
                         Email = userDict.ContainsKey("email") ? userDict["email"].ToString() : null,
-                        FullName = userDict.ContainsKey("fullname") ? userDict["fullname"].ToString() : null,
+                        FullName = userDict.ContainsKey("fullName") ? userDict["fullname"].ToString() : null,
                         IsHost = userDict.ContainsKey("isHost") ? (bool)userDict["isHost"] : false,
-                        PasswordHash = userDict.ContainsKey("passwordHash") ? userDict["passwordHash"].ToString() : null,
                         ProfilePicture = userDict.ContainsKey("profilePicture") ? userDict["profilePicture"].ToString() : null,
                         About = userDict.ContainsKey("about") ? userDict["about"].ToString() : null
                     };
@@ -68,25 +67,22 @@ namespace SoframiPaylas.Infrastructure.Repositories
             {
                 throw new InvalidOperationException("Database service is not initialized.");
             }
-            Query query = _service.GetDb().Collection("Users").WhereEqualTo("userID", userId);
-            QuerySnapshot snapshot = await query.GetSnapshotAsync();
+            DocumentReference eventRef = _service.GetDb().Collection("Users").Document(userId);
+            DocumentSnapshot snapshot = await eventRef.GetSnapshotAsync();
 
 
-            DocumentSnapshot document = snapshot.Documents[0];
-
-            if (!document.Exists)
+            if (!snapshot.Exists)
             {
                 return null;  // Eğer belge yoksa null döner
             }
 
-            Dictionary<string, object> userDict = document.ToDictionary();
+            Dictionary<string, object> userDict = snapshot.ToDictionary();
             return new User
             {
 
                 Email = userDict["email"].ToString(),
-                FullName = userDict["fullname"].ToString(),
+                FullName = userDict["fullName"].ToString(),
                 IsHost = Convert.ToBoolean(userDict["isHost"]),
-                PasswordHash = userDict["passwordHash"].ToString(),
                 ProfilePicture = userDict["profilePicture"].ToString(),
                 About = userDict["about"].ToString()
             };

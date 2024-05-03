@@ -14,7 +14,7 @@ namespace SoframiPaylas.Application.DTOs
 
         public bool IsHost { get; set; }
         public string? ProfilePicture { get; set; }
-        public string PasswordHash { get; set; }
+
         public string? About { get; set; }
     }
 }

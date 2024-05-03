@@ -15,7 +15,17 @@ namespace SoframiPaylas.Application.Mappings
         public MappingProfile()
         {
 
+            // User <-> UserDto
+            CreateMap<User, UserDto>()
+                .ReverseMap();
 
+            // User -> CreateUserDto
+            CreateMap<User, CreateUserDto>()
+                .ReverseMap();
+
+            // User -> UpdateUserDto
+            CreateMap<User, UpdateUserDto>()
+                .ReverseMap();
         }
     }
 }

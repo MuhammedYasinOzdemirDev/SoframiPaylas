@@ -23,52 +23,46 @@ namespace SoframiPaylas.Application.Services
 
         public async Task<string> CreateUserAsync(CreateUserDto userDto)
         {
-            var user = new User
-            {
-                Email = userDto.Email,
-                FullName = userDto.FullName,
-                ProfilePicture = userDto.ProfilePicture,
-                IsHost = userDto.IsHost,
-                About = userDto.About,
-                PasswordHash = userDto.PasswordHash
-            };
+            var user = _mapper.Map<User>(userDto);
             return await _userRepository.CreateUserAsync(user);
         }
 
         public async Task DeleteUserAsync(string userId)
         {
+            var user = await _userRepository.GetUserByIdAsync(userId);
+            if (user == null)
+            {
+                throw new Exception("User not found.");
+            }
             await _userRepository.DeleteUserAsync(userId);
         }
 
         public async Task<IEnumerable<UserDto>> GetAllUserAsync()
         {
             var users = await _userRepository.GetAllUserAsync();
-            return users.Select(u => new UserDto { FullName = u.FullName, Email = u.Email, IsHost = u.IsHost, About = u.About, ProfilePicture = u.ProfilePicture });
+            return users.Select(u => _mapper.Map<UserDto>(u));
         }
         public async Task<UserDto> GetUserByIdAsync(string userId)
         {
             var user = await _userRepository.GetUserByIdAsync(userId);
-            return new UserDto
+            if (user == null)
             {
-                Email = user.Email,
-                FullName = user.FullName,
-                ProfilePicture = user.ProfilePicture,
-                IsHost = user.IsHost,
-                About = user.About
-            };
+                throw new Exception("User not found.");
+            }
+
+            return _mapper.Map<UserDto>(user);
         }
 
         public async Task UpdateUserAsync(UpdateUserDto userDto, string userId)
         {
-            var user = new User
+
+            var user = await _userRepository.GetUserByIdAsync(userId);
+            if (user == null)
             {
-                Email = userDto.Email,
-                FullName = userDto.FullName,
-                ProfilePicture = userDto.ProfilePicture,
-                PasswordHash = userDto.PasswordHash,
-                IsHost = userDto.IsHost,
-                About = userDto.About
-            };
+                throw new Exception("User not found.");
+            }
+            // Bu, mevcut kullanıcı nesnesini kullanarak, sadece gerekli alanları günceller.
+            _mapper.Map(userDto, user);
             await _userRepository.UpdateUserAsync(user, userId);
         }
     }
