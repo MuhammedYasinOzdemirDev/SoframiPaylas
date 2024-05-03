@@ -1,22 +1,63 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
+/* site.css */
 
 body {
-  margin-bottom: 60px;
+	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+	margin: 0;
+	padding-top: 12px; /* Navbar'ın altında yeterli boşluk sağlar */
+	padding-bottom: 72px;
+	background: #f4f7f6; /* Genel arkaplan rengi */
+	color: #5a5a5a; /* Genel yazı rengi */
+}
+
+/* site.css */
+
+.post-list-item a {
+	/* ... */
+	transition: color 0.3s; /* Renk değişim animasyonu */
+}
+
+.post-list-item a:hover,
+.post-list-item a:focus {
+	color: #ff6a00; /* Canlı bir hover rengi */
+	text-decoration: underline; /* Altını çiz */
+}
+
+/* İçerik kartları */
+.card {
+	margin-bottom: 1.5rem; /* Kartlar arası boşluk */
+	border: none; /* Kenarlıkları kaldır */
+	box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.1); /* Hafif gölge ekle */
+	border-radius: 8px; /* Köşeleri daha fazla yuvarla */
+}
+
+.card-header {
+	background-color: #007bff;
+	color: #fff;
+	border-bottom: none;
+}
+
+.card-body {
+	padding: 1.5rem; /* İçerik için daha fazla boşluk */
+}
+
+/* Butonlar için hover efekti */
+.btn-primary:hover {
+	background-color: #0056b3;
+	border-color: #004085;
+}
+
+/* Footer özelleştirmeleri */
+.footer {
+	background-color: #e9ecef;
+	padding: 1rem 0;
+	font-size: 0.9rem;
+	text-align: center;
+	position: fixed; /* Footer'ı ekranın altına sabitlemek için */
+	bottom: 0;
+	left: 0;
+	width: 100%;
+}
+
+.footer span.text-muted {
+	color: #6c757d;
 }
