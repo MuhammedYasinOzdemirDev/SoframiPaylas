@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using SoframiPaylas.Application.DTOs.Event;
 using SoframiPaylas.Application.DTOs.Post;
 using SoframiPaylas.Application.Interfaces;
@@ -13,9 +14,11 @@ namespace SoframiPaylas.Application.Services
     public class EventService : IEventService
     {
         private readonly IEventRepository _eventRepository;
-        public EventService(IEventRepository eventRepository)
+        private readonly IMapper _mapper;
+        public EventService(IEventRepository eventRepository, IMapper mapper)
         {
             _eventRepository = eventRepository;
+            _mapper = mapper;
         }
 
         public async Task<string> CreateEventAsync(CreateEventDto eventDto)

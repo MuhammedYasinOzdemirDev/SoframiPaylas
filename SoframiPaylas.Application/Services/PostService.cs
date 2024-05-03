@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Google.Cloud.Firestore;
 using SoframiPaylas.Application.DTOs.Post;
 using SoframiPaylas.Application.Interfaces;
@@ -13,10 +14,12 @@ namespace SoframiPaylas.Application.Services
     public class PostService : IPostService
     {
         private readonly IPostRepository _postrepository;
+        private readonly IMapper _mapper;
 
-        public PostService(IPostRepository postRepository)
+        public PostService(IPostRepository postRepository, IMapper mapper)
         {
             _postrepository = postRepository;
+            _mapper = mapper;
         }
 
         public async Task<string> CreatePostAsync(CreatePostDto postDto)

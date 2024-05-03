@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Google.Cloud.Firestore;
 using SoframiPaylas.Application.DTOs;
 using SoframiPaylas.Application.Interfaces;
@@ -13,9 +14,11 @@ namespace SoframiPaylas.Application.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-        public UserService(IUserRepository userRepository)
+        private readonly IMapper _mapper;
+        public UserService(IUserRepository userRepository, IMapper mapper)
         {
             _userRepository = userRepository;
+            _mapper = mapper;
         }
 
         public async Task<string> CreateUserAsync(CreateUserDto userDto)
