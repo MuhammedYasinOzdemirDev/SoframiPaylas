@@ -24,28 +24,24 @@ namespace SoframiPaylas.Application.Services
 
         public async Task<string> CreatePostAsync(CreatePostDto postDto)
         {
-            var post = new Post
-            {
-                UserID = postDto.UserID,
-                Title = postDto.Title,
-                Description = postDto.Description,
-                Date = postDto.Date,
-                Participants = postDto.Participants,
-                Images = postDto.Images,
-                Status = postDto.Status
-            };
+            var post = _mapper.Map<Post>(postDto);
             return await _postrepository.CreatePostAsync(post);
         }
 
         public async Task DeletePostAsync(string postId)
         {
+            var post = await _postrepository.GetPostByIdAsync(postId);
+            if (post == null)
+            {
+                throw new Exception("Post not found.");
+            }
             await _postrepository.DeletePostAsync(postId);
         }
 
         public async Task<IEnumerable<PostDto>> GetAllPostAsync()
         {
             var posts = await _postrepository.GetAllPostsAsync();
-            return posts.Select(p => new PostDto { Title = p.Title, Description = p.Description, UserID = p.UserID, Participants = p.Participants, Images = p.Images, Status = p.Status, FormattedDate = p.Date.ToDateTime().ToString("o") });
+            return posts.Select(p => _mapper.Map<PostDto>(p));
         }
 
         public async Task<PostDto> GetPostByIdAsync(string userId)
@@ -55,30 +51,17 @@ namespace SoframiPaylas.Application.Services
             {
                 throw new KeyNotFoundException($"No post found with ID {userId}");
             }
-            return new PostDto
-            {
-                UserID = post.UserID,
-                Title = post.Title,
-                Description = post.Description,
-                Participants = post.Participants,
-                Images = post.Images,
-                Status = post.Status,
-                FormattedDate = post.Date.ToDateTime().ToString("o")
-            };
+            return _mapper.Map<PostDto>(post);
         }
 
         public async Task UpdatePostAsync(UpdatePostDto postDto, string postId)
         {
-            var post = new Post
+            var post = await _postrepository.GetPostByIdAsync(postId);
+            if (post == null)
             {
-                UserID = postDto.UserID,
-                Title = postDto.Title,
-                Description = postDto.Description,
-                Date = postDto.Date,
-                Participants = postDto.Participants,
-                Images = postDto.Images,
-                Status = postDto.Status
-            };
+                throw new Exception("Post not found.");
+            }
+            _mapper.Map(postDto, post);
             await _postrepository.UpdatePostAsync(post, postId);
         }
     }

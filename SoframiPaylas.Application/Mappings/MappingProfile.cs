@@ -26,6 +26,16 @@ namespace SoframiPaylas.Application.Mappings
             // User -> UpdateUserDto
             CreateMap<User, UpdateUserDto>()
                 .ReverseMap();
+
+            // Post <-> PostDto
+            CreateMap<Post, PostDto>()
+                .ForMember(dest => dest.FormattedDate, opt => opt.MapFrom(src => src.Date.ToDateTime().ToString("yyyy-MM-dd"))); // Tarih formatlaması
+
+            // Post -> CreatePostDto
+            CreateMap<Post, CreatePostDto>().ReverseMap();
+
+            // Post -> UpdatePostDto
+            CreateMap<Post, UpdatePostDto>().ReverseMap();
         }
     }
 }
