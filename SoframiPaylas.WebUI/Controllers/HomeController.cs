@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SoframiPaylas.WebUI.Services.Interfaces;
 
 namespace SoframiPaylas.WebUI.Controllers
 {
@@ -12,10 +13,15 @@ namespace SoframiPaylas.WebUI.Controllers
     public class HomeController : Controller
     {
 
-
-        public IActionResult Index()
+        private readonly IEventApiService _eventApiService;
+        public HomeController(IEventApiService eventApiService)
         {
-            return View();
+            _eventApiService = eventApiService;
+        }
+        public async Task<IActionResult> Index()
+        {
+            var events = await _eventApiService.GetAllEventsAsync();
+            return View(events);
         }
 
     }

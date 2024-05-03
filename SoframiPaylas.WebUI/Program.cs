@@ -1,10 +1,24 @@
+using SoframiPaylas.WebUI.Mappings;
+using SoframiPaylas.WebUI.Services;
+using SoframiPaylas.WebUI.Services.Interfaces;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-var app = builder.Build();
+builder.Services.AddHttpClient("API", c =>
+{
+    c.BaseAddress = new Uri("http://localhost:5103/api/"); // API'nizin adresi
+});
 
+//Api Services
+builder.Services.AddScoped<IEventApiService, EventApiService>();
+
+//Mapping
+builder.Services.AddAutoMapper(typeof(ViewModelToDtoProfile));
+
+var app = builder.Build();
 
 
 app.UseHttpsRedirection();
