@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using SoframiPaylas.Application.DTOs;
-using SoframiPaylas.Application.DTOs.Event;
+using SoframiPaylas.Application.DTOs.Food;
 using SoframiPaylas.Application.DTOs.Post;
 using SoframiPaylas.Domain.Entities;
 
@@ -37,14 +37,14 @@ namespace SoframiPaylas.Application.Mappings
             // Post -> UpdatePostDto
             CreateMap<Post, UpdatePostDto>().ReverseMap();
 
-            // Event <-> EventDto
-            CreateMap<Event, EventDto>().ReverseMap();
+            // Food <-> FoodDto
+            CreateMap<Food, FoodDto>().ReverseMap();
 
-            // Event -> CreateEventDto
-            CreateMap<Event, CreateEventDto>().ReverseMap();
+            // Food -> CreateFoodDto
+            CreateMap<Food, CreateFoodDto>().ReverseMap();
 
-            // Event -> UpdateEventDto
-            CreateMap<Event, UpdateEventDto>().ReverseMap();
+            // Food -> UpdateFoodDto
+            CreateMap<Food, UpdateFoodDto>().ReverseMap();
         }
     }
 }

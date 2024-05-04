@@ -9,19 +9,39 @@ namespace SoframiPaylas.Domain.Entities
     [FirestoreData]
     public class Post
     {
-        [FirestoreProperty("userID")]
-        public string UserID { get; set; }
+        [FirestoreProperty("hostID")]
+        public string HostID { get; set; }
+
         [FirestoreProperty("title")]
         public string Title { get; set; }
+
         [FirestoreProperty("description")]
         public string Description { get; set; }
+
+        [FirestoreProperty("location")]
+        public GeoPoint Location { get; set; }
+
         [FirestoreProperty("date")]
         public Timestamp Date { get; set; }
+
+        [FirestoreProperty("time")]
+        public string Time { get; set; }
+
+        [FirestoreProperty("maxParticipants")]
+        public int MaxParticipants { get; set; }
+
+        [FirestoreProperty("images")]
+        public List<string> Images { get; set; }
+
+        [FirestoreProperty("eventStatus")]
+        public bool PostStatus { get; set; }
+
+        // Related Foods (Yemekler)
+        [FirestoreProperty("relatedFoods")]
+        public List<string> RelatedFoods { get; set; }
+
+        // Participants with status
         [FirestoreProperty("participants")]
-        public int Participants { get; set; }
-        [FirestoreProperty("ımages")]
-        public string Images { get; set; }
-        [FirestoreProperty("status")]
-        public string Status { get; set; }
+        public List<string> Participants { get; set; }
     }
 }

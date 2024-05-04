@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Google.Cloud.Firestore;
 using SoframiPaylas.Application.DTOs.Post;
 using SoframiPaylas.Application.Interfaces;
 using SoframiPaylas.Domain.Entities;
@@ -13,56 +12,56 @@ namespace SoframiPaylas.Application.Services
 {
     public class PostService : IPostService
     {
-        private readonly IPostRepository _postrepository;
+        private readonly IPostRepository _postRepository;
         private readonly IMapper _mapper;
-
         public PostService(IPostRepository postRepository, IMapper mapper)
         {
-            _postrepository = postRepository;
+            _postRepository = postRepository;
             _mapper = mapper;
         }
 
         public async Task<string> CreatePostAsync(CreatePostDto postDto)
         {
-            var post = _mapper.Map<Post>(postDto);
-            return await _postrepository.CreatePostAsync(post);
+            var postItem = _mapper.Map<Post>(postDto);
+            return await _postRepository.CreatePostAsync(postItem);
         }
 
-        public async Task DeletePostAsync(string postId)
+        public async Task DeletePostAsync(string id)
         {
-            var post = await _postrepository.GetPostByIdAsync(postId);
-            if (post == null)
+            var postItem = await _postRepository.GetPostByIdAsync(id);
+            if (postItem == null)
             {
                 throw new Exception("Post not found.");
             }
-            await _postrepository.DeletePostAsync(postId);
+
+            await _postRepository.DeletePostAsync(id);
         }
 
-        public async Task<IEnumerable<PostDto>> GetAllPostAsync()
+        public async Task<IEnumerable<PostDto>> GetAllPostsAsync()
         {
-            var posts = await _postrepository.GetAllPostsAsync();
-            return posts.Select(p => _mapper.Map<PostDto>(p));
+            var posts = await _postRepository.GetPostAllAsync();
+            return posts.Select(e => _mapper.Map<PostDto>(e));
         }
 
-        public async Task<PostDto> GetPostByIdAsync(string userId)
+        public async Task<PostDto> GetPostByIdAsync(string id)
         {
-            var post = await _postrepository.GetPostByIdAsync(userId);
-            if (post == null)
+            var e = await _postRepository.GetPostByIdAsync(id);
+            if (e == null)
             {
-                throw new KeyNotFoundException($"No post found with ID {userId}");
+                throw new KeyNotFoundException($"No post found with ID {id}");
             }
-            return _mapper.Map<PostDto>(post);
+            return _mapper.Map<PostDto>(e);
         }
 
-        public async Task UpdatePostAsync(UpdatePostDto postDto, string postId)
+        public async Task UpdatePostAsync(string id, UpdatePostDto postDto)
         {
-            var post = await _postrepository.GetPostByIdAsync(postId);
-            if (post == null)
+            var postItem = await _postRepository.GetPostByIdAsync(id);
+            if (postItem == null)
             {
                 throw new Exception("Post not found.");
             }
-            _mapper.Map(postDto, post);
-            await _postrepository.UpdatePostAsync(post, postId);
+            _mapper.Map(postDto, postItem);
+            await _postRepository.UpdatePostAsync(id, postItem);
         }
     }
 }

@@ -8,10 +8,11 @@ namespace SoframiPaylas.Infrastructure.Interfaces
 {
     public interface IPostRepository
     {
-        Task<List<Post>> GetAllPostsAsync();
-        Task<Post> GetPostByIdAsync(string id);
         Task<string> CreatePostAsync(Post post);
-        Task UpdatePostAsync(Post post, string postId);
-        Task DeletePostAsync(string postId);
+        Task<List<Post>> GetPostAllAsync();
+        Task<Post> GetPostByIdAsync(string id);
+        Task UpdatePostAsync(string id, Post post);
+        Task DeletePostAsync(string id);
+
     }
 }

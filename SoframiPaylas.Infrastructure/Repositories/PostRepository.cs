@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Google.Cloud.Firestore;
+using Newtonsoft.Json;
+
 using SoframiPaylas.Domain.Entities;
+
 using SoframiPaylas.Infrastructure.Data.Service;
 using SoframiPaylas.Infrastructure.Interfaces;
 
@@ -12,32 +15,31 @@ namespace SoframiPaylas.Infrastructure.Repositories
     public class PostRepository : IPostRepository
     {
         private readonly FirebaseService _service;
-        public PostRepository(FirebaseService service)
+        public PostRepository(FirebaseService firebaseService)
         {
-            _service = service;
+            _service = firebaseService;
         }
 
         public async Task<string> CreatePostAsync(Post post)
         {
             string postId = Guid.NewGuid().ToString();
-
             await _service.GetDb().Collection("Posts").Document(postId).SetAsync(post);
-
             return postId;
         }
 
-        public async Task DeletePostAsync(string postId)
+        public async Task DeletePostAsync(string id)
         {
-            if (string.IsNullOrEmpty(postId))
-                throw new ArgumentException("Post ID cannot be null or empty.", nameof(postId));
 
-            DocumentReference postRef = _service.GetDb().Collection("Posts").Document(postId);
+            if (string.IsNullOrEmpty(id))
+                throw new ArgumentException("Post ID cannot be null or empty.", nameof(id));
+
+            DocumentReference postRef = _service.GetDb().Collection("Posts").Document(id);
 
             // Firestore'dan belirtilen kullanıcıyı silme
             await postRef.DeleteAsync();
         }
 
-        public async Task<List<Post>> GetAllPostsAsync()
+        public async Task<List<Post>> GetPostAllAsync()
         {
             if (_service == null || _service.GetDb() == null)
                 throw new InvalidOperationException("Database service is not initialized properly.");
@@ -47,23 +49,28 @@ namespace SoframiPaylas.Infrastructure.Repositories
             List<Post> posts = new List<Post>();
             foreach (DocumentSnapshot document in snapshots.Documents)
             {
-
                 if (document.Exists)
                 {
                     Dictionary<string, object> postDict = document.ToDictionary();
-                    var post = new Post
+                    var postItem = new Post
                     {
-                        UserID = postDict.ContainsKey("userID") ? postDict["userID"].ToString() : null,
-                        Title = postDict.ContainsKey("Title") ? postDict["Title"].ToString() : null,
-                        Description = postDict.ContainsKey("Description") ? postDict["Description"].ToString() : null,
-                        Date = postDict.ContainsKey("Date") && postDict["Date"] is Timestamp ? (Timestamp)postDict["Date"] : Timestamp.FromDateTime(DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc)),
-                        Participants = postDict.ContainsKey("Participants") ? Convert.ToInt32(postDict["Participants"]) : 0,
-                        Images = postDict.ContainsKey("Images") ? postDict["Images"].ToString() : null,
-                        Status = postDict.ContainsKey("Status") ? postDict["Status"].ToString() : null
+                        HostID = postDict.ContainsKey("hostID") ? postDict["hostID"].ToString() : null,
+                        Title = postDict.ContainsKey("title") ? postDict["title"].ToString() : null,
+                        Description = postDict.ContainsKey("description") ? postDict["description"].ToString() : null,
+                        Location = postDict.ContainsKey("location") ? (GeoPoint)postDict["location"] : new GeoPoint(0, 0),
+                        Date = postDict.ContainsKey("date") ? (Timestamp)postDict["date"] : new Timestamp(),
+                        Time = postDict.ContainsKey("time") ? postDict["time"].ToString() : null,
+                        MaxParticipants = postDict.ContainsKey("maxParticipants") ? Convert.ToInt32(postDict["maxParticipants"]) : 0,
+                        Images = postDict.ContainsKey("images") ? ((List<object>)postDict["images"]).ConvertAll(obj => obj.ToString()) : new List<string>(),
+                        PostStatus = postDict.ContainsKey("eventStatus") ? Convert.ToBoolean(postDict["eventStatus"]) : false,
+                        RelatedFoods = postDict.ContainsKey("relatedFoods") && postDict["relatedFoods"] is List<string> ? (List<string>)postDict["relatedFoods"] : null,
+                        Participants = postDict.ContainsKey("participants") && postDict["participants"] is List<string> ? (List<string>)postDict["participants"] : null
                     };
-                    posts.Add(post);
+
+                    posts.Add(postItem);
                 }
             }
+
             return posts;
         }
 
@@ -73,40 +80,45 @@ namespace SoframiPaylas.Infrastructure.Repositories
             {
                 throw new InvalidOperationException("Database service is not initialized.");
             }
-
-            DocumentReference eventRef = _service.GetDb().Collection("Posts").Document(id);
-            DocumentSnapshot snapshot = await eventRef.GetSnapshotAsync();
-
-
+            DocumentReference postRef = _service.GetDb().Collection("Posts").Document(id);
+            DocumentSnapshot snapshot = await postRef.GetSnapshotAsync();
 
 
             if (!snapshot.Exists)
             {
-                return null;  // Eğer belge yoksa null döner
+                return null;
             }
 
             Dictionary<string, object> postDict = snapshot.ToDictionary();
             return new Post
             {
-                UserID = postDict.ContainsKey("userID") ? postDict["userID"].ToString() : null,
-                Title = postDict.ContainsKey("Title") ? postDict["Title"].ToString() : null,
-                Description = postDict.ContainsKey("Description") ? postDict["Description"].ToString() : null,
-                Date = postDict.ContainsKey("Date") && postDict["Date"] is Timestamp ? (Timestamp)postDict["Date"] : Timestamp.FromDateTime(DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc)),
-                Participants = postDict.ContainsKey("Participants") ? Convert.ToInt32(postDict["Participants"]) : 0,
-                Images = postDict.ContainsKey("Images") ? postDict["Images"].ToString() : null,
-                Status = postDict.ContainsKey("Status") ? postDict["Status"].ToString() : null
+                HostID = postDict.ContainsKey("hostID") ? postDict["hostID"].ToString() : null,
+                Title = postDict.ContainsKey("title") ? postDict["title"].ToString() : null,
+                Description = postDict.ContainsKey("description") ? postDict["description"].ToString() : null,
+                Location = postDict.ContainsKey("location") ? (GeoPoint)postDict["location"] : new GeoPoint(0, 0),
+                Date = postDict.ContainsKey("date") ? (Timestamp)postDict["date"] : new Timestamp(),
+                Time = postDict.ContainsKey("time") ? postDict["time"].ToString() : null,
+                MaxParticipants = postDict.ContainsKey("maxParticipants") ? Convert.ToInt32(postDict["maxParticipants"]) : 0,
+                Images = postDict.ContainsKey("images") ? ((List<object>)postDict["images"]).ConvertAll(obj => obj.ToString()) : new List<string>(),
+                PostStatus = postDict.ContainsKey("eventStatus") ? Convert.ToBoolean(postDict["eventStatus"]) : false,
+                RelatedFoods = postDict.ContainsKey("relatedFoods") && postDict["relatedFoods"] is List<string> ? (List<string>)postDict["relatedFoods"] : null,
+                Participants = postDict.ContainsKey("participants") && postDict["participants"] is List<string> ? (List<string>)postDict["participants"] : null
             };
         }
 
-        public async Task UpdatePostAsync(Post post, string postId)
+        public async Task UpdatePostAsync(string id, Post postItem)
         {
-            if (post == null)
-                throw new ArgumentNullException(nameof(post), "Post object must not be null.");
-            if (string.IsNullOrEmpty(postId))
-                throw new ArgumentException("Post ID must not be null or empty.", nameof(postId));
+            if (postItem == null)
+                throw new ArgumentNullException(nameof(postItem), "Post object must not be null.");
+            if (string.IsNullOrEmpty(id))
+                throw new ArgumentException("Post ID must not be null or empty.", nameof(id));
 
-            DocumentReference postReference = _service.GetDb().Collection("Posts").Document(postId);
-            await postReference.SetAsync(post, SetOptions.MergeAll);
+            DocumentReference postReference = _service.GetDb().Collection("Posts").Document(id);
+            await postReference.SetAsync(postItem, SetOptions.MergeAll);
         }
+
+
+
+
     }
 }

@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SoframiPaylas.Application.DTOs.Post;
+using SoframiPaylas.Application.DTOs.Post;
 
 namespace SoframiPaylas.Application.Interfaces
 {
     public interface IPostService
     {
-        Task<IEnumerable<PostDto>> GetAllPostAsync();
-        Task<PostDto> GetPostByIdAsync(string userId);
         Task<string> CreatePostAsync(CreatePostDto postDto);
-        Task UpdatePostAsync(UpdatePostDto postDto, string postId);
-        Task DeletePostAsync(string postId);
+        Task<IEnumerable<PostDto>> GetAllPostsAsync();
+        Task<PostDto> GetPostByIdAsync(string id);
+        Task UpdatePostAsync(string id, UpdatePostDto postDto);
+        Task DeletePostAsync(string id);
     }
 }

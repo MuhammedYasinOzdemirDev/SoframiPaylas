@@ -23,7 +23,7 @@ namespace SoframiPaylas.WebAPI.Controllers
         [HttpGet("posts")]
         public async Task<IActionResult> GetAllPostAsync()
         {
-            var posts = await _postservice.GetAllPostAsync();
+            var posts = await _postservice.GetAllPostsAsync();
             if (posts == null)
                 return NotFound("Post not found");
             return Ok(posts);
@@ -47,7 +47,7 @@ namespace SoframiPaylas.WebAPI.Controllers
         [HttpPut("post")]
         public async Task<IActionResult> UpdatePost([FromBody] UpdatePostDto postDto, string postId)
         {
-            await _postservice.UpdatePostAsync(postDto, postId);
+            await _postservice.UpdatePostAsync(postId, postDto);
             return Ok();
         }
         [HttpDelete("post")]
