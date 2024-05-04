@@ -234,22 +234,6 @@ namespace SoframiPaylas.WebAPI.Controllers
                 return StatusCode(500, "Gönderi güncelleme işlemi sırasında beklenmedik bir hata oluştuğunda bu hata döner.");
             }
         }
-
-        [HttpDelete("post")]
-        public async Task<IActionResult> DeletePost(string postId)
-        {
-            try
-            {
-                var deleteResult = await _postservice.DeletePostAsync(postId);
-                if (!deleteResult)
-                    return NotFound("Post to delete not found.");
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "An error occurred while deleting the post.");
-            }
-        }
         /// <summary>
         /// Belirtilen ID'ye sahip gönderiyi sistemden siler.
         /// </summary>
@@ -275,14 +259,15 @@ namespace SoframiPaylas.WebAPI.Controllers
         /// <response code="204">Gönderi başarıyla silindi, içerik dönmez.</response>
         /// <response code="404">Belirtilen ID'ye sahip gönderi bulunamadı.</response>
         /// <response code="500">Gönderi silme işlemi sırasında beklenmedik bir hata oluştuğunda bu hata dönülür.</response>
-        [HttpPost("{postId}/join")]
-        public async Task<IActionResult> RequestJoinEvent(string postId, [FromBody] JoinParticipantDto joinRequest)
+
+        [HttpDelete("post")]
+        public async Task<IActionResult> DeletePost(string postId)
         {
             try
             {
-                var joinResult = await _participantService.AddParticipantAsync(postId, joinRequest);
-                if (!joinResult)
-                    return BadRequest("Belirtilen ID'ye sahip gönderi bulunamadı.");
+                var deleteResult = await _postservice.DeletePostAsync(postId);
+                if (!deleteResult)
+                    return NotFound("Belirtilen ID'ye sahip gönderi bulunamadı.");
                 return NoContent();
             }
             catch (Exception ex)
@@ -291,6 +276,75 @@ namespace SoframiPaylas.WebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Bir kullanıcının belirtilen gönderiye katılma isteğini işler.
+        /// </summary>
+        /// <remarks>
+        /// Bu işlem, belirtilen gönderiye bir kullanıcının katılma talebini kaydeder. Gönderi bulunamazsa 400 Bad Request hatası ile yanıt verilir. İşlem başarılı ise 204 No Content dönülür.
+        ///
+        /// ### Örnek İstek
+        /// 
+        ///     POST /api/posts/{postId}/join
+        ///     {
+        ///        "userID": "12345",
+        ///        "status": 1
+        ///     }
+        ///
+        /// ### Hatalar
+        /// 
+        /// - **400 Bad Request**: Belirtilen ID'ye sahip gönderi bulunamadığında veya verilerde başka bir doğrulama hatası olduğunda bu hata dönülür.
+        /// - **500 Internal Server Error**: Katılım işlemi sırasında beklenmedik bir hata oluşursa, bu hata dönülür.
+        /// </remarks>
+        /// <param name="postId">Katılım isteğinin yapıldığı gönderinin benzersiz tanımlayıcısı.</param>
+        /// <param name="joinRequest">Katılım isteği detaylarını içeren DTO nesnesi.</param>
+        /// <returns>HTTP yanıtı olarak, başarılı ise içerik dönmeyen yanıt, başarısız ise hata mesajı içerir.</returns>
+        /// <response code="204">Katılım isteği başarıyla işlendi.</response>
+        /// <response code="400">Belirtilen gönderi bulunamadı veya veri doğrulaması başarısız oldu.</response>
+        /// <response code="500">Katılım işlemi sırasında beklenmedik bir hata oluştuğunda bu hata dönülür.</response>
+        [HttpPost("{postId}/join")]
+        public async Task<IActionResult> RequestJoinEvent(string postId, [FromBody] JoinParticipantDto joinRequest)
+        {
+            try
+            {
+                var joinResult = await _participantService.AddParticipantAsync(postId, joinRequest);
+                if (!joinResult)
+                    return BadRequest("Belirtilen gönderi bulunamadı veya veri doğrulaması başarısız oldu.");
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Katılım işlemi sırasında beklenmedik bir hata oluştuğunda bu hata dönülür.");
+            }
+        }
+        /// <summary>
+        /// Belirtilen gönderi için bir katılımcıyı onaylar.
+        /// </summary>
+        /// <remarks>
+        /// Bu işlem, belirtilen gönderiye ve kullanıcıya ait katılım isteğinin durumunu günceller. Eğer katılımcı veya gönderi bulunamazsa, 404 Not Found hatası döner.
+        ///
+        /// ### Örnek İstek
+        /// 
+        ///     PUT /api/posts/{postId}/confirm-participant/{userId}
+        ///
+        /// ### Örnek Yanıt
+        /// 
+        /// Başarılı işlem sonucunda dönen yanıt:
+        ///
+        ///     {
+        ///         "message": "Katılımcı başarıyla onaylandı."
+        ///     }
+        ///
+        /// ### Hatalar
+        /// 
+        /// - **404 Not Found**: Belirtilen katılımcı veya gönderi bulunamadığında bu hata dönülür.
+        /// - **500 Internal Server Error**: İşlem sırasında beklenmedik bir hata oluşursa, bu hata dönülür.
+        /// </remarks>
+        /// <param name="postId">Onaylanacak katılımcının bağlı olduğu gönderinin benzersiz tanımlayıcısı.</param>
+        /// <param name="userId">Onaylanacak katılımcının kullanıcı ID'si.</param>
+        /// <returns>HTTP yanıtı olarak, başarılı ise onay mesajı, başarısız ise hata mesajı içerir.</returns>
+        /// <response code="200">Katılımcı başarıyla onaylandı.</response>
+        /// <response code="404">Belirtilen katılımcı veya gönderi bulunamadı.</response>
+        /// <response code="500">Katılımcı onaylama işlemi sırasında beklenmedik bir hata oluştuğunda bu hata dönülür.</response>
         [HttpPut("{postId}/confirm-participant/{userId}")]
         public async Task<IActionResult> ConfirmParticipant(string postId, string userId)
         {
@@ -301,14 +355,14 @@ namespace SoframiPaylas.WebAPI.Controllers
 
                 if (!success)
                 {
-                    return NotFound(new { message = "Participant or post not found." });
+                    return NotFound(new { message = "Belirtilen katılımcı veya gönderi bulunamadı." });
                 }
 
-                return Ok(new { message = "Participant confirmed successfully." });
+                return Ok(new { message = "Katılımcı başarıyla onaylandı." });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "An error occurred while deleting the post.");
+                return StatusCode(500, "Katılımcı onaylama işlemi sırasında beklenmedik bir hata oluştuğunda bu hata dönülür.");
             }
         }
     }
