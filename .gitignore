@@ -55,3 +55,7 @@ Thumbs.db
 # ozel dosyalar
 
 sofrani-paylas-firebase.json
+
+*.nuget  
+*.nuget.dgspec.json
+*.nuget.g.props
