@@ -16,10 +16,14 @@ namespace SoframiPaylas.Infrastructure.Repositories
         {
             _service = service;
         }
-        public async Task AddParticipantAsync(Participant participant) //Katilma İstegi 
+        public async Task<bool> AddParticipantAsync(Participant participant) //Katilma İstegi 
         {
+            if (participant == null)
+                throw new ArgumentNullException(nameof(participant), "Participant object must not be null.");
             CollectionReference reference = _service.GetDb().Collection("Participants");
             await reference.AddAsync(participant);
+            // DocumentReference'in null olup olmadığına bakarak işlem sonucunu kontrol ederiz
+            return reference != null;
         }
 
         public async Task<bool> UpdateParticipantStatus(string postId, string userId, int status)

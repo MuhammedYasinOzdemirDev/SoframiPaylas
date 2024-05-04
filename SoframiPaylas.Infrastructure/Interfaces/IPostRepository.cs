@@ -11,8 +11,8 @@ namespace SoframiPaylas.Infrastructure.Interfaces
         Task<string> CreatePostAsync(Post post);
         Task<List<Post>> GetPostAllAsync();
         Task<Post> GetPostByIdAsync(string id);
-        Task UpdatePostAsync(string id, Post post);
-        Task DeletePostAsync(string id);
+        Task<bool> UpdatePostAsync(string id, Post post);
+        Task<bool> DeletePostAsync(string id);
 
     }
 }

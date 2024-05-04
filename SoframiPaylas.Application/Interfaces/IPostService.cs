@@ -12,7 +12,7 @@ namespace SoframiPaylas.Application.Interfaces
         Task<string> CreatePostAsync(CreatePostDto postDto);
         Task<IEnumerable<PostDto>> GetAllPostsAsync();
         Task<PostDto> GetPostByIdAsync(string id);
-        Task UpdatePostAsync(string id, UpdatePostDto postDto);
-        Task DeletePostAsync(string id);
+        Task<bool> UpdatePostAsync(string id, UpdatePostDto postDto);
+        Task<bool> DeletePostAsync(string id);
     }
 }

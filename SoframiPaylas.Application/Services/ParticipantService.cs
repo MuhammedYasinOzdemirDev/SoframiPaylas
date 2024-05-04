@@ -17,9 +17,9 @@ namespace SoframiPaylas.Application.Services
         {
             _repository = repository;
         }
-        public async Task AddParticipantAsync(string postId, JoinParticipantDto joinParticipantDto)
+        public async Task<bool> AddParticipantAsync(string postId, JoinParticipantDto joinParticipantDto)
         {
-            await _repository.AddParticipantAsync(new Participant
+            return await _repository.AddParticipantAsync(new Participant
             {
                 PostId = postId,
                 UserID = joinParticipantDto.UserID,

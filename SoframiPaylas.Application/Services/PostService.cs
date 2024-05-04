@@ -26,7 +26,7 @@ namespace SoframiPaylas.Application.Services
             return await _postRepository.CreatePostAsync(postItem);
         }
 
-        public async Task DeletePostAsync(string id)
+        public async Task<bool> DeletePostAsync(string id)
         {
             var postItem = await _postRepository.GetPostByIdAsync(id);
             if (postItem == null)
@@ -34,7 +34,7 @@ namespace SoframiPaylas.Application.Services
                 throw new Exception("Post not found.");
             }
 
-            await _postRepository.DeletePostAsync(id);
+            return await _postRepository.DeletePostAsync(id);
         }
 
         public async Task<IEnumerable<PostDto>> GetAllPostsAsync()
@@ -53,7 +53,7 @@ namespace SoframiPaylas.Application.Services
             return _mapper.Map<PostDto>(e);
         }
 
-        public async Task UpdatePostAsync(string id, UpdatePostDto postDto)
+        public async Task<bool> UpdatePostAsync(string id, UpdatePostDto postDto)
         {
             var postItem = await _postRepository.GetPostByIdAsync(id);
             if (postItem == null)
@@ -61,7 +61,7 @@ namespace SoframiPaylas.Application.Services
                 throw new Exception("Post not found.");
             }
             _mapper.Map(postDto, postItem);
-            await _postRepository.UpdatePostAsync(id, postItem);
+            return await _postRepository.UpdatePostAsync(id, postItem);
         }
     }
 }

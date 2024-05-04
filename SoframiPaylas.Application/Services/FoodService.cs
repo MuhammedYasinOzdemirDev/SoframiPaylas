@@ -28,14 +28,14 @@ namespace SoframiPaylas.Application.Services
             return await _foodrepository.CreateFoodAsync(food);
         }
 
-        public async Task DeleteFoodAsync(string foodId)
+        public async Task<bool> DeleteFoodAsync(string foodId)
         {
             var food = await _foodrepository.GetFoodByIdAsync(foodId);
             if (food == null)
             {
                 throw new Exception("Food not found.");
             }
-            await _foodrepository.DeleteFoodAsync(foodId);
+            return await _foodrepository.DeleteFoodAsync(foodId);
         }
 
         public async Task<IEnumerable<FoodDto>> GetAllFoodAsync()
@@ -54,7 +54,7 @@ namespace SoframiPaylas.Application.Services
             return _mapper.Map<FoodDto>(food);
         }
 
-        public async Task UpdateFoodAsync(UpdateFoodDto foodDto, string foodId)
+        public async Task<bool> UpdateFoodAsync(UpdateFoodDto foodDto, string foodId)
         {
             var food = await _foodrepository.GetFoodByIdAsync(foodId);
             if (food == null)
@@ -62,7 +62,7 @@ namespace SoframiPaylas.Application.Services
                 throw new Exception("Food not found.");
             }
             _mapper.Map(foodDto, food);
-            await _foodrepository.UpdateFoodAsync(food, foodId);
+            return await _foodrepository.UpdateFoodAsync(food, foodId);
         }
     }
 }

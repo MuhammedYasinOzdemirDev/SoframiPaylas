@@ -21,42 +21,88 @@ namespace SoframiPaylas.WebAPI
         [HttpGet("foods")]
         public async Task<IActionResult> GetAllFoods()
         {
-            var foods = await _service.GetAllFoodAsync();
-            if (foods == null)
+            try
             {
-                return NotFound();
+                var foods = await _service.GetAllFoodAsync();
+                if (foods == null || !foods.Any())
+                {
+                    return NotFound("No foods found.");
+                }
+                return Ok(foods);
             }
-            return Ok(foods);
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while deleting the food.");
+
+            }
         }
         [HttpGet("food/{foodId}")]
         public async Task<IActionResult> GetFoodById(string foodId)
         {
-            var foodItem = await _service.GetFoodByIdAsync(foodId);
-            if (foodItem == null)
-                return NotFound("Food not found");
-            return Ok(foodItem);
+            try
+            {
+                var foodItem = await _service.GetFoodByIdAsync(foodId);
+                if (foodItem == null)
+                    return NotFound("Food not found");
+                return Ok(foodItem);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while deleting the food.");
+
+            }
         }
 
         [HttpPost("food")]
         public async Task<IActionResult> CreateFood([FromBody] CreateFoodDto foodDto)
         {
-            var foodId = await _service.CreateFoodAsync(foodDto);
-            if (string.IsNullOrEmpty(foodId))
-                return BadRequest();
-            return Ok(foodId);
+            try
+            {
+                var foodId = await _service.CreateFoodAsync(foodDto);
+                if (string.IsNullOrEmpty(foodId))
+                    return BadRequest("Failed to create food.");
+                return Ok(foodId);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while deleting the food.");
+
+            }
         }
 
         [HttpPut("food/{foodID}")]
         public async Task<IActionResult> UpdateFoodById([FromBody] UpdateFoodDto foodDto, string foodID)
         {
-            await _service.UpdateFoodAsync(foodDto, foodID);
-            return Ok();
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+                var updateResult = await _service.UpdateFoodAsync(foodDto, foodID);
+                if (!updateResult)
+                    return NotFound("Food to update not found.");
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while deleting the food.");
+
+            }
         }
         [HttpDelete("food/{foodID}")]
         public async Task<IActionResult> DeleteFoodById(string foodID)
         {
-            await _service.DeleteFoodAsync(foodID);
-            return Ok();
+            try
+            {
+                var deleteResult = await _service.DeleteFoodAsync(foodID);
+                if (!deleteResult)
+                    return NotFound("Food to delete not found.");
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while deleting the food.");
+
+            }
         }
     }
 }

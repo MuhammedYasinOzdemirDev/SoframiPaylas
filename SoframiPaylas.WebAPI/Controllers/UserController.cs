@@ -23,46 +23,96 @@ namespace SoframiPaylas.WebAPI.Controllers
         [HttpGet("users")]
         public async Task<IActionResult> GetAllUserAsync()
         {
-            var users = await _userService.GetAllUserAsync();
-            if (users == null)
+            try
             {
-                return BadRequest("Users not found.");
+                var users = await _userService.GetAllUserAsync();
+                if (users == null)
+                {
+                    return NotFound("Users not found.");
+                }
+                return Ok(users);
             }
-            return Ok(users);
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while retrieving users.");
+            }
         }
         [HttpGet("users/{userId}", Name = "GetUserById")]
         public async Task<IActionResult> GetUserByIdAsync(string userId)
         {
-            var user = await _userService.GetUserByIdAsync(userId);
-            if (user == null)
+            try
             {
-                return NotFound();
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return BadRequest("User ID must be provided.");
+                }
+                var user = await _userService.GetUserByIdAsync(userId);
+                if (user == null)
+                {
+                    return NotFound($"User with ID {userId} not found.");
+                }
+                return Ok(user);
             }
-            return Ok(user);
+            catch (Exception ex)
+            {
+                // Log the exception details here
+                return StatusCode(500, "An error occurred while retrieving the user.");
+            }
         }
         [HttpPost("user")]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserDto userDto)
         {
-            var userId = await _userService.CreateUserAsync(userDto);
-
-            if (userId == null)
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState);
             }
+            try
+            {
+                var userId = await _userService.CreateUserAsync(userDto);
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return BadRequest("Failed to create user.");
+                }
 
-            return Ok(userId);
+                return Ok(userId);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception details here
+                return StatusCode(500, "An error occurred while creating the user.");
+            }
         }
         [HttpPut("user/{userId}")]
         public async Task<IActionResult> UpdateUser(string userId, [FromBody] UpdateUserDto userDto)
         {
-            await _userService.UpdateUserAsync(userDto, userId);
-            return Ok();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+                await _userService.UpdateUserAsync(userDto, userId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                // Log the exception details here
+                return StatusCode(500, "An error occurred while updating the user.");
+            }
         }
         [HttpDelete("user/{userId}")]
         public async Task<IActionResult> DeleteUser(string userId)
         {
-            await _userService.DeleteUserAsync(userId);
-            return NoContent();
+            try
+            {
+                await _userService.DeleteUserAsync(userId);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                // Log the exception details here
+                return StatusCode(500, "An error occurred while deleting the user.");
+            }
         }
 
     }

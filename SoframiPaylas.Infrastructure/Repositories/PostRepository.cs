@@ -27,7 +27,7 @@ namespace SoframiPaylas.Infrastructure.Repositories
             return postId;
         }
 
-        public async Task DeletePostAsync(string id)
+        public async Task<bool> DeletePostAsync(string id)
         {
 
             if (string.IsNullOrEmpty(id))
@@ -36,7 +36,16 @@ namespace SoframiPaylas.Infrastructure.Repositories
             DocumentReference postRef = _service.GetDb().Collection("Posts").Document(id);
 
             // Firestore'dan belirtilen kullanıcıyı silme
-            await postRef.DeleteAsync();
+            try
+            {
+                await postRef.DeleteAsync();
+                return true;  // Silme işlemi başarılı
+            }
+            catch (Exception ex)
+            {
+                // Loglama işlemi burada yapılabilir
+                return false;  // Silme işlemi başarısız
+            }
         }
 
         public async Task<List<Post>> GetPostAllAsync()
@@ -106,7 +115,7 @@ namespace SoframiPaylas.Infrastructure.Repositories
             };
         }
 
-        public async Task UpdatePostAsync(string id, Post postItem)
+        public async Task<bool> UpdatePostAsync(string id, Post postItem)
         {
             if (postItem == null)
                 throw new ArgumentNullException(nameof(postItem), "Post object must not be null.");
@@ -115,10 +124,17 @@ namespace SoframiPaylas.Infrastructure.Repositories
 
             DocumentReference postReference = _service.GetDb().Collection("Posts").Document(id);
             await postReference.SetAsync(postItem, SetOptions.MergeAll);
+            try
+            {
+                await postReference.SetAsync(postItem, SetOptions.MergeAll);
+                return true;  // Güncelleme işlemi başarılı
+            }
+            catch (Exception ex)
+            {
+                // Loglama işlemi burada yapılabilir
+                return false;  // Güncelleme işlemi başarısız
+            }
         }
-
-
-
 
     }
 }

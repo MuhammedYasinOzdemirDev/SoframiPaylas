@@ -11,7 +11,7 @@ namespace SoframiPaylas.Infrastructure.Interfaces
         Task<List<Food>> GetAllFoodsAsync();
         Task<Food> GetFoodByIdAsync(string id);
         Task<string> CreateFoodAsync(Food food);
-        Task UpdateFoodAsync(Food food, string footId);
-        Task DeleteFoodAsync(string foodId);
+        Task<bool> UpdateFoodAsync(Food food, string footId);
+        Task<bool> DeleteFoodAsync(string foodId);
     }
 }

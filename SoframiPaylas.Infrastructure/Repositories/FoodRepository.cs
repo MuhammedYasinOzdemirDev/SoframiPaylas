@@ -26,15 +26,23 @@ namespace SoframiPaylas.Infrastructure.Repositories
             return foodId;
         }
 
-        public async Task DeleteFoodAsync(string foodId)
+        public async Task<bool> DeleteFoodAsync(string foodId)
         {
             if (string.IsNullOrEmpty(foodId))
                 throw new ArgumentException("Food ID cannot be null or empty.", nameof(foodId));
 
             DocumentReference foodRef = _service.GetDb().Collection("Foods").Document(foodId);
-
-            // Firestore'dan belirtilen kullanıcıyı silme
-            await foodRef.DeleteAsync();
+            try
+            {
+                // Firestore'dan belirtilen kullanıcıyı silme
+                await foodRef.DeleteAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                // Loglama işlemi burada yapılabilir
+                return false;  // Güncelleme işlemi başarısız
+            }
         }
 
         public async Task<List<Food>> GetAllFoodsAsync()
@@ -74,9 +82,6 @@ namespace SoframiPaylas.Infrastructure.Repositories
             DocumentReference eventRef = _service.GetDb().Collection("Foods").Document(id);
             DocumentSnapshot snapshot = await eventRef.GetSnapshotAsync();
 
-
-
-
             if (!snapshot.Exists)
             {
                 return null;  // Eğer belge yoksa null döner
@@ -92,7 +97,7 @@ namespace SoframiPaylas.Infrastructure.Repositories
             };
         }
 
-        public async Task UpdateFoodAsync(Food food, string foodId)
+        public async Task<bool> UpdateFoodAsync(Food food, string foodId)
         {
             if (food == null)
                 throw new ArgumentNullException(nameof(food), "Food object must not be null.");
@@ -100,7 +105,16 @@ namespace SoframiPaylas.Infrastructure.Repositories
                 throw new ArgumentException("Food ID must not be null or empty.", nameof(foodId));
 
             DocumentReference foodReference = _service.GetDb().Collection("Foods").Document(foodId);
-            await foodReference.SetAsync(food, SetOptions.MergeAll);
+            try
+            {
+                await foodReference.SetAsync(food, SetOptions.MergeAll);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                // Loglama işlemi burada yapılabilir
+                return false;  // Güncelleme işlemi başarısız
+            }
         }
     }
 }
