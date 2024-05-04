@@ -1,3 +1,5 @@
+using System.Reflection;
+using Microsoft.OpenApi.Models;
 using SoframiPaylas.Application.Interfaces;
 using SoframiPaylas.Application.Mappings;
 using SoframiPaylas.Application.Services;
@@ -27,13 +29,43 @@ builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddScoped<IParticipantService, ParticipantService>();
 //Mapping
 builder.Services.AddAutoMapper(typeof(MappingProfile));
+//Swager
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Sofranı Paylas API",
+        Version = "v1",
+        Description = "A detailed description of my API.",
+        TermsOfService = new Uri("https://example.com/terms"),
+        Contact = new OpenApiContact
+        {
+            Name = "Support",
+            Email = "support@example.com",
+            Url = new Uri("https://example.com/contact")
+        },
+        License = new OpenApiLicense
+        {
+            Name = "Use under LICX",
+            Url = new Uri("https://example.com/license")
+        }
+    });
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sofranı Paylas API V1");
+        c.RoutePrefix = string.Empty;  // Swagger UI'ı ana sayfada açar
+    });
 }
 
 
