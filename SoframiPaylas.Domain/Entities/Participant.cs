@@ -18,9 +18,11 @@ namespace SoframiPaylas.Domain.Entities
     {
         [FirestoreProperty("userID")]
         public string UserID { get; set; }
+        [FirestoreProperty("postID")]
+        public string PostId { get; set; }
 
         [FirestoreProperty("status")]
-        public ParticipationStatus Status { get; set; } = ParticipationStatus.Pending;
+        public int Status { get; set; } = (int)ParticipationStatus.Pending;
 
     }
 }

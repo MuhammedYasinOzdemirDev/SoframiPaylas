@@ -29,6 +29,6 @@ namespace SoframiPaylas.Application.DTOs.Post
         public List<string> RelatedFoods { get; set; }
 
 
-        public List<Participant> Participants { get; set; }
+        public List<string> Participants { get; set; }
     }
 }

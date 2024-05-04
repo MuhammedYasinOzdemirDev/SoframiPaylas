@@ -27,9 +27,9 @@ namespace SoframiPaylas.Application.DTOs.Post
 
         public bool PostStatus { get; set; }
 
-        public List<FoodDto> RelatedFoods { get; set; }
+        public List<string> RelatedFoods { get; set; }
 
 
-        public List<Participant> Participants { get; set; }
+        public List<string> Participants { get; set; }
     }
 }

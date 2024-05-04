@@ -19,10 +19,12 @@ builder.Services.AddSingleton<FirebaseService>();  // Firebase servisini singlet
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IFoodRepository, FoodRepository>();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddScoped<IParticipantRepository, ParticipantRepository>();
 //Service
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IFoodService, FoodService>();
 builder.Services.AddScoped<IPostService, PostService>();
+builder.Services.AddScoped<IParticipantService, ParticipantService>();
 //Mapping
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 var app = builder.Build();
