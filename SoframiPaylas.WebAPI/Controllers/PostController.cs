@@ -35,7 +35,7 @@ namespace SoframiPaylas.WebAPI.Controllers
         ///
         ///     [
         ///         {
-        ///             "hostID": "12345",
+        ///             "hostID": "8ymayJzHVVX393V9ZdO8",
         ///             "title": "Yemek Paylaşım Etkinliği",
         ///             "description": "Bu etkinlikte ev yapımı yemeklerimizi paylaşıyoruz!",
         ///             "location": { "latitude": 41.0082, "longitude": 28.9784 },
@@ -82,9 +82,9 @@ namespace SoframiPaylas.WebAPI.Controllers
         ///
         /// ### Örnek İstek
         /// 
-        ///     GET /api/posts/post/{postId}
+        ///     GET /api/Post/post/{postId}
         ///     {
-        ///         "postId": "abc123"
+        ///         "postId": "8ymayJzHVVX393V9ZdO8"
         ///     }
         ///
         /// ### Örnek Yanıt
@@ -92,7 +92,7 @@ namespace SoframiPaylas.WebAPI.Controllers
         /// Başarılı yanıt aşağıdaki gibi olacaktır:
         ///
         ///     {
-        ///         "hostID": "12345",
+        ///         "hostID": "8ymayJzHVVX393V9ZdO8",
         ///         "title": "Kültürlerarası Yemek Festivali",
         ///         "description": "Dünya mutfaklarından lezzetler bu etkinlikte sizleri bekliyor!",
         ///         "location": { "latitude": 41.0082, "longitude": 28.9784 },
@@ -138,9 +138,9 @@ namespace SoframiPaylas.WebAPI.Controllers
         ///
         /// ### Örnek İstek
         /// 
-        ///     POST /api/posts/post
+        ///     POST /api/Post/post
         ///     {
-        ///        "hostID": "12345",
+        ///        "hostID": "8ymayJzHVVX393V9ZdO8",
         ///        "title": "Uluslararası Mutfak Festivali",
         ///        "description": "Dünya mutfaklarının en seçkin lezzetlerini deneyimleyin!",
         ///        "location": { "latitude": 40.7128, "longitude": -74.0060 },
@@ -188,10 +188,10 @@ namespace SoframiPaylas.WebAPI.Controllers
         ///
         /// ### Örnek İstek
         /// 
-        ///     PUT /api/posts/post
+        ///     PUT /api/Post/post
         ///     {
-        ///        "postId": "abc123",
-        ///        "hostID": "12345",
+        ///        "postId": "8ymayJzHVVX393V9ZdO8",
+        ///        "hostID": "5ymayJzHVVX393V9ZdO8",
         ///        "title": "Kültürel Yemek Festivali Güncellendi",
         ///        "description": "Festivalde yeni yemekler eklendi!",
         ///        "location": { "latitude": 40.7128, "longitude": -74.0060 },
@@ -243,9 +243,9 @@ namespace SoframiPaylas.WebAPI.Controllers
         ///
         /// ### Örnek İstek
         /// 
-        ///     DELETE /api/posts/post
+        ///     DELETE /api/Post/post
         ///     {
-        ///         "postId": "abc123"
+        ///         "postId": "8ymayJzHVVX393V9ZdO8"
         ///     }
         ///
         /// ### Hatalar
@@ -284,9 +284,9 @@ namespace SoframiPaylas.WebAPI.Controllers
         ///
         /// ### Örnek İstek
         /// 
-        ///     POST /api/posts/{postId}/join
+        ///     POST /api/Post/{postId}/join
         ///     {
-        ///        "userID": "12345",
+        ///        "userID": "8ymayJzHVVX393V9ZdO8",
         ///        "status": 1
         ///     }
         ///
@@ -324,7 +324,7 @@ namespace SoframiPaylas.WebAPI.Controllers
         ///
         /// ### Örnek İstek
         /// 
-        ///     PUT /api/posts/{postId}/confirm-participant/{userId}
+        ///     PUT /api/Post/{postId}/confirm-participant/{userId}
         ///
         /// ### Örnek Yanıt
         /// 

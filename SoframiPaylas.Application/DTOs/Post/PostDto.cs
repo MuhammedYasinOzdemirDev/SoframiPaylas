@@ -13,7 +13,7 @@ namespace SoframiPaylas.Application.DTOs.Post
         /// <summary>
         /// Gönderiyi oluşturan kullanıcının ID'si.
         /// </summary>
-        /// <example>12345</example>
+        /// <example>8ymayJzHVVX393V9ZdO8</example>
         public string HostID { get; set; }
 
         /// <summary>

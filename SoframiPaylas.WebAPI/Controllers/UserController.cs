@@ -81,7 +81,7 @@ namespace SoframiPaylas.WebAPI.Controllers
         ///
         /// ### Örnek İstek
         /// 
-        ///     GET /api/users/{userId}
+        ///     GET /api/User/users/{userId}
         ///     {
         ///         "userId": "f2b3ec34-eb7a-46ef-8c2e-f10ba9b8e8b2"
         ///     }
@@ -140,7 +140,7 @@ namespace SoframiPaylas.WebAPI.Controllers
         ///
         /// ### Örnek İstek
         /// 
-        ///     POST /api/users/user
+        ///     POST /api/User/user
         ///     {
         ///        "email": "newuser@example.com",
         ///        "fullName": "Yeni Kullanıcı",
@@ -198,7 +198,7 @@ namespace SoframiPaylas.WebAPI.Controllers
         ///
         /// ### Örnek İstek
         /// 
-        ///     PUT /api/users/user/{userId}
+        ///     PUT /api/User/user/{userId}
         ///     {
         ///        "email": "updateduser@example.com",
         ///        "fullName": "Güncellenmiş Kullanıcı Adı",
@@ -245,7 +245,7 @@ namespace SoframiPaylas.WebAPI.Controllers
         ///
         /// ### Örnek İstek
         /// 
-        ///     DELETE /api/users/user/{userId}
+        ///     DELETE /api/User/user/{userId}
         ///     {
         ///         "userId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
         ///     }
