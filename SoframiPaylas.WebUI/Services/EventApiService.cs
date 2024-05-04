@@ -31,7 +31,7 @@ namespace SoframiPaylas.WebUI.Services
                 IEnumerable<EventDto> eventDtoEnumerable = await response.Content.ReadFromJsonAsync<IEnumerable<EventDto>>();
                 List<EventDto> eventDtoList = eventDtoEnumerable.ToList();
 
-                Console.WriteLine(eventDtoList.Count);
+
                 return _mapper.Map<List<EventViewModel>>(eventDtoList);
             }
             catch (HttpRequestException ex)

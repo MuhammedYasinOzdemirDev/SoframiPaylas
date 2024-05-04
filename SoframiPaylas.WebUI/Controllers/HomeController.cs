@@ -20,8 +20,8 @@ namespace SoframiPaylas.WebUI.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var events = await _eventApiService.GetAllEventsAsync();
-            return View(events);
+            //var events = await _eventApiService.GetAllEventsAsync();
+            return View();
         }
 
     }

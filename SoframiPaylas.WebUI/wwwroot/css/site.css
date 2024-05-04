@@ -9,19 +9,6 @@ body {
 	color: #5a5a5a; /* Genel yazı rengi */
 }
 
-/* site.css */
-
-.post-list-item a {
-	/* ... */
-	transition: color 0.3s; /* Renk değişim animasyonu */
-}
-
-.post-list-item a:hover,
-.post-list-item a:focus {
-	color: #ff6a00; /* Canlı bir hover rengi */
-	text-decoration: underline; /* Altını çiz */
-}
-
 /* İçerik kartları */
 .card {
 	margin-bottom: 1.5rem; /* Kartlar arası boşluk */

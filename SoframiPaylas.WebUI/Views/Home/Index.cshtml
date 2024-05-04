@@ -1,7 +1,41 @@
-@model List<EventViewModel>
-    <br><br><br>
-    @foreach(var item in Model)
-    {
+<div class="container">
+    <!-- Yemek Paylaşım İlanları ve Etkinlikler -->
+    <div class="row mt-4">
+        <div class="col-md-8">
+            <h2>Yemek Paylaşım İlanları</h2>
+            <!-- İlan Kartı -->
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Lezzetli Lazanya</h5>
+                    <p class="card-text">Bu Pazar günü beraber yemek yapalım!</p>
+                    <a href="#" class="btn btn-primary">Katıl</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <h2>Etkinlikler</h2>
+            <!-- Etkinlik Listesi -->
+            <ul class="list-group">
+                <li class="list-group-item">Açık Hava Sineması</li>
+                <li class="list-group-item">Kitap Kulübü Buluşması</li>
+            </ul>
+            <div>
+                <h2>Arama Yap</h2>
+                <input type="text" class="form-control" placeholder="Etkinlik veya yemek arayın">
+                <button class="btn btn-primary mt-2">Ara</button>
+            </div>
+        </div>
+    </div>
 
-    <p>@item.Title</p>
-    }
+
+    <!-- Topluluk Forumları ve İletişim -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <h2>Topluluk Duvarı</h2>
+            <p>Yemek tariflerinizi, deneyimlerinizi paylaşın veya tartışmalara katılın!</p>
+            <!-- Mesaj Gönderme Alanı -->
+            <textarea class="form-control" rows="3"></textarea>
+            <button class="btn btn-success mt-2">Gönder</button>
+        </div>
+    </div>
+</div>
