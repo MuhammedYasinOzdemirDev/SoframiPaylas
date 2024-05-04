@@ -54,6 +54,11 @@ builder.Services.AddSwaggerGen(c =>
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
+
+    // Application katmanının XML dosyasını ekleyin
+    var applicationXmlFile = "SoframiPaylas.Application.xml";
+    var applicationXmlPath = Path.Combine(AppContext.BaseDirectory, applicationXmlFile);
+    c.IncludeXmlComments(applicationXmlPath);
 });
 var app = builder.Build();
 
