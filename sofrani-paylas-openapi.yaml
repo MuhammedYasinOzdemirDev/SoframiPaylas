@@ -1,0 +1,693 @@
+openapi: 3.0.1
+info:
+  title: Sofranı Paylas API
+  description: 'Yemek Paylaşım Platformu, kullanıcıların yemek tariflerini paylaştıkları ve etkinlik düzenleyebildikleri bir platformdur. Bu API, platform üzerindeki gönderi, katılımcı ve etkinlik yönetimini sağlar. Kullanıcılar gönderiler oluşturabilir, gönderilere katılabilir ve etkinlikleri yönetebilirler.'
+  termsOfService: https://example.com/terms
+  contact:
+    name: Muhammed Yasin Özdemir
+    url: https://www.linkedin.com/in/yasin-%C3%B6zdemir1903/
+    email: cozdemir@gmail.com
+  license:
+    name: MIT License
+    url: https://opensource.org/licenses/MIT
+  version: v1
+servers:
+  - url: https://api.example.com
+    description: Üretim Ortamı
+  - url: https://api-staging.example.com
+    description: Staging Ortamı
+  - url: http://localhost:5000
+    description: Geliştirme Ortamı
+paths:
+  /api/Food/foods:
+    get:
+      tags:
+        - Food
+      summary: Tüm yiyecek öğelerinin listesini döner.
+      description: "Bu işlem, veritabanındaki tüm yiyecek öğelerini getirir. Eğer kayıtlı hiç yiyecek yoksa, kullanıcıya 404 hatası ile bilgi verilir.\r\n            \r\n### Örnek Yanıt\r\n\r\nBaşarılı yanıt aşağıdaki gibi olacaktır:\r\n            \r\n    [\r\n        {\r\n            \"postID\": \"VNRPesXcUL01AOaqFouk\",\r\n            \"title\": \"Peynirli Pizza\",\r\n            \"description\": \"Zengin mozzarella peyniri ile hazırlanmış, kıtır hamurlu pizza\",\r\n            \"images\": \"url_to_pizza_image\"\r\n        },\r\n        {\r\n            \"postID\": \"VNRPesXcUL01AOaqFouk\",\r\n            \"title\": \"Sushi\",\r\n            \"description\": \"Taze hazırlanmış sushi çeşitleri\",\r\n            \"images\": \"url_to_sushi_image\"\r\n        }\r\n    ]\r\n            \r\n### Hatalar\r\n\r\n- **404 Not Found**: Eğer sistemde hiç yiyecek bulunamazsa, bu hata dönülür.\r\n- **500 Internal Server Error**: Veritabanı sorgusu sırasında beklenmedik bir hata oluşursa, bu hata dönülür."
+      responses:
+        '200':
+          description: Yiyecekler başarıyla bulundu ve döndürüldü.
+        '404':
+          description: Hiç yiyecek bulunamadı.
+        '500':
+          description: Yiyecekleri getirirken bir hata meydana geldi.
+  '/api/Food/food/{foodId}':
+    get:
+      tags:
+        - Food
+      summary: Belirtilen ID'ye sahip yiyeceği getirir.
+      description: "Bu işlem, veritabanında belirtilen ID'ye sahip yiyeceği arar ve bulursa döndürür. Eğer ilgili yiyecek bulunamazsa, kullanıcıya 404 hatası ile bilgi verilir.\r\n            \r\n### Örnek İstek\r\n\r\n    GET /api/Food/food/{foodId}\r\n    {\r\n        \"foodId\": \"VNRPesXcUL01AOaqFouk\"\r\n    }\r\n            \r\n### Örnek Yanıt\r\n\r\nBaşarılı yanıt aşağıdaki gibi olacaktır:\r\n            \r\n    {\r\n        \"postID\": \"VNRPesXcUL01AOaqFouk\",\r\n        \"title\": \"Peynirli Pizza\",\r\n        \"description\": \"Zengin mozzarella peyniri ile hazırlanmış, kıtır hamurlu pizza\",\r\n        \"images\": \"url_to_pizza_image\"\r\n    }\r\n            \r\n### Hatalar\r\n\r\n- **404 Not Found**: Eğer sistemde belirtilen ID'ye sahip bir yiyecek bulunamazsa, bu hata dönülür.\r\n- **500 Internal Server Error**: Yiyecek bilgisini getirme sırasında beklenmedik bir hata oluşursa, bu hata dönülür."
+      parameters:
+        - name: foodId
+          in: path
+          description: Getirilecek yiyeceğin benzersiz tanımlayıcısı (ID).
+          required: true
+          style: simple
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Yiyecek başarıyla bulundu ve döndürüldü.
+        '404':
+          description: Belirtilen ID'ye sahip yiyecek bulunamadı.
+        '500':
+          description: Yiyecek bilgisini getirirken bir hata meydana geldi.
+  /api/Food/food:
+    post:
+      tags:
+        - Food
+      summary: Sistemde yeni bir yiyecek öğesi oluşturur.
+      description: "Bu işlem, belirtilen detaylarda yeni bir yiyecek öğesi ekler. Yiyecek bilgileri olarak PostID, Başlık, Açıklama ve Resim URL'leri gereklidir. \r\nBaşarılı bir oluşturma işlemi sonucunda, yiyeceğin benzersiz tanımlayıcısı (ID) döndürülür.\r\n            \r\n### Örnek İstek\r\n\r\n    POST /api/Food/food\r\n    {\r\n       \"postID\": \"VNRPesXcUL01AOaqFouk\",\r\n       \"title\": \"Peynirli Pizza\",\r\n       \"description\": \"Zengin mozzarella peyniri ile hazırlanmış, kıtır hamurlu pizza\",\r\n       \"images\": \"url_to_pizza_image\"\r\n    }\r\n            \r\n### Örnek Yanıt\r\n\r\nBaşarılı bir oluşturma işlemi sonucunda dönen yanıt:\r\n            \r\n    \"VNRPesXcUL01AOaqFouk\"\r\n            \r\n### Hatalar\r\n\r\n- **400 Bad Request**: Gönderilen verilerde eksiklik veya geçersizlik varsa bu hata kodu döner.\r\n- **500 Internal Server Error**: Yiyecek oluşturma işlemi sırasında beklenmedik bir hata oluşursa, bu hata dönülür."
+      requestBody:
+        description: 'Eklenecek yiyeceğin detaylarını içeren DTO nesnesi. DTO, ''postID'', ''title'', ''description'' ve ''images'' alanlarını içermelidir.'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFoodDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/CreateFoodDto'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/CreateFoodDto'
+      responses:
+        '200':
+          description: Yiyecek başarıyla oluşturuldu ve yiyeceğin ID'si döndürüldü.
+        '400':
+          description: Gönderilen verilerde eksiklik veya geçersizlik varsa bu hata kodu döner.
+        '500':
+          description: Yiyecek oluşturma işlemi sırasında beklenmedik bir hata oluştuğunda bu hata döner.
+  '/api/Food/food/{foodID}':
+    put:
+      tags:
+        - Food
+      summary: Belirtilen ID'ye sahip olan yiyecek öğesini günceller.
+      description: "Bu işlem, veritabanında belirtilen ID'ye sahip yiyecek öğesinin detaylarını günceller. Güncelleme için PostID, Başlık, Açıklama ve Resim URL'leri gereklidir.\r\nYiyecek bulunamazsa 404 hatası dönülür, güncelleme başarılı olursa herhangi bir içerik dönmez (204 No Content).\r\n            \r\n### Örnek İstek\r\n\r\n    PUT /api/Food/food/{foodID}\r\n    {\r\n       \"postID\": \"VNRPesXcUL01AOaqFouk\",\r\n       \"title\": \"Güncellenmiş Pizza\",\r\n       \"description\": \"Daha fazla peynir içeren, kıtır hamurlu pizza\",\r\n       \"images\": \"url_to_updated_pizza_image\"\r\n    }\r\n            \r\n### Hatalar\r\n\r\n- **400 Bad Request**: Gönderilen verilerde eksiklik veya geçersizlik varsa bu hata kodu döner.\r\n- **404 Not Found**: Belirtilen ID'ye sahip yiyecek bulunamazsa bu hata dönülür.\r\n- **500 Internal Server Error**: Güncelleme işlemi sırasında beklenmedik bir hata oluşursa, bu hata dönülür."
+      parameters:
+        - name: foodID
+          in: path
+          description: Güncellenecek yiyeceğin benzersiz tanımlayıcısı (ID).
+          required: true
+          style: simple
+          schema:
+            type: string
+      requestBody:
+        description: 'Güncellenecek yiyeceğin yeni detaylarını içeren DTO nesnesi. DTO, ''postID'', ''title'', ''description'', ve ''images'' alanlarını içermelidir.'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFoodDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFoodDto'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/UpdateFoodDto'
+      responses:
+        '200':
+          description: Success
+        '204':
+          description: Yiyecek başarıyla güncellendi. İçerik dönmez.
+        '400':
+          description: Gönderilen verilerde eksiklik veya geçersizlik varsa bu hata kodu döner.
+        '404':
+          description: Belirtilen ID'ye sahip yiyecek bulunamadı.
+        '500':
+          description: Güncelleme işlemi sırasında beklenmedik bir hata oluştuğunda bu hata döner.
+    delete:
+      tags:
+        - Food
+      summary: Belirtilen ID'ye sahip olan yiyecek öğesini sistemden siler.
+      description: "Bu işlem, veritabanında belirtilen ID'ye sahip yiyeceği bulur ve siler. Yiyecek bulunamazsa 404 hatası dönülür, silme başarılı olursa herhangi bir içerik dönmez (204 No Content).\r\n            \r\n### Örnek İstek\r\n\r\n    DELETE /api/Food/food/{foodID}\r\n    {\r\n        \"foodID\": \"VNRPesXcUL01AOaqFouk\"\r\n    }\r\n            \r\n### Hatalar\r\n\r\n- **404 Not Found**: Belirtilen ID'ye sahip yiyecek bulunamazsa bu hata dönülür.\r\n- **500 Internal Server Error**: Silme işlemi sırasında beklenmedik bir hata oluşursa, bu hata dönülür."
+      parameters:
+        - name: foodID
+          in: path
+          description: Silinmek istenen yiyeceğin benzersiz tanımlayıcısı (ID).
+          required: true
+          style: simple
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+        '204':
+          description: Yiyecek başarıyla silindi. İçerik dönmez.
+        '404':
+          description: Belirtilen ID'ye sahip yiyecek bulunamadı.
+        '500':
+          description: Silme işlemi sırasında beklenmedik bir hata oluştuğunda bu hata döner.
+  /api/Post/posts:
+    get:
+      tags:
+        - Post
+      summary: Sistemdeki tüm gönderileri listeler.
+      description: "Bu işlem, sistemde kaydedilmiş tüm aktif gönderileri getirir. Eğer gönderi bulunamazsa, 404 Not Found yanıtı döner.\r\n            \r\n### Örnek Yanıt\r\n\r\nBaşarılı yanıt aşağıdaki gibi olacaktır:\r\n            \r\n    [\r\n        {\r\n            \"hostID\": \"8ymayJzHVVX393V9ZdO8\",\r\n            \"title\": \"Yemek Paylaşım Etkinliği\",\r\n            \"description\": \"Bu etkinlikte ev yapımı yemeklerimizi paylaşıyoruz!\",\r\n            \"location\": { \"latitude\": 41.0082, \"longitude\": 28.9784 },\r\n            \"formattedDate\": \"23/04/2024\",\r\n            \"time\": \"18:30\",\r\n            \"maxParticipants\": 20,\r\n            \"images\": [\"https://example.com/images/event1.jpg\"],\r\n            \"postStatus\": true,\r\n            \"relatedFoods\": [\"Lahmacun\", \"Baklava\"],\r\n            \"participants\": [\"user1\", \"user2\"]\r\n        }\r\n    ]\r\n            \r\n### Hatalar\r\n\r\n- **404 Not Found**: Kayıtlı gönderi bulunamadığında bu hata dönülür.\r\n- **500 Internal Server Error**: Gönderiler getirilirken beklenmedik bir hata oluşursa, bu hata dönülür."
+      responses:
+        '200':
+          description: Gönderiler başarıyla bulundu ve döndürüldü.
+        '404':
+          description: Hiç gönderi bulunamadı.
+        '500':
+          description: Gönderileri getirirken bir hata meydana geldi.
+  '/api/Post/post/{postId}':
+    get:
+      tags:
+        - Post
+      summary: Belirtilen ID'ye sahip gönderiyi getirir.
+      description: "Bu işlem, sistemde belirtilen ID'ye sahip gönderiyi arar ve bulursa döndürür. Eğer ilgili gönderi bulunamazsa, kullanıcıya 404 Not Found hatası ile bilgi verilir.\r\n            \r\n### Örnek İstek\r\n\r\n    GET /api/Post/post/{postId}\r\n    {\r\n        \"postId\": \"8ymayJzHVVX393V9ZdO8\"\r\n    }\r\n            \r\n### Örnek Yanıt\r\n\r\nBaşarılı yanıt aşağıdaki gibi olacaktır:\r\n            \r\n    {\r\n        \"hostID\": \"8ymayJzHVVX393V9ZdO8\",\r\n        \"title\": \"Kültürlerarası Yemek Festivali\",\r\n        \"description\": \"Dünya mutfaklarından lezzetler bu etkinlikte sizleri bekliyor!\",\r\n        \"location\": { \"latitude\": 41.0082, \"longitude\": 28.9784 },\r\n        \"formattedDate\": \"30/05/2024\",\r\n        \"time\": \"14:00\",\r\n        \"maxParticipants\": 50,\r\n        \"images\": [\"https://example.com/images/festival.jpg\"],\r\n        \"postStatus\": true,\r\n        \"relatedFoods\": [\"Sushi\", \"Taco\"],\r\n        \"participants\": [\"user1\", \"user3\", \"user5\"]\r\n    }\r\n            \r\n### Hatalar\r\n\r\n- **404 Not Found**: Belirtilen ID'ye sahip gönderi bulunamazsa bu hata dönülür.\r\n- **500 Internal Server Error**: Gönderi bilgisi getirilirken beklenmedik bir hata oluşursa, bu hata dönülür."
+      parameters:
+        - name: postId
+          in: path
+          description: Getirilecek gönderinin benzersiz tanımlayıcısı.
+          required: true
+          style: simple
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Gönderi başarıyla bulundu ve döndürüldü.
+        '404':
+          description: Belirtilen ID'ye sahip gönderi bulunamadı.
+        '500':
+          description: Gönderi bilgisi getirilirken bir hata meydana geldi.
+  /api/Post/post:
+    post:
+      tags:
+        - Post
+      summary: Yeni bir gönderi oluşturur.
+      description: "Bu işlem, gönderilen gönderi bilgileriyle yeni bir gönderi kaydı oluşturur. Eğer gönderi bilgileri doğrulanamazsa veya eksikse, 400 Bad Request hatası döner. Gönderi başarıyla oluşturulursa, gönderinin benzersiz tanımlayıcısı döndürülür.\r\n            \r\n### Örnek İstek\r\n\r\n    POST /api/Post/post\r\n    {\r\n       \"hostID\": \"8ymayJzHVVX393V9ZdO8\",\r\n       \"title\": \"Uluslararası Mutfak Festivali\",\r\n       \"description\": \"Dünya mutfaklarının en seçkin lezzetlerini deneyimleyin!\",\r\n       \"location\": { \"latitude\": 40.7128, \"longitude\": -74.0060 },\r\n       \"formattedDate\": \"01/10/2024\",\r\n       \"time\": \"12:00\",\r\n       \"maxParticipants\": 100,\r\n       \"images\": [\"https://example.com/images/festival1.jpg\", \"https://example.com/images/festival2.jpg\"],\r\n       \"postStatus\": true,\r\n       \"relatedFoods\": [\"Sushi\", \"Taco\", \"Pizza\"],\r\n       \"participants\": [\"user1\", \"user2\"]\r\n    }\r\n            \r\n### Hatalar\r\n\r\n- **400 Bad Request**: Gönderilen verilerin doğrulaması başarısız olduğunda veya gerekli alanlar eksikse bu hata kodu döner.\r\n- **500 Internal Server Error**: Gönderi oluşturma işlemi sırasında beklenmedik bir hata oluşursa, bu hata dönülür."
+      requestBody:
+        description: 'Oluşturulacak gönderinin bilgilerini içeren DTO nesnesi. DTO, ''hostID'', ''title'', ''description'', ''location'', ''formattedDate'', ''time'', ''maxParticipants'', ''images'', ''postStatus'', ''relatedFoods'', ve ''participants'' alanlarını içermelidir.'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePostDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/CreatePostDto'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/CreatePostDto'
+      responses:
+        '200':
+          description: Gönderi başarıyla oluşturuldu ve gönderinin ID'si döndürüldü.
+        '400':
+          description: Gönderilen verilerin doğrulaması başarısız olduğunda veya gerekli alanlar eksikse bu hata kodu döner.
+        '500':
+          description: Gönderi oluşturma işlemi sırasında beklenmedik bir hata oluştuğunda bu hata dönülür.
+    put:
+      tags:
+        - Post
+      summary: Belirtilen ID'ye sahip gönderiyi günceller.
+      description: "Bu işlem, belirtilen ID'ye sahip gönderinin bilgilerini günceller. Gönderi bilgileri doğrulanamazsa 400 Bad Request hatası döner. Eğer belirtilen ID'ye sahip gönderi bulunamazsa 404 Not Found hatası döner. Güncelleme başarılı olursa, 200 OK yanıtı ile cevap döner.\r\n            \r\n### Örnek İstek\r\n\r\n    PUT /api/Post/post\r\n    {\r\n       \"postId\": \"8ymayJzHVVX393V9ZdO8\",\r\n       \"hostID\": \"5ymayJzHVVX393V9ZdO8\",\r\n       \"title\": \"Kültürel Yemek Festivali Güncellendi\",\r\n       \"description\": \"Festivalde yeni yemekler eklendi!\",\r\n       \"location\": { \"latitude\": 40.7128, \"longitude\": -74.0060 },\r\n       \"formattedDate\": \"05/10/2024\",\r\n       \"time\": \"17:00\",\r\n       \"maxParticipants\": 150,\r\n       \"images\": [\"https://example.com/images/new_festival.jpg\"],\r\n       \"postStatus\": true,\r\n       \"relatedFoods\": [\"Ramen\", \"Taco\", \"Pasta\"],\r\n       \"participants\": [\"user1\", \"user2\", \"user3\"]\r\n    }\r\n            \r\n### Hatalar\r\n\r\n- **400 Bad Request**: Gönderilen verilerin doğrulaması başarısız olduğunda bu hata kodu döner.\r\n- **404 Not Found**: Belirtilen ID'ye sahip gönderi bulunamazsa bu hata dönülür.\r\n- **500 Internal Server Error**: Gönderi güncelleme işlemi sırasında beklenmedik bir hata oluşursa, bu hata dönülür."
+      parameters:
+        - name: postId
+          in: query
+          description: Güncellenmek istenen gönderinin benzersiz tanımlayıcısı.
+          style: form
+          schema:
+            type: string
+      requestBody:
+        description: Güncellenmek istenen gönderinin bilgilerini içeren DTO nesnesi.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePostDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePostDto'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/UpdatePostDto'
+      responses:
+        '200':
+          description: Gönderi başarıyla güncellendi.
+        '400':
+          description: Gönderilen verilerin doğrulaması başarısız olduğunda bu hata kodu döner.
+        '404':
+          description: Belirtilen ID'ye sahip gönderi bulunamadı.
+        '500':
+          description: Gönderi güncelleme işlemi sırasında beklenmedik bir hata oluştuğunda bu hata döner.
+    delete:
+      tags:
+        - Post
+      summary: Belirtilen ID'ye sahip gönderiyi sistemden siler.
+      description: "Bu işlem, sistemde belirtilen ID'ye sahip gönderiyi arar ve siler. Gönderi başarıyla silinirse 204 No Content yanıtı döner. \r\nEğer belirtilen ID'ye sahip gönderi bulunamazsa, 404 Not Found hatası döner.\r\n            \r\n### Örnek İstek\r\n\r\n    DELETE /api/Post/post\r\n    {\r\n        \"postId\": \"8ymayJzHVVX393V9ZdO8\"\r\n    }\r\n            \r\n### Hatalar\r\n\r\n- **204 No Content**: Gönderi başarıyla silindi, hiçbir içerik dönmez.\r\n- **404 Not Found**: Belirtilen ID'ye sahip gönderi bulunamazsa bu hata dönülür.\r\n- **500 Internal Server Error**: Gönderi silme işlemi sırasında beklenmedik bir hata oluşursa, bu hata dönülür."
+      parameters:
+        - name: postId
+          in: query
+          description: Silinmek istenen gönderinin benzersiz tanımlayıcısı.
+          style: form
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+        '204':
+          description: 'Gönderi başarıyla silindi, içerik dönmez.'
+        '404':
+          description: Belirtilen ID'ye sahip gönderi bulunamadı.
+        '500':
+          description: Gönderi silme işlemi sırasında beklenmedik bir hata oluştuğunda bu hata dönülür.
+  '/api/Post/{postId}/join':
+    post:
+      tags:
+        - Post
+      summary: Bir kullanıcının belirtilen gönderiye katılma isteğini işler.
+      description: "Bu işlem, belirtilen gönderiye bir kullanıcının katılma talebini kaydeder. Gönderi bulunamazsa 400 Bad Request hatası ile yanıt verilir. İşlem başarılı ise 204 No Content dönülür.\r\n            \r\n### Örnek İstek\r\n\r\n    POST /api/Post/{postId}/join\r\n    {\r\n       \"userID\": \"8ymayJzHVVX393V9ZdO8\",\r\n       \"status\": 1\r\n    }\r\n            \r\n### Hatalar\r\n\r\n- **400 Bad Request**: Belirtilen ID'ye sahip gönderi bulunamadığında veya verilerde başka bir doğrulama hatası olduğunda bu hata dönülür.\r\n- **500 Internal Server Error**: Katılım işlemi sırasında beklenmedik bir hata oluşursa, bu hata dönülür."
+      parameters:
+        - name: postId
+          in: path
+          description: Katılım isteğinin yapıldığı gönderinin benzersiz tanımlayıcısı.
+          required: true
+          style: simple
+          schema:
+            type: string
+      requestBody:
+        description: Katılım isteği detaylarını içeren DTO nesnesi.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JoinParticipantDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/JoinParticipantDto'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/JoinParticipantDto'
+      responses:
+        '200':
+          description: Success
+        '204':
+          description: Katılım isteği başarıyla işlendi.
+        '400':
+          description: Belirtilen gönderi bulunamadı veya veri doğrulaması başarısız oldu.
+        '500':
+          description: Katılım işlemi sırasında beklenmedik bir hata oluştuğunda bu hata dönülür.
+  '/api/Post/{postId}/confirm-participant/{userId}':
+    put:
+      tags:
+        - Post
+      summary: Belirtilen gönderi için bir katılımcıyı onaylar.
+      description: "Bu işlem, belirtilen gönderiye ve kullanıcıya ait katılım isteğinin durumunu günceller. Eğer katılımcı veya gönderi bulunamazsa, 404 Not Found hatası döner.\r\n            \r\n### Örnek İstek\r\n\r\n    PUT /api/Post/{postId}/confirm-participant/{userId}\r\n            \r\n### Örnek Yanıt\r\n\r\nBaşarılı işlem sonucunda dönen yanıt:\r\n            \r\n    {\r\n        \"message\": \"Katılımcı başarıyla onaylandı.\"\r\n    }\r\n            \r\n### Hatalar\r\n\r\n- **404 Not Found**: Belirtilen katılımcı veya gönderi bulunamadığında bu hata dönülür.\r\n- **500 Internal Server Error**: İşlem sırasında beklenmedik bir hata oluşursa, bu hata dönülür."
+      parameters:
+        - name: postId
+          in: path
+          description: Onaylanacak katılımcının bağlı olduğu gönderinin benzersiz tanımlayıcısı.
+          required: true
+          style: simple
+          schema:
+            type: string
+        - name: userId
+          in: path
+          description: Onaylanacak katılımcının kullanıcı ID'si.
+          required: true
+          style: simple
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Katılımcı başarıyla onaylandı.
+        '404':
+          description: Belirtilen katılımcı veya gönderi bulunamadı.
+        '500':
+          description: Katılımcı onaylama işlemi sırasında beklenmedik bir hata oluştuğunda bu hata dönülür.
+  /api/User/users:
+    get:
+      tags:
+        - User
+      summary: Tüm kullanıcıların listesini döner.
+      description: "Bu işlem, sistemde kayıtlı olan tüm kullanıcıları getirir. Eğer kayıtlı hiç kullanıcı yoksa, kullanıcıya 404 hatası ile bilgi verilir.\r\n            \r\n### Örnek Yanıt\r\n\r\nBaşarılı yanıt aşağıdaki gibi olacaktır:\r\n            \r\n    [\r\n        {\r\n         \"email\": \"example@email.com\",\r\n        \"fullName\": \"Kullanıcı 1\",\r\n        \"isHost\": true,\r\n        \"profilePicture\": \"https://example.com/images/profile.jpg\",\r\n        \"about\": \"Kullanıcı hakkında kısa bilgi.\"\r\n        },\r\n        {\r\n           \"email\": \"example@email.com\",\r\n        \"fullName\": \"Kullanıcı 2\",\r\n        \"isHost\": true,\r\n        \"profilePicture\": \"https://example.com/images/profile.jpg\",\r\n        \"about\": \"Kullanıcı hakkında kısa bilgi.\"\r\n        }\r\n    ]\r\n            \r\n### Hatalar\r\n\r\n- **404 Not Found**: Eğer sistemde hiç kullanıcı bulunamazsa, bu hata dönülür.\r\n- **500 Internal Server Error**: Kullanıcılar getirilirken beklenmedik bir hata oluşursa, bu hata dönülür."
+      responses:
+        '200':
+          description: Kullanıcılar başarıyla bulundu ve döndürüldü.
+        '404':
+          description: Hiç kullanıcı bulunamadı.
+        '500':
+          description: Kullanıcıları getirirken bir hata meydana geldi.
+  '/api/User/users/{userId}':
+    get:
+      tags:
+        - User
+      summary: Belirtilen ID'ye sahip kullanıcıyı getirir.
+      description: "Bu işlem, veritabanında belirtilen GUID formatındaki ID'ye sahip kullanıcıyı arar ve bulursa döndürür. Eğer ilgili kullanıcı bulunamazsa, kullanıcıya 404 hatası ile bilgi verilir.\r\n            \r\n### Örnek İstek\r\n\r\n    GET /api/User/users/{userId}\r\n    {\r\n        \"userId\": \"f2b3ec34-eb7a-46ef-8c2e-f10ba9b8e8b2\"\r\n    }\r\n            \r\n### Örnek Yanıt\r\n\r\nBaşarılı yanıt aşağıdaki gibi olacaktır:\r\n            \r\n    {\r\n        \"email\": \"example@email.com\",\r\n        \"fullName\": \"Kullanıcı Adı Soyadı\",\r\n        \"isHost\": true,\r\n        \"profilePicture\": \"https://example.com/images/profile.jpg\",\r\n        \"about\": \"Kullanıcı hakkında kısa bilgi.\"\r\n    }\r\n            \r\n### Hatalar\r\n\r\n- **400 Bad Request**: Kullanıcı ID'si sağlanmadıysa bu hata dönülür.\r\n- **404 Not Found**: Belirtilen ID'ye sahip kullanıcı bulunamazsa bu hata dönülür.\r\n- **500 Internal Server Error**: Kullanıcı bilgisi getirilirken beklenmedik bir hata oluşursa, bu hata dönülür."
+      parameters:
+        - name: userId
+          in: path
+          description: Getirilecek kullanıcının GUID formatındaki benzersiz tanımlayıcısı.
+          required: true
+          style: simple
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Kullanıcı başarıyla bulundu ve döndürüldü.
+        '400':
+          description: Kullanıcı ID'si sağlanmadı.
+        '404':
+          description: Belirtilen ID'ye sahip kullanıcı bulunamadı.
+        '500':
+          description: Kullanıcı bilgisi getirilirken bir hata meydana geldi.
+  /api/User/user:
+    post:
+      tags:
+        - User
+      summary: Yeni bir kullanıcı oluşturur.
+      description: "Bu işlem, gönderilen kullanıcı bilgileriyle yeni bir kullanıcı kaydı oluşturur. Eğer kullanıcı bilgileri doğrulanamazsa veya eksikse, 400 Bad Request hatası döner. Kullanıcı başarıyla oluşturulursa, kullanıcının benzersiz tanımlayıcısı döndürülür.\r\n            \r\n### Örnek İstek\r\n\r\n    POST /api/User/user\r\n    {\r\n       \"email\": \"newuser@example.com\",\r\n       \"fullName\": \"Yeni Kullanıcı\",\r\n       \"isHost\": false,\r\n       \"profilePicture\": \"https://example.com/images/default.jpg\",\r\n       \"about\": \"Kullanıcı hakkında bilgi.\"\r\n    }\r\n            \r\n### Örnek Yanıt\r\n\r\nBaşarılı bir oluşturma işlemi sonucunda dönen yanıt:\r\n            \r\n    \"3fa85f64-5717-4562-b3fc-2c963f66afa6\"\r\n            \r\n### Hatalar\r\n\r\n- **400 Bad Request**: Gönderilen verilerde eksiklik veya geçersizlik varsa bu hata kodu döner.\r\n- **500 Internal Server Error**: Kullanıcı oluşturma işlemi sırasında beklenmedik bir hata oluşursa, bu hata dönülür."
+      requestBody:
+        description: 'Oluşturulacak kullanıcının bilgilerini içeren DTO nesnesi. DTO, ''email'', ''fullName'', ''isHost'', ''profilePicture'', ve ''about'' alanlarını içermelidir.'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserDto'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/CreateUserDto'
+      responses:
+        '200':
+          description: Kullanıcı başarıyla oluşturuldu ve kullanıcının ID'si döndürüldü.
+        '400':
+          description: Gönderilen verilerde eksiklik veya geçersizlik varsa bu hata kodu döner.
+        '500':
+          description: Kullanıcı oluşturma işlemi sırasında beklenmedik bir hata oluştuğunda bu hata döner.
+  '/api/User/user/{userId}':
+    put:
+      tags:
+        - User
+      summary: Belirtilen ID'ye sahip kullanıcıyı günceller.
+      description: "Bu işlem, belirtilen kullanıcı ID'sine sahip kullanıcının bilgilerini günceller. Eğer veriler doğrulanamazsa 400 hata kodu ile birlikte hata detayları döner. Güncelleme işlemi başarılı olursa 200 durum kodu ile cevap döner.\r\n            \r\n### Örnek İstek\r\n\r\n    PUT /api/User/user/{userId}\r\n    {\r\n       \"email\": \"updateduser@example.com\",\r\n       \"fullName\": \"Güncellenmiş Kullanıcı Adı\",\r\n       \"isHost\": true,\r\n       \"profilePicture\": \"https://example.com/images/updated_profile.jpg\",\r\n       \"about\": \"Kullanıcı hakkında güncellenmiş bilgi.\"\r\n    }\r\n            \r\n### Hatalar\r\n\r\n- **400 Bad Request**: Gönderilen verilerin doğrulaması başarısız olduğunda bu hata dönülür.\r\n- **500 Internal Server Error**: Kullanıcı güncelleme işlemi sırasında beklenmedik bir hata oluşursa, bu hata dönülür."
+      parameters:
+        - name: userId
+          in: path
+          description: Güncellenmek istenen kullanıcının GUID formatındaki benzersiz tanımlayıcısı.
+          required: true
+          style: simple
+          schema:
+            type: string
+      requestBody:
+        description: Güncellenmek istenen kullanıcının yeni bilgilerini içeren DTO nesnesi.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserDto'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserDto'
+      responses:
+        '200':
+          description: Kullanıcı başarıyla güncellendi.
+        '400':
+          description: Gönderilen verilerin doğrulaması başarısız olduğunda bu hata kodu dönülür.
+        '500':
+          description: Kullanıcı güncelleme işlemi sırasında beklenmedik bir hata oluştuğunda bu hata dönülür.
+    delete:
+      tags:
+        - User
+      summary: Belirtilen ID'ye sahip kullanıcıyı sistemden siler.
+      description: "Bu işlem, veritabanında belirtilen ID'ye sahip kullanıcıyı arar ve siler. Kullanıcı başarıyla silinirse 204 No Content yanıtı döner. \r\nKullanıcı bulunamazsa veya silinemezse, hata detayları ile birlikte 500 Internal Server Error yanıtı döner.\r\n            \r\n### Örnek İstek\r\n\r\n    DELETE /api/User/user/{userId}\r\n    {\r\n        \"userId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\"\r\n    }\r\n            \r\n### Hatalar\r\n\r\n- **204 No Content**: Kullanıcı başarıyla silindi.\r\n- **500 Internal Server Error**: Kullanıcı silinirken beklenmedik bir hata oluşursa, bu hata dönülür."
+      parameters:
+        - name: userId
+          in: path
+          description: Silinmek istenen kullanıcının GUID formatındaki benzersiz tanımlayıcısı.
+          required: true
+          style: simple
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+        '204':
+          description: Kullanıcı başarıyla silindi. İçerik dönmez.
+        '500':
+          description: Kullanıcı silinirken beklenmedik bir hata oluştuğunda bu hata dönülür.
+components:
+  schemas:
+    CreateFoodDto:
+      type: object
+      properties:
+        postID:
+          type: string
+          description: Yiyecek gönderisinin benzersiz tanımlayıcısı.
+          nullable: true
+          example: VNRPesXcUL01AOaqFouk
+        title:
+          type: string
+          description: Yiyeceğin başlığı.
+          nullable: true
+          example: Lahmacun
+        description:
+          type: string
+          description: Yiyeceğin açıklaması.
+          nullable: true
+          example: 'Lahmacun, ince hamur üzerine kıyma, soğan, domates ve baharatların karışımı ile hazırlanan, özellikle Gaziantep bölgesine ait bir Türk yemegidir.'
+        images:
+          type: string
+          description: Yiyeceğin görselini içeren resim URL'si.
+          nullable: true
+          example: https://example.com/images/lahmacun.jpg
+      additionalProperties: false
+    CreatePostDto:
+      type: object
+      properties:
+        hostID:
+          type: string
+          description: Gönderiyi oluşturan kullanıcının ID'si.
+          nullable: true
+          example: 8ymayJzHVVX393V9ZdO8
+        title:
+          type: string
+          description: Gönderinin başlığı.
+          nullable: true
+          example: Yemek Paylaşım Etkinliği
+        description:
+          type: string
+          description: Gönderi açıklaması.
+          nullable: true
+          example: Bu etkinlikte ev yapımı yemeklerimizi paylaşıyoruz!
+        location:
+          $ref: '#/components/schemas/GeoPoint'
+        formattedDate:
+          type: string
+          description: Gönderinin tarih bilgisi.
+          nullable: true
+          example: '23/04/2024'
+        time:
+          type: string
+          description: Etkinliğin başlama saati.
+          nullable: true
+          example: '18:30'
+        maxParticipants:
+          type: integer
+          description: Maksimum katılımcı sayısı.
+          format: int32
+          example: 20
+        images:
+          type: array
+          items:
+            type: string
+          description: Gönderi ile ilişkili resimlerin listesi.
+          nullable: true
+          example:
+            - https://example.com/images/event1.jpg
+            - https://example.com/images/event2.jpg
+        postStatus:
+          type: boolean
+          description: Gönderinin aktif olup olmadığını gösterir.
+          example: true
+        relatedFoods:
+          type: array
+          items:
+            type: string
+          description: Gönderi ile ilişkili yemeklerin listesi.
+          nullable: true
+          example:
+            - Lahmacun
+            - Baklava
+        participants:
+          type: array
+          items:
+            type: string
+          description: Etkinliğe katılan kullanıcıların listesi.
+          nullable: true
+          example:
+            - user1
+            - user2
+      additionalProperties: false
+    CreateUserDto:
+      type: object
+      properties:
+        email:
+          type: string
+          description: Kullanıcının e-posta adresi.
+          nullable: true
+          example: user@example.com
+        fullName:
+          type: string
+          description: Kullanıcının tam adı.
+          nullable: true
+          example: Ahmet Yılmaz
+        isHost:
+          type: boolean
+          description: Kullanıcının ev sahibi olup olmadığını belirtir.
+          example: true
+        profilePicture:
+          type: string
+          description: Kullanıcının profil resmi URL'si.
+          nullable: true
+          example: https://example.com/images/profile.jpg
+        about:
+          type: string
+          description: Kullanıcı hakkında ek bilgiler.
+          nullable: true
+          example: 'Hobileri, ilgi alanları gibi bilgiler.'
+      additionalProperties: false
+    GeoPoint:
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+      additionalProperties: false
+    JoinParticipantDto:
+      type: object
+      properties:
+        userID:
+          type: string
+          description: Katılımcının kullanıcı ID'si.
+          nullable: true
+          example: VNRPesXcUL01AOaqFouk
+        status:
+          type: integer
+          description: 'Katılımcının durumu. Örneğin, 1 bekleyen, 2 onaylanan, 3 reddedilen anlamına gelebilir.'
+          format: int32
+          example: 1
+      additionalProperties: false
+    UpdateFoodDto:
+      type: object
+      properties:
+        postID:
+          type: string
+          description: Güncellenecek yiyecek gönderisinin benzersiz tanımlayıcısı.
+          nullable: true
+          example: VNRPesXcUL01AOaqFouk
+        title:
+          type: string
+          description: Yiyeceğin güncellenen başlığı.
+          nullable: true
+          example: Baklava
+        description:
+          type: string
+          description: Yiyeceğin güncellenen açıklaması.
+          nullable: true
+          example: 'Baklava, ince yufkalar arasında ceviz veya fıstık ile yapılan, şerbetli bir Türk tatlısıdır.'
+        images:
+          type: string
+          description: Yiyeceğin güncellenen görselini içeren resim URL'si.
+          nullable: true
+          example: https://example.com/images/baklava.jpg
+      additionalProperties: false
+    UpdatePostDto:
+      type: object
+      properties:
+        hostID:
+          type: string
+          description: Gönderiyi oluşturan kullanıcının ID'si.
+          nullable: true
+          example: 8ymayJzHVVX393V9ZdO8
+        title:
+          type: string
+          description: Gönderinin başlığı.
+          nullable: true
+          example: Yemek Paylaşım Etkinliği
+        description:
+          type: string
+          description: Gönderi açıklaması.
+          nullable: true
+          example: Bu etkinlikte ev yapımı yemeklerimizi paylaşıyoruz!
+        location:
+          $ref: '#/components/schemas/GeoPoint'
+        formattedDate:
+          type: string
+          description: Gönderinin tarih bilgisi.
+          nullable: true
+          example: '23/04/2024'
+        time:
+          type: string
+          description: Etkinliğin başlama saati.
+          nullable: true
+          example: '18:30'
+        maxParticipants:
+          type: integer
+          description: Maksimum katılımcı sayısı.
+          format: int32
+          example: 20
+        images:
+          type: array
+          items:
+            type: string
+          description: Gönderi ile ilişkili resimlerin listesi.
+          nullable: true
+          example:
+            - https://example.com/images/event1.jpg
+            - https://example.com/images/event2.jpg
+        postStatus:
+          type: boolean
+          description: Gönderinin aktif olup olmadığını gösterir.
+          example: true
+        relatedFoods:
+          type: array
+          items:
+            type: string
+          description: Gönderi ile ilişkili yemeklerin listesi.
+          nullable: true
+          example:
+            - Lahmacun
+            - Baklava
+        participants:
+          type: array
+          items:
+            type: string
+          description: Etkinliğe katılan kullanıcıların listesi.
+          nullable: true
+          example:
+            - user1
+            - user2
+      additionalProperties: false
+    UpdateUserDto:
+      type: object
+      properties:
+        email:
+          type: string
+          description: Güncellenmek istenen kullanıcının e-posta adresi.
+          nullable: true
+          example: updated_user@example.com
+        fullName:
+          type: string
+          description: Güncellenmek istenen kullanıcının tam adı.
+          nullable: true
+          example: Mehmet Öz
+        isHost:
+          type: boolean
+          description: Kullanıcının ev sahibi olup olmadığı bilgisinin güncellenmesi.
+          example: false
+        profilePicture:
+          type: string
+          description: Kullanıcının güncellenmiş profil resmi URL'si.
+          nullable: true
+          example: https://example.com/images/updated_profile.jpg
+        about:
+          type: string
+          description: Kullanıcı hakkında güncellenmiş ek bilgiler.
+          nullable: true
+          example: 'Yeni eklenen hobiler, değişen ilgi alanları gibi bilgiler.'
+      additionalProperties: false
