@@ -37,20 +37,24 @@ builder.Services.AddSwaggerGen(c =>
     {
         Title = "Sofranı Paylas API",
         Version = "v1",
-        Description = "A detailed description of my API.",
+        Description = "Yemek Paylaşım Platformu, kullanıcıların yemek tariflerini paylaştıkları ve etkinlik düzenleyebildikleri bir platformdur. Bu API, platform üzerindeki gönderi, katılımcı ve etkinlik yönetimini sağlar. Kullanıcılar gönderiler oluşturabilir, gönderilere katılabilir ve etkinlikleri yönetebilirler.",
         TermsOfService = new Uri("https://example.com/terms"),
         Contact = new OpenApiContact
         {
-            Name = "Support",
-            Email = "support@example.com",
-            Url = new Uri("https://example.com/contact")
+            Name = "Muhammed Yasin Özdemir",
+            Email = "cozdemir@gmail.com",
+            Url = new Uri("https://www.linkedin.com/in/yasin-%C3%B6zdemir1903/")
         },
         License = new OpenApiLicense
         {
-            Name = "Use under LICX",
-            Url = new Uri("https://example.com/license")
+            Name = "MIT License",
+            Url = new Uri("https://opensource.org/licenses/MIT")
         }
+
     });
+    c.AddServer(new OpenApiServer { Url = "https://api.example.com", Description = "Üretim Ortamı" });
+    c.AddServer(new OpenApiServer { Url = "https://api-staging.example.com", Description = "Staging Ortamı" });
+    c.AddServer(new OpenApiServer { Url = "http://localhost:5000", Description = "Geliştirme Ortamı" });
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
