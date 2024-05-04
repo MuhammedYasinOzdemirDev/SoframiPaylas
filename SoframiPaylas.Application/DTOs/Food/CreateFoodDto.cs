@@ -11,7 +11,7 @@ namespace SoframiPaylas.Application.DTOs.Food
         /// <summary>
         /// Yiyecek gönderisinin benzersiz tanımlayıcısı.
         /// </summary>
-        /// <example>1</example>
+        /// <example>VNRPesXcUL01AOaqFouk</example>
         public string PostID { get; set; }
         /// <summary>
         /// Yiyeceğin başlığı.
