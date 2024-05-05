@@ -1,10 +1,10 @@
-name: .NET Core uygulaması derleyin ve SofranıPaylas Web Uygulamasına dağıtın
+name: .NET Core uygulaması derleyin ve SoframiPaylasWebAPI Web Uygulamasına dağıtın
 on:
   push:
     branches:
     - main
 env:
-  AZURE_WEBAPP_NAME: SofranıPaylas
+  AZURE_WEBAPP_NAME: SoframiPaylasWebAPI
   AZURE_WEBAPP_PACKAGE_PATH: SoframiPaylas.WebAPI\publish
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 8.0.x
@@ -44,5 +44,5 @@ jobs:
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.SofranPaylas_7E23 }}
+        publish-profile: ${{ secrets.SoframiPaylasWebAPI_30C2 }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
