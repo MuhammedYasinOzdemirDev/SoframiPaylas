@@ -13,8 +13,7 @@ builder.Services.AddHttpClient("API", c =>
 });
 
 //Api Services
-builder.Services.AddScoped<IEventApiService, EventApiService>();
-
+builder.Services.AddScoped<IPostApiService, PostApiService>();
 //Mapping
 builder.Services.AddAutoMapper(typeof(ViewModelToDtoProfile));
 

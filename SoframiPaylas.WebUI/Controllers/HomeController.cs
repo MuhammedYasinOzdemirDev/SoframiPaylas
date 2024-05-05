@@ -13,15 +13,15 @@ namespace SoframiPaylas.WebUI.Controllers
     public class HomeController : Controller
     {
 
-        private readonly IEventApiService _eventApiService;
-        public HomeController(IEventApiService eventApiService)
+        private readonly IPostApiService _apiService;
+        public HomeController(IPostApiService postApiService)
         {
-            _eventApiService = eventApiService;
+            _apiService = postApiService;
         }
         public async Task<IActionResult> Index()
         {
-            //var events = await _eventApiService.GetAllEventsAsync();
-            return View();
+            var postList = await _apiService.GetAllPostsAsync();
+            return View(postList);
         }
 
     }

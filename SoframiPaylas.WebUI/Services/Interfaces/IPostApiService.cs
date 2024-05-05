@@ -6,8 +6,8 @@ using SoframiPaylas.WebUI.Models;
 
 namespace SoframiPaylas.WebUI.Services.Interfaces
 {
-    public interface IEventApiService
+    public interface IPostApiService
     {
-        Task<List<EventViewModel>> GetAllEventsAsync();
+        Task<List<PostViewModel>> GetAllPostsAsync();
     }
 }

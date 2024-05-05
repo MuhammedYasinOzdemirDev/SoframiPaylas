@@ -1,0 +1,24 @@
+# Dockerfile for WebUI
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+# Copy csproj files and restore as distinct layers
+COPY ["SoframiPaylas.WebUI/SoframiPaylas.WebUI.csproj", "SoframiPaylas.WebUI/"]
+COPY ["SoframiPaylas.Application/SoframiPaylas.Application.csproj", "SoframiPaylas.Application/"]
+
+RUN dotnet restore "SoframiPaylas.WebUI/SoframiPaylas.WebUI.csproj"
+
+# Copy everything else and build
+COPY . .
+WORKDIR "/src/SoframiPaylas.WebUI"
+RUN dotnet tool install -g Microsoft.Web.LibraryManager.Cli
+RUN /root/.dotnet/tools/libman restore
+RUN dotnet build "SoframiPaylas.WebUI.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "SoframiPaylas.WebUI.csproj" -c Release -o /app/publish
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "SoframiPaylas.WebUI.dll"]

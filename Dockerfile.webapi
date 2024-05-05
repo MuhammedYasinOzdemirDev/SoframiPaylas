@@ -1,0 +1,24 @@
+# Dockerfile for WebAPI
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+# Copy csproj files and restore as distinct layers
+COPY ["SoframiPaylas.WebAPI/SoframiPaylas.WebAPI.csproj", "SoframiPaylas.WebAPI/"]
+COPY ["SoframiPaylas.Application/SoframiPaylas.Application.csproj", "SoframiPaylas.Application/"]
+COPY ["SoframiPaylas.Infrastructure/SoframiPaylas.Infrastructure.csproj", "SoframiPaylas.Infrastructure/"]
+COPY ["SoframiPaylas.Domain/SoframiPaylas.Domain.csproj", "SoframiPaylas.Domain/"]
+
+RUN dotnet restore "SoframiPaylas.WebAPI/SoframiPaylas.WebAPI.csproj"
+
+# Copy everything else and build
+COPY . .
+WORKDIR "/src/SoframiPaylas.WebAPI"
+RUN dotnet build "SoframiPaylas.WebAPI.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "SoframiPaylas.WebAPI.csproj" -c Release -o /app/publish
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "SoframiPaylas.WebAPI.dll"]

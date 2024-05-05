@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  soframipaylas.webapi:
+    build:
+      context: .
+      dockerfile: Dockerfile.webapi
+    ports:
+      - "5103:80"
+    networks:
+      - soframipaylas-network
+    environment:
+      FIREBASE_CONFIG:type: "service_account"
+      FIREBASE_CONFIG:project_id: "sofrani-paylas"
+      FIREBASE_CONFIG:private_key_id: "8e90fa87d5124f24c78d65577e9ee60d93cc91b5"
+      FIREBASE_CONFIG:private_key: "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCrFY1OOhJXyLbf\nTgMfMike1IGuSRWpxuOlwD/jUdTROcDoh1jvyMjAivtQbO3f8cfGF7DEtDz48P3w\nkrGQouVz5ViEVzQMebRUA0DK8gLgPJoHR+AzfVd9hAUeCTlNxbdJGHK4hNjG6KBh\nGxwp53XY8Iy4jF8GpcBRMWRZpFegmNw/fjUNCIi3FsjKQ3ZWzhaseD2nbe14ohEJ\nqKuBWLLTMzXXKv804PDGRn+XQUPPXfwu2ApTJkrLB/98BXc2iaLWvsfLyv0Lz56k\nlRj9ATWkgYPerxbAUsZUnM2yVDdbtF1/9o3/mNrbCPP6J8/sZMOdhCjiySzGXNZY\nMPlHucJzAgMBAAECggEAOn2lz+beupBupS3At3uov1eb9oAaHe9XiSWPMiKaBeYe\n4+DSMTiOGfXqMfbr5LJ+wGT9FGMirWGHECa2+mIW3Ga+upAtxU4ertJl5nyTKyLM\n7kxOhIwHy2vFbB1vL/22yhDHt/oDOw3xNwHTwSfXDJJBKh8jpdwpQhkG2/bp1oec\nGBOFcIiXG0eN/vTJe7m+2fUQ9qeiMpTn3mshiyAGBF+Wehu+lf3aONNEXz/zEmSp\n++9/OLKNWUJrla5/35uE+h+djlG16mSjqHhqNAii+oPTAgMwHHXY37TtGukErew+\ncpx83qOykJ5qDwL9xi+TcT47lvQch55mYf4idRwNgQKBgQDtZxctC3ZBPNKXBzLArVrRzb36SSyUszAim5QEdK2eVsmJY/pYZfxsSAjZM1wJktTXrjFc8pd+S/Z9XB//VhaTd5nAEv9c2EFNvBK23YWpwhcNpa8A1oc73kbjb2vRrkHGMEQMsyjlGt1SssHKznfzvQR2p41NpVYRgKsVEVpX4EwKBgQC4fIADUjCA+OYxjOwY5eZooqFeLPVy4zUS7klNPfZ/idqMR3k38CLIvcucFBiR701iArmbhz9G18dY2r+KaF/QFBKAa/Svt07+yrXzSlduJGCqBx1D0zImSdjRvnwWiJ/DZ23GbtJXu3OxwtPmzgvEWxoBE0CeLIKn8UVbjrEYIQKBgFdIQrYV87lSgl5ykA9U7QIb8Y/2nURiiP0AVDA7MaX4ZIp1zpH3lRG+fjpU7q66ZDST36Q7sMUHaq12VHFNFmnLXCTJF0fsXj4VOpAu67iZGl6zHp9hQEEbnNZ7nZluxtH15t8Ac7Wf5eVEwYktqKPSPfS7Fmywu0WcFADnEKYvAoGAA/ao\nyWl6oUq3p1jfuak2ygi0btGIdG9tNHrqGD68jQDpMRpYAFuoY6ewOCo2XOxHPVPR\nqQW+1kbMgZwxgUe8xzunKhsnpp7Jk6/HOPLf7f3aFc0RU+O1sBzmC5uMDu/gftI6\nCYlX+4qLccY9xzemCRHr/RnsyXkrVXBZjR4DsAECgYBv8pe4GpwDTd+7UIwuN9Hr\nDymjwN9UYSY1PHXIdgJBfV1AZjR8nbkSvmvQneXnM8wR10gWuzs3PYD5T67LTTAt\naQq1XLyHT8Rmgqb5E7dTLlevgj9TTFi9P4tRj6yAjCU3JJ2feyqikI9E1n1DiSD/\nqzg0jBsY25U5J7KRk1hQDQ==\n-----END PRIVATE KEY-----"
+      FIREBASE_CONFIG:client_email: "firebase-adminsdk-xktqm@sofrani-paylas.iam.gserviceaccount.com"
+      FIREBASE_CONFIG:client_id: "103851286047982562323"
+      FIREBASE_CONFIG:auth_uri: "https://accounts.google.com/o/oauth2/auth"
+      FIREBASE_CONFIG:token_uri: "https://oauth2.googleapis.com/token"
+      FIREBASE_CONFIG:auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs"
+      FIREBASE_CONFIG:client_x509_cert_url: "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-xktqm%40sofrani-paylas.iam.gserviceaccount.com"
+      FIREBASE_CONFIG:universe_domain: "googleapis.com"
+  soframipaylas.webui:
+    build:
+      context: .
+      dockerfile: Dockerfile.webui
+    ports:
+      - "5001:80"
+    depends_on:
+      - soframipaylas.webapi
+    networks:
+      - soframipaylas-network
+
+networks:
+  soframipaylas-network:
+    driver: bridge
