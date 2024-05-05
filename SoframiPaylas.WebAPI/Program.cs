@@ -3,6 +3,7 @@ using Microsoft.OpenApi.Models;
 using SoframiPaylas.Application.Interfaces;
 using SoframiPaylas.Application.Mappings;
 using SoframiPaylas.Application.Services;
+using SoframiPaylas.Infrastructure.Data.Config;
 using SoframiPaylas.Infrastructure.Data.Service;
 using SoframiPaylas.Infrastructure.Interfaces;
 using SoframiPaylas.Infrastructure.Repositories;
@@ -14,7 +15,38 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<FirebaseService>();  // Firebase servisini singleton olarak kaydet
+
+// FirebaseConfig sınıfını singleton olarak kaydet
+builder.Services.AddSingleton<FirebaseService>(serviceProvider =>
+{
+    // Yapılandırma nesnesini veya başka bağımlılıkları çözümle
+    // Örneğin, eğer FirebaseConfig yerine IConfiguration gerekiyorsa:
+    var config = serviceProvider.GetRequiredService<IConfiguration>();
+    var firebaseConfigSection = config.GetSection("FIREBASE_CONFIG");
+
+    // Yapılandırmayı Dictionary olarak çevir
+    var firebaseConfigDict = firebaseConfigSection.Get<Dictionary<string, string>>();
+
+    // Dictionary'i model nesnesine dönüştür
+    var firebaseConfig = new FireBaseConfig
+    {
+        Type = firebaseConfigDict.GetValueOrDefault("type"),
+        ProjectId = firebaseConfigDict.GetValueOrDefault("project_id"),
+        PrivateKeyId = firebaseConfigDict.GetValueOrDefault("private_key_id"),
+        PrivateKey = firebaseConfigDict.GetValueOrDefault("private_key"),
+        ClientEmail = firebaseConfigDict.GetValueOrDefault("client_email"),
+        ClientId = firebaseConfigDict.GetValueOrDefault("client_id"),
+        AuthUri = firebaseConfigDict.GetValueOrDefault("auth_uri"),
+        TokenUri = firebaseConfigDict.GetValueOrDefault("token_uri"),
+        AuthProviderX509CertUrl = firebaseConfigDict.GetValueOrDefault("auth_provider_x509_cert_url"),
+        ClientX509CertUrl = firebaseConfigDict.GetValueOrDefault("client_x509_cert_url"),
+        UniverseDomain = firebaseConfigDict.GetValueOrDefault("universe_domain")
+    };
+    if (firebaseConfig == null)
+        throw new InvalidOperationException("Firebase configuration must be provided.");
+
+    return new FirebaseService(firebaseConfig);
+});
 
 
 //Repository
