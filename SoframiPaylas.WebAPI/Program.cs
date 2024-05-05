@@ -23,7 +23,10 @@ builder.Services.AddSingleton<FirebaseService>(serviceProvider =>
     // Örneğin, eğer FirebaseConfig yerine IConfiguration gerekiyorsa:
     var config = serviceProvider.GetRequiredService<IConfiguration>();
     var firebaseConfigSection = config.GetSection("FIREBASE_CONFIG");
-
+    if (firebaseConfigSection == null)
+    {
+        throw new InvalidOperationException("FIREBASE_CONFIG section is missing in the configuration.");
+    }
     // Yapılandırmayı Dictionary olarak çevir
     var firebaseConfigDict = firebaseConfigSection.Get<Dictionary<string, string>>();
 
@@ -84,8 +87,9 @@ builder.Services.AddSwaggerGen(c =>
         }
 
     });
-    c.AddServer(new OpenApiServer { Url = "https://soframipaylaswebapi.azurewebsites.net", Description = "Azure Cloud Ortamı" });
     c.AddServer(new OpenApiServer { Url = "http://localhost:5103", Description = "Geliştirme Ortamı" });
+    c.AddServer(new OpenApiServer { Url = "https://soframipaylaswebapi.azurewebsites.net", Description = "Azure Cloud Ortamı" });
+
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
@@ -115,8 +119,6 @@ if (app.Environment.IsDevelopment())
        c.RoutePrefix = string.Empty;  // Swagger UI'ı ana sayfada açar
    });
 }
-
-
 
 app.UseHttpsRedirection();
 app.UseRouting();

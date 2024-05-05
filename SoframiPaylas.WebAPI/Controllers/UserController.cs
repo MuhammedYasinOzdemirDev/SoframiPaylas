@@ -68,8 +68,9 @@ namespace SoframiPaylas.WebAPI.Controllers
                 }
                 return Ok(users);
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
+
                 return StatusCode(500, "Kullanıcıları getirirken bir hata meydana geldi.");
             }
         }

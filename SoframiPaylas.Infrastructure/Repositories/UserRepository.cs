@@ -51,7 +51,7 @@ namespace SoframiPaylas.Infrastructure.Repositories
                     var user = new User
                     {
                         Email = userDict.ContainsKey("email") ? userDict["email"].ToString() : null,
-                        FullName = userDict.ContainsKey("fullName") ? userDict["fullname"].ToString() : null,
+                        FullName = userDict.ContainsKey("fullName") ? userDict["fullName"].ToString() : null,
                         IsHost = userDict.ContainsKey("isHost") ? (bool)userDict["isHost"] : false,
                         ProfilePicture = userDict.ContainsKey("profilePicture") ? userDict["profilePicture"].ToString() : null,
                         About = userDict.ContainsKey("about") ? userDict["about"].ToString() : null
@@ -79,12 +79,11 @@ namespace SoframiPaylas.Infrastructure.Repositories
             Dictionary<string, object> userDict = snapshot.ToDictionary();
             return new User
             {
-
-                Email = userDict["email"].ToString(),
-                FullName = userDict["fullName"].ToString(),
-                IsHost = Convert.ToBoolean(userDict["isHost"]),
-                ProfilePicture = userDict["profilePicture"].ToString(),
-                About = userDict["about"].ToString()
+                Email = userDict.ContainsKey("email") ? userDict["email"].ToString() : null,
+                FullName = userDict.ContainsKey("fullName") ? userDict["fullName"].ToString() : null,
+                IsHost = userDict.ContainsKey("isHost") ? (bool)userDict["isHost"] : false,
+                ProfilePicture = userDict.ContainsKey("profilePicture") ? userDict["profilePicture"].ToString() : null,
+                About = userDict.ContainsKey("about") ? userDict["about"].ToString() : null
             };
 
         }

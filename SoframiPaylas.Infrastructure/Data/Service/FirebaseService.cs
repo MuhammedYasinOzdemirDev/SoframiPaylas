@@ -17,12 +17,9 @@ namespace SoframiPaylas.Infrastructure.Data.Service
     public class FirebaseService
     {
         private readonly FirestoreDb db;
-        private readonly FireBaseConfig _config;
-
 
         public FirebaseService(FireBaseConfig config)
         {
-            _config = config ?? throw new ArgumentNullException(nameof(config), "FirebaseConfig cannot be null."); ;
             string jsonConfig = JsonConvert.SerializeObject(new
             {
                 type = config.Type,
