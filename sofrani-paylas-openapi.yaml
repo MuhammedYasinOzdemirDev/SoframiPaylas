@@ -12,12 +12,10 @@ info:
     url: https://opensource.org/licenses/MIT
   version: v1
 servers:
-  - url: https://api.example.com
-    description: Üretim Ortamı
-  - url: https://api-staging.example.com
-    description: Staging Ortamı
-  - url: http://localhost:5000
+  - url: http://localhost:5103
     description: Geliştirme Ortamı
+  - url: https://soframipaylaswebapi.azurewebsites.net
+    description: Azure Cloud Ortamı
 paths:
   /api/Food/foods:
     get:
