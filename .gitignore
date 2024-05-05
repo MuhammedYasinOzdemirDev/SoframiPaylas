@@ -94,5 +94,6 @@ bld/
 .vs/
 
 # Gelistirme Sureci Dappsettings.jsonosyaları
-appsettings.json
-appsettings.Development.json
+app.settings.json
+
+appsettings.Development.jsonapp.settings.json
