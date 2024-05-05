@@ -52,7 +52,7 @@ builder.Services.AddSwaggerGen(c =>
         }
 
     });
-    c.AddServer(new OpenApiServer { Url = "https://xn--sofranpaylas-64b.azurewebsites.net/", Description = "Azure Cloud Ortamı" });
+    c.AddServer(new OpenApiServer { Url = "https://soframipaylaswebapi.azurewebsites.net", Description = "Azure Cloud Ortamı" });
     c.AddServer(new OpenApiServer { Url = "http://localhost:5103", Description = "Geliştirme Ortamı" });
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
@@ -63,6 +63,14 @@ builder.Services.AddSwaggerGen(c =>
     var applicationXmlPath = Path.Combine(AppContext.BaseDirectory, applicationXmlFile);
     c.IncludeXmlComments(applicationXmlPath);
 });
+
+builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowSpecificOrigin",
+            builder => builder.WithOrigins("http://localhost:5103", "https://soframipaylaswebapi.azurewebsites.net")
+                              .AllowAnyMethod()
+                              .AllowAnyHeader());
+    });
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -77,9 +85,11 @@ if (app.Environment.IsDevelopment())
 }
 
 
-app.UseAuthorization();
 
 app.UseHttpsRedirection();
+app.UseRouting();
+app.UseCors("AllowSpecificOrigin");
+app.UseAuthorization();
 app.MapControllers();
 
 
