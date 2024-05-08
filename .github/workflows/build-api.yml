@@ -26,11 +26,10 @@ jobs:
         run: dotnet build SoframiPaylas.WebAPI/SoframiPaylas.WebAPI.csproj --no-restore
 
       - name: Publish the project
-        run: dotnet publish SoframiPaylas.WebAPI/SoframiPaylas.WebAPI.csproj -c Release -o ${{secrets.AZURE_WEBAPP_PACKAGE_PATH}}
+        run: dotnet publish SoframiPaylas.WebAPI/SoframiPaylas.WebAPI.csproj -c Release
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
           app-name: "SoframiPaylasWebAPI" # Azure App Service adınızı buraya girin
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ${{env.AZURE_WEBAPP_PACKAGE_PATH}}
