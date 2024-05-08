@@ -1,0 +1,36 @@
+name: Deploy WebAPI to Azure App Service
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "SoframiPaylas.WebAPI/**"
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: "8.0.x" # Burada kullanılan .NET sürümünü doğru ayarlayın
+
+      - name: Restore dependencies
+        run: dotnet restore SoframiPaylas.WebAPI/SoframiPaylas.WebAPI.csproj
+
+      - name: Build the project
+        run: dotnet build SoframiPaylas.WebAPI/SoframiPaylas.WebAPI.csproj --no-restore
+
+      - name: Publish the project
+        run: dotnet publish SoframiPaylas.WebAPI/SoframiPaylas.WebAPI.csproj -c Release -o ${{env.AZURE_WEBAPP_PACKAGE_PATH}}
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: "SoframiPaylasWebAPI" # Azure App Service adınızı buraya girin
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ${{env.AZURE_WEBAPP_PACKAGE_PATH}}
