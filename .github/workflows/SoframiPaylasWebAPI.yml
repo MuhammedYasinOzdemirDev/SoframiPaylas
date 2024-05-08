@@ -1,48 +1,36 @@
-name: .NET Core uygulaması derleyin ve SoframiPaylasWebAPI Web Uygulamasına dağıtın
+name: Deploy WebAPI to Azure App Service
+
 on:
   push:
     branches:
-    - main
-env:
-  AZURE_WEBAPP_NAME: SoframiPaylasWebAPI
-  AZURE_WEBAPP_PACKAGE_PATH: SoframiPaylas.WebAPI\publish
-  CONFIGURATION: Release
-  DOTNET_CORE_VERSION: 8.0.x
-  WORKING_DIRECTORY: SoframiPaylas.WebAPI
+      - main
+    paths:
+      - 'SoframiPaylas.WebAPI/**'
+
 jobs:
-  build:
+  build-and-deploy:
     runs-on: windows-latest
+
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup .NET SDK
-      uses: actions/setup-dotnet@v3
+    - uses: actions/checkout@v2
+    
+    - name: Set up .NET
+      uses: actions/setup-dotnet@v2
       with:
-        dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
-    - name: Restore
-      run: dotnet restore "${{ env.WORKING_DIRECTORY }}"
-    - name: Build
-      run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-restore
-    - name: Test
-      run: dotnet test "${{ env.WORKING_DIRECTORY }}" --no-build
-    - name: Publish
-      run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
-    - name: Publish Artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: webapp
-        path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-  deploy:
-    runs-on: windows-latest
-    needs: build
-    steps:
-    - name: Download artifact from build job
-      uses: actions/download-artifact@v3
-      with:
-        name: webapp
-        path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-    - name: Deploy to Azure WebApp
+        dotnet-version: '8.0.x' # Burada kullanılan .NET sürümünü doğru ayarlayın
+    
+    - name: Restore dependencies
+      run: dotnet restore SoframiPaylas.WebAPI/SoframiPaylas.WebAPI.csproj
+    
+    - name: Build the project
+      run: dotnet build SoframiPaylas.WebAPI/SoframiPaylas.WebAPI.csproj --no-restore
+    
+    - name: Publish the project
+      run: dotnet publish SoframiPaylas.WebAPI/SoframiPaylas.WebAPI.csproj -c Release -o ${{env.AZURE_WEBAPP_PACKAGE_PATH}}
+    
+    - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
       with:
-        app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.SoframiPaylasWebAPI_30C2 }}
-        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+        app-name: 'SoframiPaylasWebAPI' # Azure App Service adınızı buraya girin
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: ${{env.AZURE_WEBAPP_PACKAGE_PATH}}
