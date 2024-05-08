@@ -89,6 +89,9 @@ builder.Services.AddSwaggerGen(c =>
     });
     c.AddServer(new OpenApiServer { Url = "http://localhost:5103", Description = "Geliştirme Ortamı" });
     c.AddServer(new OpenApiServer { Url = "https://soframipaylaswebapi.azurewebsites.net", Description = "Azure Cloud Ortamı" });
+    c.AddServer(new OpenApiServer { Url = "https://xn--sofranpaylas-64b.azurewebsites.net", Description = "Azure Cloud Ortamı 2 " });
+
+
 
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
