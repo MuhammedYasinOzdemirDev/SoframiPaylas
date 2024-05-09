@@ -44,7 +44,9 @@ namespace SoframiPaylas.Infrastructure.Repositories
                         IsHost = userDict.ContainsKey("isHost") ? (bool)userDict["isHost"] : false,
                         ProfilePicture = userDict.ContainsKey("profilePicture") ? userDict["profilePicture"].ToString() : null,
                         About = userDict.ContainsKey("about") ? userDict["about"].ToString() : null,
-                        Role = userDict.ContainsKey("role") ? userDict["role"].ToString() : null
+                        Role = userDict.ContainsKey("role") ? userDict["role"].ToString() : null,
+                        Name = userDict.ContainsKey("name") ? userDict["name"].ToString() : null,
+                        Surname = userDict.ContainsKey("surname") ? userDict["surname"].ToString() : null
                     };
                     users.Add(user);
                 }
@@ -75,7 +77,9 @@ namespace SoframiPaylas.Infrastructure.Repositories
                 ProfilePicture = userDict.ContainsKey("profilePicture") ? userDict["profilePicture"].ToString() : null,
                 About = userDict.ContainsKey("about") ? userDict["about"].ToString() : null
                 ,
-                Role = userDict.ContainsKey("role") ? userDict["role"].ToString() : null
+                Role = userDict.ContainsKey("role") ? userDict["role"].ToString() : null,
+                Name = userDict.ContainsKey("name") ? userDict["name"].ToString() : null,
+                Surname = userDict.ContainsKey("surname") ? userDict["surname"].ToString() : null
             };
 
         }

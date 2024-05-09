@@ -13,6 +13,10 @@ namespace SoframiPaylas.Domain.Entities
 
         [FirestoreProperty("email")]
         public string Email { get; set; }
+        [FirestoreProperty("name")]
+        public string Name { get; set; }
+        [FirestoreProperty("surname")]
+        public string Surname { get; set; }
 
         [FirestoreProperty("userName")]
         public string UserName { get; set; }

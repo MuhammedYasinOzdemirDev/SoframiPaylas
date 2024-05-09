@@ -13,6 +13,8 @@ namespace SoframiPaylas.WebUI.Services
     {
         private readonly HttpClient _httpClient;
         private readonly IMapper _mapper;
+        private readonly int _maxRetries = 3;
+        private readonly TimeSpan _retryDelay = TimeSpan.FromSeconds(2);
         public PostApiService(IHttpClientFactory httpClient, IMapper mapper)
         {
             _httpClient = httpClient.CreateClient("API");
@@ -34,8 +36,17 @@ namespace SoframiPaylas.WebUI.Services
             }
             catch (HttpRequestException ex)
             {
-                throw new ApplicationException($"An error occurred when retrieving events: {ex.Message}", ex);
+                // RetryHandler tarafından yeniden denenmesine rağmen hala hata alınıyorsa
+                Console.WriteLine($"An error occurred after retries: {ex.Message}");
+                return null;  // Hata durumunda false dönerek, çağrı yapan koda bilgi ver
             }
+            catch (Exception ex)
+            {
+                // Diğer beklenmedik hatalar için
+                Console.WriteLine($"An unexpected error occurred: {ex.Message}");
+                return null;
+            }
+
         }
     }
 }

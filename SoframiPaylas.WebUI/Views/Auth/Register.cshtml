@@ -1,0 +1,152 @@
+@model RegisterViewModel
+
+<div class="register-container">
+    <h2 class="register-title">Kayıt Ol</h2>
+    <form asp-action="Register" method="post" class="register-form" id="registerForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="row">
+
+            <div class="form-group mb-3 col-6">
+                <label asp-for="Name">Ad:</label>
+                <input type="text" id="Name" name="Name" class="form-control" required>
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3 col-6">
+                <label asp-for="Surname">Soyad:</label>
+                <input type="text" id="Surname" name="Surname" asp-for="Surname" class="form-control" required>
+                <span asp-validation-for="Surname" class="text-danger"></span>
+            </div>
+
+        </div>
+        <div class="form-group mb-3">
+            <label asp-for="UserName">Kullanıcı Adı:</label>
+            <input type="text" id="UserName" name="UserName" asp-for="UserName" class="form-control" required>
+            <span asp-validation-for="UserName" class="text-danger"></span>
+        </div>
+        <div class="form-group mb-3">
+            <label asp-for="Email">E-posta:</label>
+            <input type="email" id="Email" name="Email" asp-for="Email" class="form-control" required>
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="form-group mb-3">
+            <label asp-for="Password">Şifre:</label>
+            <input type="password" id="Password" name="Password" asp-for="Password" class="form-control" required>
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+        <div class="form-group mb-3">
+            <label asp-for="ConfirmPassword">Şifre Tekrar:</label>
+            <input type="password" id="ConfirmPassword" name="ConfirmPassword" asp-for="ConfirmPassword"
+                class="form-control" required>
+            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Kayıt Ol</button>
+    </form>
+</div>
+@section Scripts{
+<script>
+    document.getElementById('registerForm').addEventListener('submit', function (event) {
+        var name = document.getElementById('Name').value.trim();
+        var surname = document.getElementById('Surname').value.trim();
+        var username = document.getElementById('Username').value.trim();
+        var email = document.getElementById('Email').value.trim();
+        var password = document.getElementById('Password').value.trim();
+        var confirmPassword = document.getElementById('ConfirmPassword').value.trim();
+
+        // Alanların boş olup olmadığını kontrol et
+        if (!name || !surname || !username || !email || !password || !confirmPassword) {
+            alert('Lütfen tüm alanları doldurunuz.');
+            event.preventDefault();  // Form gönderimini engelle
+            return;  // Fonksiyondan çık
+        }
+        const errors = [];
+
+        if (password.length < 6) {
+            errors.push("Şifre en az 6 karakter olmalıdır.");
+        }
+        if (!password.match(/[0-9]/)) {
+            errors.push("Şifrede en az bir rakam bulunmalıdır.");
+        }
+        if (!password.match(/[A-Z]/)) {
+            errors.push("Şifrede en az bir büyük harf bulunmalıdır.");
+        }
+        if (!password.match(/[a-z]/)) {
+            errors.push("Şifrede en az bir küçük harf bulunmalıdır.");
+        }
+        if (!password.match(/\W/)) {
+            errors.push("Şifrede en az bir alfasayısal olmayan karakter bulunmalıdır.");
+        }
+
+        if (errors.length > 0) {
+            event.preventDefault();
+            alert(errors.join("\n"));
+        }
+
+        // Şifrelerin eşleşip eşleşmediğini kontrol et
+        if (password !== confirmPassword) {
+            alert('Şifreler eşleşmiyor, lütfen kontrol ediniz.');
+            event.preventDefault();  // Form gönderimini engelle
+        }
+    });
+</script>}
+<style>
+    .register-container {
+        width: 100%;
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #f7f7f7;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .register-title {
+        text-align: center;
+        margin-bottom: 12px;
+        color: #333;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .form-control {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+    }
+
+    .form-control:focus {
+        border-color: #80bdff;
+        outline: none;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    .text-danger {
+        color: #dc3545;
+        margin-top: 5px;
+    }
+
+    .btn-primary {
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+</style>
