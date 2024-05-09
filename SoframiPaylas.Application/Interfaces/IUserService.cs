@@ -11,7 +11,7 @@ namespace SoframiPaylas.Application.Interfaces
     {
         Task<IEnumerable<UserDto>> GetAllUserAsync();
         Task<UserDto> GetUserByIdAsync(string userId);
-        Task<string> CreateUserAsync(CreateUserDto userDto);
+
         Task UpdateUserAsync(UpdateUserDto userDto, string userId);
         Task DeleteUserAsync(string userId);
     }

@@ -21,12 +21,6 @@ namespace SoframiPaylas.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<string> CreateUserAsync(CreateUserDto userDto)
-        {
-            var user = _mapper.Map<User>(userDto);
-            return await _userRepository.CreateUserAsync(user);
-        }
-
         public async Task DeleteUserAsync(string userId)
         {
             var user = await _userRepository.GetUserByIdAsync(userId);

@@ -16,7 +16,7 @@ namespace SoframiPaylas.Application.DTOs
         /// Güncellenmek istenen kullanıcının tam adı.
         /// </summary>
         /// <example>Mehmet Öz</example>
-        public string? FullName { get; set; }
+        public string? UserName { get; set; }
         /// <summary>
         /// Kullanıcının ev sahibi olup olmadığı bilgisinin güncellenmesi.
         /// </summary>
@@ -32,5 +32,7 @@ namespace SoframiPaylas.Application.DTOs
         /// </summary>
         /// <example>Yeni eklenen hobiler, değişen ilgi alanları gibi bilgiler.</example>
         public string? About { get; set; }
+
+        public string Role { get; set; }
     }
 }

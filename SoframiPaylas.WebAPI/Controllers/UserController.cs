@@ -133,6 +133,7 @@ namespace SoframiPaylas.WebAPI.Controllers
                 return StatusCode(500, "Kullanıcı bilgisi getirilirken bir hata meydana geldi.");
             }
         }
+        /*
         /// <summary>
         /// Yeni bir kullanıcı oluşturur.
         /// </summary>
@@ -190,7 +191,7 @@ namespace SoframiPaylas.WebAPI.Controllers
                 // Log the exception details here
                 return StatusCode(500, "Kullanıcı oluşturulurken bir hata meydana geldi.");
             }
-        }
+        }*/
         /// <summary>
         /// Belirtilen ID'ye sahip kullanıcıyı günceller.
         /// </summary>

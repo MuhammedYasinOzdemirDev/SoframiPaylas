@@ -20,17 +20,6 @@ namespace SoframiPaylas.Infrastructure.Repositories
             _service = service;
         }
 
-
-        public async Task<string> CreateUserAsync(User user)
-
-        {
-
-            string userId = Guid.NewGuid().ToString();
-            await _service.GetDb().Collection("Users").Document(userId).SetAsync(user);
-
-            return userId;
-        }
-
         public async Task<IEnumerable<User>> GetAllUserAsync()
         {
             if (_service == null || _service.GetDb() == null)
@@ -51,10 +40,11 @@ namespace SoframiPaylas.Infrastructure.Repositories
                     var user = new User
                     {
                         Email = userDict.ContainsKey("email") ? userDict["email"].ToString() : null,
-                        FullName = userDict.ContainsKey("fullName") ? userDict["fullName"].ToString() : null,
+                        UserName = userDict.ContainsKey("userName") ? userDict["userName"].ToString() : null,
                         IsHost = userDict.ContainsKey("isHost") ? (bool)userDict["isHost"] : false,
                         ProfilePicture = userDict.ContainsKey("profilePicture") ? userDict["profilePicture"].ToString() : null,
-                        About = userDict.ContainsKey("about") ? userDict["about"].ToString() : null
+                        About = userDict.ContainsKey("about") ? userDict["about"].ToString() : null,
+                        Role = userDict.ContainsKey("role") ? userDict["role"].ToString() : null
                     };
                     users.Add(user);
                 }
@@ -80,10 +70,12 @@ namespace SoframiPaylas.Infrastructure.Repositories
             return new User
             {
                 Email = userDict.ContainsKey("email") ? userDict["email"].ToString() : null,
-                FullName = userDict.ContainsKey("fullName") ? userDict["fullName"].ToString() : null,
+                UserName = userDict.ContainsKey("userName") ? userDict["userName"].ToString() : null,
                 IsHost = userDict.ContainsKey("isHost") ? (bool)userDict["isHost"] : false,
                 ProfilePicture = userDict.ContainsKey("profilePicture") ? userDict["profilePicture"].ToString() : null,
                 About = userDict.ContainsKey("about") ? userDict["about"].ToString() : null
+                ,
+                Role = userDict.ContainsKey("role") ? userDict["role"].ToString() : null
             };
 
         }

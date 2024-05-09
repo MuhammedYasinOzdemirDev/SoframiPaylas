@@ -14,8 +14,8 @@ namespace SoframiPaylas.Domain.Entities
         [FirestoreProperty("email")]
         public string Email { get; set; }
 
-        [FirestoreProperty("fullName")]
-        public string FullName { get; set; }
+        [FirestoreProperty("userName")]
+        public string UserName { get; set; }
 
         [FirestoreProperty("isHost")]
         public bool IsHost { get; set; }
@@ -26,5 +26,7 @@ namespace SoframiPaylas.Domain.Entities
 
         [FirestoreProperty("about")]
         public string About { get; set; }
+        [FirestoreProperty("role")]
+        public string Role { get; set; }
     }
 }
