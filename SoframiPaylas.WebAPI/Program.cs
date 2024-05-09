@@ -1,5 +1,10 @@
 using System.Reflection;
+using BlogApp.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using SoframiPaylas.Application.ExternalServices;
+using SoframiPaylas.Application.ExternalServices.Interfaces;
 using SoframiPaylas.Application.Interfaces;
 using SoframiPaylas.Application.Mappings;
 using SoframiPaylas.Application.Services;
@@ -101,6 +106,13 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 //Mapping
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
+//External Services
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddSingleton<IEmailSender, EmailService>(serviceProvider =>
+{
+    var emailSettings = serviceProvider.GetRequiredService<IOptions<EmailSettings>>().Value;
+    return new EmailService(emailSettings.SmtpHost, emailSettings.SmtpPort, emailSettings.FromAddress, emailSettings.SmtpUsername, emailSettings.SmtpPassword);
+});
 // Swager
 builder.Services.AddSwaggerGen(c =>
 {

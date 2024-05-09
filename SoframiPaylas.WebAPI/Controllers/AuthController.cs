@@ -23,17 +23,16 @@ namespace SoframiPaylas.WebAPI.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] CreateUserDto user, string password)
         {
-            try
-            {
-                var userId = await _authService.RegisterUserAsync(user, password);
-                return Ok(new { UserId = userId, Message = "Registration successful" });
-            }
-            catch (Exception ex)
-            {
 
-                return StatusCode(500, "Kullanıcı kaydı oluşturulamadı...");
-            }
+            var userId = await _authService.RegisterUserAsync(user, password);
+            return Ok(new { UserId = userId, Message = "Registration successful" });
         }
+        /*  catch (Exception ex)
+          {
+
+              return StatusCode(500, "Kullanıcı kaydı oluşturulamadı...");
+          }*/
+
 
     }
 }

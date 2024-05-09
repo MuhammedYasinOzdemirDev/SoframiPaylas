@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using AutoMapper;
 using SoframiPaylas.Application.DTOs;
+using SoframiPaylas.Application.ExternalServices.Interfaces;
 using SoframiPaylas.Application.Interfaces;
 using SoframiPaylas.Domain.Entities;
 using SoframiPaylas.Infrastructure.Interfaces;
@@ -14,16 +16,22 @@ namespace SoframiPaylas.Application.Services
     {
         private readonly IAuthRepository _authRepository;
         private readonly IMapper _mapper;
-        public AuthService(IAuthRepository authRepository, IMapper mapper)
+        private readonly IEmailSender _emailsender;
+        public AuthService(IAuthRepository authRepository, IMapper mapper, IEmailSender emailSender)
         {
             _authRepository = authRepository;
             _mapper = mapper;
+            _emailsender = emailSender;
         }
 
         public async Task<string> RegisterUserAsync(CreateUserDto userDto, string password)
         {
             var user = _mapper.Map<User>(userDto);
-            return await _authRepository.RegisterUserAsync(user, password);
+            var userId = await _authRepository.RegisterUserAsync(user, password);
+            var link = await _authRepository.GenerateEmailVerificationLink(user.Email);
+            await _emailsender.SendEmailAsync(userDto.Email, "Hesabınızı Doğrulayın",
+                       $"Lütfen hesabınızı doğrulamak için <a href='{HtmlEncoder.Default.Encode(link)}'>buraya tıklayın</a>.");
+            return userId;
         }
     }
 }
