@@ -50,6 +50,40 @@ builder.Services.AddSingleton<FirebaseService>(serviceProvider =>
 
     return new FirebaseService(firebaseConfig);
 });
+builder.Services.AddSingleton<FirebaseAuthService>(serviceProvider =>
+{
+    // Yapılandırma nesnesini veya başka bağımlılıkları çözümle
+    // Örneğin, eğer FirebaseConfig yerine IConfiguration gerekiyorsa:
+    var config = serviceProvider.GetRequiredService<IConfiguration>();
+    var firebaseConfigSection = config.GetSection("FIREBASE_CONFIG");
+    if (firebaseConfigSection == null)
+    {
+        throw new InvalidOperationException("FIREBASE_CONFIG section is missing in the configuration.");
+    }
+    // Yapılandırmayı Dictionary olarak çevir
+    var firebaseConfigDict = firebaseConfigSection.Get<Dictionary<string, string>>();
+
+    // Dictionary'i model nesnesine dönüştür
+    var firebaseConfig = new FireBaseConfig
+    {
+        Type = firebaseConfigDict.GetValueOrDefault("type"),
+        ProjectId = firebaseConfigDict.GetValueOrDefault("project_id"),
+        PrivateKeyId = firebaseConfigDict.GetValueOrDefault("private_key_id"),
+        PrivateKey = firebaseConfigDict.GetValueOrDefault("private_key"),
+        ClientEmail = firebaseConfigDict.GetValueOrDefault("client_email"),
+        ClientId = firebaseConfigDict.GetValueOrDefault("client_id"),
+        AuthUri = firebaseConfigDict.GetValueOrDefault("auth_uri"),
+        TokenUri = firebaseConfigDict.GetValueOrDefault("token_uri"),
+        AuthProviderX509CertUrl = firebaseConfigDict.GetValueOrDefault("auth_provider_x509_cert_url"),
+        ClientX509CertUrl = firebaseConfigDict.GetValueOrDefault("client_x509_cert_url"),
+        UniverseDomain = firebaseConfigDict.GetValueOrDefault("universe_domain")
+    };
+    if (firebaseConfig == null)
+        throw new InvalidOperationException("Firebase configuration must be provided.");
+
+    return new FirebaseAuthService(firebaseConfig);
+});
+
 
 
 //Repository
@@ -89,17 +123,8 @@ builder.Services.AddSwaggerGen(c =>
     });
     c.AddServer(new OpenApiServer { Url = "http://localhost:5103", Description = "Geliştirme Ortamı" });
     c.AddServer(new OpenApiServer { Url = "https://soframipaylaswebapi.azurewebsites.net", Description = "Azure Cloud Ortamı" });
-<<<<<<< HEAD
     c.AddServer(new OpenApiServer { Url = "https://xn--sofranpaylas-64b.azurewebsites.net", Description = "Azure Cloud Ortamı 2 " });
 
-
-=======
-<<<<<<< HEAD
-    c.AddServer(new OpenApiServer { Url = "https://xn--sofranpaylas-64b.azurewebsites.net", Description = "Azure Cloud Ortamı 2 " });
-=======
-    c.AddServer(new OpenApiServer { Url = "https://xn--sofranpaylas-64b.azurewebsites.net/", Description = "Azure Cloud Ortamı 2 " });
->>>>>>> 6127747f5c79f9aff32b7004350d19bf5b8cc60a
->>>>>>> 5564091dd096f7aee9aaeca07790eb830a6b872b
 
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
