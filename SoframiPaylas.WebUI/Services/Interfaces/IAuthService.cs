@@ -8,6 +8,6 @@ namespace SoframiPaylas.WebUI.Services.Interfaces
 {
     public interface IAuthService
     {
-        Task<bool> RegisterAsync(RegisterViewModel model);
+        Task<HttpResponseMessage> RegisterAsync(RegisterViewModel model);
     }
 }

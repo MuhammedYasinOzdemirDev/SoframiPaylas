@@ -3,7 +3,7 @@
 <div class="register-container">
     <h2 class="register-title">Kayıt Ol</h2>
     <form asp-action="Register" method="post" class="register-form" id="registerForm">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div asp-validation-summary="All" class="text-danger"></div>
         <div class="row">
 
             <div class="form-group mb-3 col-6">
@@ -44,51 +44,9 @@
     </form>
 </div>
 @section Scripts{
-<script>
-    document.getElementById('registerForm').addEventListener('submit', function (event) {
-        var name = document.getElementById('Name').value.trim();
-        var surname = document.getElementById('Surname').value.trim();
-        var username = document.getElementById('Username').value.trim();
-        var email = document.getElementById('Email').value.trim();
-        var password = document.getElementById('Password').value.trim();
-        var confirmPassword = document.getElementById('ConfirmPassword').value.trim();
 
-        // Alanların boş olup olmadığını kontrol et
-        if (!name || !surname || !username || !email || !password || !confirmPassword) {
-            alert('Lütfen tüm alanları doldurunuz.');
-            event.preventDefault();  // Form gönderimini engelle
-            return;  // Fonksiyondan çık
-        }
-        const errors = [];
 
-        if (password.length < 6) {
-            errors.push("Şifre en az 6 karakter olmalıdır.");
-        }
-        if (!password.match(/[0-9]/)) {
-            errors.push("Şifrede en az bir rakam bulunmalıdır.");
-        }
-        if (!password.match(/[A-Z]/)) {
-            errors.push("Şifrede en az bir büyük harf bulunmalıdır.");
-        }
-        if (!password.match(/[a-z]/)) {
-            errors.push("Şifrede en az bir küçük harf bulunmalıdır.");
-        }
-        if (!password.match(/\W/)) {
-            errors.push("Şifrede en az bir alfasayısal olmayan karakter bulunmalıdır.");
-        }
-
-        if (errors.length > 0) {
-            event.preventDefault();
-            alert(errors.join("\n"));
-        }
-
-        // Şifrelerin eşleşip eşleşmediğini kontrol et
-        if (password !== confirmPassword) {
-            alert('Şifreler eşleşmiyor, lütfen kontrol ediniz.');
-            event.preventDefault();  // Form gönderimini engelle
-        }
-    });
-</script>}
+}
 <style>
     .register-container {
         width: 100%;

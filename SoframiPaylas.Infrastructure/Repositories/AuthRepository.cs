@@ -40,6 +40,7 @@ namespace SoframiPaylas.Infrastructure.Repositories
         public async Task<string> GenerateEmailVerificationLink(string email)
         {
             var user = await auth.GetUserByEmailAsync(email);
+
             var link = await auth.GenerateEmailVerificationLinkAsync(email, new ActionCodeSettings
             {
                 Url = "http://localhost:5103/api/auth",

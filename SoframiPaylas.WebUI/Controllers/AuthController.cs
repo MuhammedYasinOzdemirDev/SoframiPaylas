@@ -32,8 +32,47 @@ namespace SoframiPaylas.WebUI.Controllers
             }
             if (ModelState.IsValid)
             {
-                await _authService.RegisterAsync(model);
-                return RedirectToAction("Index", "Home");
+                try
+                {
+                    HttpResponseMessage response = await _authService.RegisterAsync(model);
+                    // API'den hata mesajını oku
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        string errorMessage = await response.Content.ReadAsStringAsync();
+                        // Burada spesifik hata kodlarını ele alıyoruz
+                        if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
+                        {
+                            Console.WriteLine(errorMessage);
+
+                            ModelState.AddModelError("", errorMessage);
+                        }
+                        else if (response.StatusCode >= System.Net.HttpStatusCode.InternalServerError)
+                        {
+                            // 500 ve üzeri hata kodları için genel bir işlem yapılabilir
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("", errorMessage);
+                        }
+                        return View(model);
+                    }
+
+                    return RedirectToAction("Index", "Home");
+
+                }
+                catch (HttpRequestException ex)
+                {
+                    // RetryHandler tarafından yeniden denenmesine rağmen hala hata alınıyorsa
+                    Console.WriteLine($"An error occurred after retries: {ex.Message}");
+                    return View(model);// Hata durumunda false dönerek, çağrı yapan koda bilgi ver
+                }
+                catch (Exception ex)
+                {
+                    // Diğer beklenmedik hatalar için
+                    Console.WriteLine($"An unexpected error occurred: {ex.Message}");
+                    return View(model);
+                }
             }
             return View(model);
         }
