@@ -28,6 +28,11 @@ namespace SoframiPaylas.WebAPI.Controllers
             {
                 return BadRequest("Email and password are required.");
             }
+            var existingUser = await _authService.GetUserByUsernameAsync(user.UserName);
+            if (existingUser)
+            {
+                return Conflict("Username already exists.");
+            }
             try
             {
                 var userId = await _authService.RegisterUserAsync(user, password);

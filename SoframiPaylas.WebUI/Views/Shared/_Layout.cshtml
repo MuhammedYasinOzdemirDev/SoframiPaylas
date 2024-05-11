@@ -8,6 +8,8 @@
     <link href="~/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="~/css/site.css" rel="stylesheet">
     <link href="~/lib/bootstrap-icon/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/lib/nprogress/nprogress.css">
+    <link rel="stylesheet" href="~/css/nprogress.css">
 </head>
 
 <body>
@@ -28,7 +30,23 @@
     <script src="~/lib/jquery/jquery.min.js"></script>
     <script src="~/lib/popper/umd/popper.min.js"></script>
     <script src="~/lib/bootstrap/js/bootstrap.min.js"></script>
-    <script src="~/lib/sweetalert2/sweetalert2.js"></script>
+    <script src="~/lib/sweetalert2/sweetalert2.all.js"></script>
+    <script src="~/lib/nprogress/nprogress.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            NProgress.start(); // Sayfa yüklenmeye başladığında NProgress'i başlat
+        });
+
+        window.onload = function () {
+            NProgress.done(); // Sayfa yüklenmesi tamamlandığında NProgress'i durdur
+        };
+        $(document).ajaxStart(function () {
+            NProgress.start();
+        }).ajaxStop(function () {
+            NProgress.done();
+        });
+
+    </script>
 
     @RenderSection("Scripts",required:false)
 

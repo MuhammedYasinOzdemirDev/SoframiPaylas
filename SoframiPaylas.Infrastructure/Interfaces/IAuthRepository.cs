@@ -10,5 +10,6 @@ namespace SoframiPaylas.Infrastructure.Interfaces
     {
         Task<string> RegisterUserAsync(User user, string password);
         Task<string> GenerateEmailVerificationLink(string email);
+        Task<bool> GetUserByUsernameAsync(string username);
     }
 }

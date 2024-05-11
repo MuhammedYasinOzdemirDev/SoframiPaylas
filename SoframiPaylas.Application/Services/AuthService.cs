@@ -25,6 +25,11 @@ namespace SoframiPaylas.Application.Services
             _emailsender = emailSender;
         }
 
+        public async Task<bool> GetUserByUsernameAsync(string username)
+        {
+            return await _authRepository.GetUserByUsernameAsync(username);
+        }
+
         public async Task<string> RegisterUserAsync(CreateUserDto userDto, string password)
         {
             var user = _mapper.Map<User>(userDto);
@@ -34,7 +39,6 @@ namespace SoframiPaylas.Application.Services
             await _emailsender.SendEmailAsync(userDto.Email, "Hesabınızı Doğrulayın",
                        $"Lütfen hesabınızı doğrulamak için <a href='{HtmlEncoder.Default.Encode(link)}'>buraya tıklayın</a>.");
             return userId;
-
         }
     }
 }

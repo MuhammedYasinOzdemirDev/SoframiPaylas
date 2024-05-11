@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -23,59 +24,58 @@ namespace SoframiPaylas.WebUI.Controllers
         {
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (model == null)
             {
-                throw new ArgumentNullException(nameof(model), "Register model cannot be null.");
+                return Json(new { success = false, message = "Model cannot be null." });
             }
-            if (ModelState.IsValid)
+
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    HttpResponseMessage response = await _authService.RegisterAsync(model);
-                    // API'den hata mesajını oku
 
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        string errorMessage = await response.Content.ReadAsStringAsync();
-                        // Burada spesifik hata kodlarını ele alıyoruz
-                        if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
-                        {
-                            Console.WriteLine(errorMessage);
-
-                            ModelState.AddModelError("", errorMessage);
-                        }
-                        else if (response.StatusCode >= System.Net.HttpStatusCode.InternalServerError)
-                        {
-                            // 500 ve üzeri hata kodları için genel bir işlem yapılabilir
-                        }
-                        else
-                        {
-                            ModelState.AddModelError("", errorMessage);
-                        }
-                        return View(model);
-                    }
-
-                    return RedirectToAction("Index", "Home");
-
-                }
-                catch (HttpRequestException ex)
-                {
-                    // RetryHandler tarafından yeniden denenmesine rağmen hala hata alınıyorsa
-                    Console.WriteLine($"An error occurred after retries: {ex.Message}");
-                    return View(model);// Hata durumunda false dönerek, çağrı yapan koda bilgi ver
-                }
-                catch (Exception ex)
-                {
-                    // Diğer beklenmedik hatalar için
-                    Console.WriteLine($"An unexpected error occurred: {ex.Message}");
-                    return View(model);
-                }
+                return Json(new { success = false, message = "Hata" });
             }
-            return View(model);
+            try
+            {
+                HttpResponseMessage response = await _authService.RegisterAsync(model);
+
+                // API'den başarısız yanıt gelmesi durumunda hataları işle
+                if (!response.IsSuccessStatusCode)
+                {
+                    string errorMessage = await response.Content.ReadAsStringAsync();
+                    if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
+                    {
+                        return Json(new { success = false, message = "Kayıt sırasında bir hata oluştu: " + errorMessage });
+                    }
+                    else if (response.StatusCode >= System.Net.HttpStatusCode.InternalServerError)
+                    {
+                        // Sunucu hatası durumunda genel bir hata mesajı göster
+                        return Json(new { success = false, message = "Bir sunucu hatası oluştu, lütfen daha sonra tekrar deneyiniz." });
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "Kayıt sırasında bir hata oluştu: " + errorMessage });
+                    }
+                }
+                // Başarılı kayıt sonrası JSON olarak başarı mesajı döndür
+                return Json(new { success = true, message = "Kayıt başarılı! Lütfen giriş yapın.", redirectUrl = Url.Action("Index", "Home") });
+            }
+            catch (HttpRequestException ex)
+            {
+                // Ağ hatası durumunda hata mesajı ekle ve formu tekrar göster
+                ModelState.AddModelError("", $"Ağ hatası oluştu: {ex.Message}");
+                return Json(new { success = false, message = $"Ağ hatası oluştu: {ex.Message}" });
+            }
+            catch (Exception ex)
+            {
+                // Beklenmedik hatalar için hata mesajı ekle ve formu tekrar göster
+                return Json(new { success = false, message = $"Beklenmedik bir hata oluştu: {ex.Message}" });
+            }
         }
+
 
 
     }

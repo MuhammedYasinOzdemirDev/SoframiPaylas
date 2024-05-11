@@ -6,7 +6,10 @@ using SoframiPaylas.WebUI.Services.Interfaces;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews().AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
+        }); ;
 
 
 //Api Services
@@ -19,7 +22,7 @@ builder.Services.AddAutoMapper(typeof(ViewModelToDtoProfile));
 builder.Services.AddTransient<RetryHandler>();
 builder.Services.AddHttpClient("API", c =>
 {
-c.BaseAddress = new Uri("http://localhost:5103/api/"); // API'nizin adresi
+    c.BaseAddress = new Uri("http://localhost:5103/api/"); // API'nizin adresi
 }).AddHttpMessageHandler<RetryHandler>();
 
 var app = builder.Build();

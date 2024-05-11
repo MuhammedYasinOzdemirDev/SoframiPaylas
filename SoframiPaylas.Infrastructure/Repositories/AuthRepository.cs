@@ -47,6 +47,19 @@ namespace SoframiPaylas.Infrastructure.Repositories
                 HandleCodeInApp = true,
             });
             return link;
+        }
+        public async Task<bool> GetUserByUsernameAsync(string username)
+        {
+            var usersRef = db.Collection("Users");
+            var querySnapshot = await usersRef.WhereEqualTo("userName", username).GetSnapshotAsync();
+            foreach (var document in querySnapshot.Documents)
+            {
+                if (document.Exists)
+                {
+                    return true;
+                }
+            }
+            return false;
 
         }
     }

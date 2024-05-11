@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.002.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoframiPaylas.WebAPI", "SoframiPaylas.WebAPI.csproj", "{ED69A1E1-7EEF-4DE9-AEC1-0E3C88AE0C7F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ED69A1E1-7EEF-4DE9-AEC1-0E3C88AE0C7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED69A1E1-7EEF-4DE9-AEC1-0E3C88AE0C7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED69A1E1-7EEF-4DE9-AEC1-0E3C88AE0C7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED69A1E1-7EEF-4DE9-AEC1-0E3C88AE0C7F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E38F532C-8953-46EE-965E-7E576199E4AA}
+	EndGlobalSection
+EndGlobal

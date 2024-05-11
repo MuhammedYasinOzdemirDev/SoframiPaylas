@@ -1,16 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Firebase.Database;
-using FirebaseAdmin;
+
 using Google.Apis.Auth.OAuth2;
 using Google.Cloud.Firestore;
 using Google.Cloud.Firestore.V1;
 using Grpc.Auth;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using SoframiPaylas.Infrastructure.Data.Config;
+using Polly;
+using Google.Api.Gax.Grpc;
 
 namespace SoframiPaylas.Infrastructure.Data.Service
 {
@@ -38,7 +34,8 @@ namespace SoframiPaylas.Infrastructure.Data.Service
             var credential = GoogleCredential.FromJson(jsonConfig).CreateScoped(FirestoreClient.DefaultScopes);
             var firestoreClient = new FirestoreClientBuilder
             {
-                ChannelCredentials = credential.ToChannelCredentials()
+                ChannelCredentials = credential.ToChannelCredentials(),
+
             }.Build();
             db = FirestoreDb.Create("sofrani-paylas", firestoreClient);
         }
@@ -46,6 +43,23 @@ namespace SoframiPaylas.Infrastructure.Data.Service
         {
             return db;
         }
+        /*public async Task<T> ExecuteFirestoreOperationAsync<T>(Func<Task<T>> operation, TimeSpan timeout)
+        {
+            var retryPolicy = Policy
+                .Handle<Exception>()
+                .WaitAndRetryAsync(new[]
+                {
+                TimeSpan.FromSeconds(1),
+                TimeSpan.FromSeconds(2),
+                TimeSpan.FromSeconds(4)
+                });
+
+            var timeoutPolicy = Policy.TimeoutAsync(timeout, Polly.Timeout.TimeoutStrategy.Pessimistic);
+
+            var policyWrap = Policy.WrapAsync(retryPolicy, timeoutPolicy);
+
+            return await policyWrap.ExecuteAsync(operation);
+        }*/
 
     }
 }
