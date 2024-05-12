@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 
+
 namespace SoframiPaylas.Infrastructure.Data.Config;
 public class FireBaseConfig
 {

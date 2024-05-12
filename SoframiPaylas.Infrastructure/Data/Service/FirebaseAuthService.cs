@@ -2,7 +2,7 @@ using System.Text.Json;
 using FirebaseAdmin;
 using FirebaseAdmin.Auth;
 using Google.Apis.Auth.OAuth2;
-
+using Polly;
 using SoframiPaylas.Infrastructure.Data.Config;
 
 namespace SoframiPaylas.Infrastructure.Data.Service
