@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using FirebaseAdmin.Auth;
 using Google.Cloud.Firestore;
 using SoframiPaylas.Domain.Entities;

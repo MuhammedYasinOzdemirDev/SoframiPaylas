@@ -1,6 +1,5 @@
 using System.Reflection;
 using BlogApp.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using SoframiPaylas.Application.ExternalServices;

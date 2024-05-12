@@ -14,16 +14,16 @@ namespace SoframiPaylas.Infrastructure.Repositories
 {
     public class PostRepository : IPostRepository
     {
-        private readonly FirebaseService _service;
+        private readonly FirestoreDb db;
         public PostRepository(FirebaseService firebaseService)
         {
-            _service = firebaseService;
+            db = firebaseService.GetDb();
         }
 
         public async Task<string> CreatePostAsync(Post post)
         {
             string postId = Guid.NewGuid().ToString();
-            await _service.GetDb().Collection("Posts").Document(postId).SetAsync(post);
+            await db.Collection("Posts").Document(postId).SetAsync(post);
             return postId;
         }
 
@@ -33,7 +33,7 @@ namespace SoframiPaylas.Infrastructure.Repositories
             if (string.IsNullOrEmpty(id))
                 throw new ArgumentException("Post ID cannot be null or empty.", nameof(id));
 
-            DocumentReference postRef = _service.GetDb().Collection("Posts").Document(id);
+            DocumentReference postRef = db.Collection("Posts").Document(id);
 
             // Firestore'dan belirtilen kullanıcıyı silme
             try
@@ -50,9 +50,9 @@ namespace SoframiPaylas.Infrastructure.Repositories
 
         public async Task<List<Post>> GetPostAllAsync()
         {
-            if (_service == null || _service.GetDb() == null)
+            if (db == null)
                 throw new InvalidOperationException("Database service is not initialized properly.");
-            CollectionReference postRef = _service.GetDb().Collection("Posts");
+            CollectionReference postRef = db.Collection("Posts");
             QuerySnapshot snapshots = await postRef.GetSnapshotAsync();
 
             List<Post> posts = new List<Post>();
@@ -85,11 +85,11 @@ namespace SoframiPaylas.Infrastructure.Repositories
 
         public async Task<Post> GetPostByIdAsync(string id)
         {
-            if (_service == null || _service.GetDb() == null)
+            if (db == null)
             {
                 throw new InvalidOperationException("Database service is not initialized.");
             }
-            DocumentReference postRef = _service.GetDb().Collection("Posts").Document(id);
+            DocumentReference postRef = db.Collection("Posts").Document(id);
             DocumentSnapshot snapshot = await postRef.GetSnapshotAsync();
 
 
@@ -122,7 +122,7 @@ namespace SoframiPaylas.Infrastructure.Repositories
             if (string.IsNullOrEmpty(id))
                 throw new ArgumentException("Post ID must not be null or empty.", nameof(id));
 
-            DocumentReference postReference = _service.GetDb().Collection("Posts").Document(id);
+            DocumentReference postReference = db.Collection("Posts").Document(id);
             await postReference.SetAsync(postItem, SetOptions.MergeAll);
             try
             {

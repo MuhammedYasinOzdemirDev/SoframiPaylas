@@ -453,6 +453,35 @@
           }
         }
       },
+      "Polly/8.4.0": {
+        "type": "package",
+        "dependencies": {
+          "Polly.Core": "8.4.0"
+        },
+        "compile": {
+          "lib/net6.0/Polly.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/Polly.dll": {
+            "related": ".pdb;.xml"
+          }
+        }
+      },
+      "Polly.Core/8.4.0": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/Polly.Core.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/Polly.Core.dll": {
+            "related": ".pdb;.xml"
+          }
+        }
+      },
       "Rx-Core/2.2.5": {
         "type": "package",
         "dependencies": {
@@ -1323,6 +1352,59 @@
         "packageIcon.png"
       ]
     },
+    "Polly/8.4.0": {
+      "sha512": "z2EeUutuy49jBQyZ5s2FUuTCGx3GCzJ0cJ2HbjWwks94TsC6bKTtAHKBkMZOa/DyYRl5yIX7MshvMTWl1J6RNg==",
+      "type": "package",
+      "path": "polly/8.4.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net462/Polly.dll",
+        "lib/net462/Polly.pdb",
+        "lib/net462/Polly.xml",
+        "lib/net472/Polly.dll",
+        "lib/net472/Polly.pdb",
+        "lib/net472/Polly.xml",
+        "lib/net6.0/Polly.dll",
+        "lib/net6.0/Polly.pdb",
+        "lib/net6.0/Polly.xml",
+        "lib/netstandard2.0/Polly.dll",
+        "lib/netstandard2.0/Polly.pdb",
+        "lib/netstandard2.0/Polly.xml",
+        "package-icon.png",
+        "package-readme.md",
+        "polly.8.4.0.nupkg.sha512",
+        "polly.nuspec"
+      ]
+    },
+    "Polly.Core/8.4.0": {
+      "sha512": "3AZxuP//pxOeBo9tQs7/tz4Z5TTbu4BYfjpaXZD0JYKJo98ngN9TMUz1nybh4k0ykWkMBpGZALV/AmVIE3ew7A==",
+      "type": "package",
+      "path": "polly.core/8.4.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net462/Polly.Core.dll",
+        "lib/net462/Polly.Core.pdb",
+        "lib/net462/Polly.Core.xml",
+        "lib/net472/Polly.Core.dll",
+        "lib/net472/Polly.Core.pdb",
+        "lib/net472/Polly.Core.xml",
+        "lib/net6.0/Polly.Core.dll",
+        "lib/net6.0/Polly.Core.pdb",
+        "lib/net6.0/Polly.Core.xml",
+        "lib/net8.0/Polly.Core.dll",
+        "lib/net8.0/Polly.Core.pdb",
+        "lib/net8.0/Polly.Core.xml",
+        "lib/netstandard2.0/Polly.Core.dll",
+        "lib/netstandard2.0/Polly.Core.pdb",
+        "lib/netstandard2.0/Polly.Core.xml",
+        "package-icon.png",
+        "package-readme.md",
+        "polly.core.8.4.0.nupkg.sha512",
+        "polly.core.nuspec"
+      ]
+    },
     "Rx-Core/2.2.5": {
       "sha512": "DfWVTfW6tvRkkqpnRHKxPIvaRZyDJGADuqrE6J2nwejOQbLRWi0rNUwXkViDWz++25BGDy3iRE5OE6Dv8mJxYQ==",
       "type": "package",
@@ -1625,6 +1707,7 @@
       "Grpc.Core >= 2.46.6",
       "Microsoft.Extensions.Configuration.Abstractions >= 8.0.0",
       "Microsoft.Extensions.Configuration.Binder >= 8.0.1",
+      "Polly >= 8.4.0",
       "SoframiPaylas.Domain >= 1.0.0"
     ]
   },
@@ -1708,6 +1791,10 @@
           "Microsoft.Extensions.Configuration.Binder": {
             "target": "Package",
             "version": "[8.0.1, )"
+          },
+          "Polly": {
+            "target": "Package",
+            "version": "[8.4.0, )"
           }
         },
         "imports": [
