@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using FirebaseAdmin.Auth;
 using Microsoft.AspNetCore.Mvc;
 using SoframiPaylas.Application.DTOs;
 using SoframiPaylas.Application.Interfaces;
-using SoframiPaylas.Domain.Entities;
+
 
 namespace SoframiPaylas.WebAPI.Controllers
 {

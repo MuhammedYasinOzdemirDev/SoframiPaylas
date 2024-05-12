@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using Firebase.Database;
 using Google.Cloud.Firestore;
 using SoframiPaylas.Domain.Entities;
 using SoframiPaylas.Infrastructure.Data.Service;
@@ -14,20 +8,20 @@ namespace SoframiPaylas.Infrastructure.Repositories
     public class UserRepository : IUserRepository
     {
 
-        private readonly FirebaseService _service;
+        private readonly FirestoreDb db;
         public UserRepository(FirebaseService service)
         {
-            _service = service;
+            db = service.GetDb();
         }
 
         public async Task<IEnumerable<User>> GetAllUserAsync()
         {
-            if (_service == null || _service.GetDb() == null)
+            if (db == null)
             {
                 throw new InvalidOperationException("Database service is not initialized properly.");
             }
 
-            CollectionReference usersRef = _service.GetDb().Collection("Users");
+            CollectionReference usersRef = db.Collection("Users");
             QuerySnapshot snapshot = await usersRef.GetSnapshotAsync();
 
 
@@ -55,11 +49,11 @@ namespace SoframiPaylas.Infrastructure.Repositories
         }
         public async Task<User> GetUserByIdAsync(string userId)
         {
-            if (_service == null || _service.GetDb() == null)
+            if (db == null)
             {
                 throw new InvalidOperationException("Database service is not initialized.");
             }
-            DocumentReference eventRef = _service.GetDb().Collection("Users").Document(userId);
+            DocumentReference eventRef = db.Collection("Users").Document(userId);
             DocumentSnapshot snapshot = await eventRef.GetSnapshotAsync();
 
 
@@ -91,7 +85,7 @@ namespace SoframiPaylas.Infrastructure.Repositories
 
 
 
-            DocumentReference userRef = _service.GetDb().Collection("Users").Document(userId);
+            DocumentReference userRef = db.Collection("Users").Document(userId);
 
             // Firestore ile kullanıcı verilerini güncelleme
             await userRef.SetAsync(user, SetOptions.MergeAll);
@@ -102,7 +96,7 @@ namespace SoframiPaylas.Infrastructure.Repositories
             if (string.IsNullOrEmpty(userId))
                 throw new ArgumentException("User ID cannot be null or empty.", nameof(userId));
 
-            DocumentReference userRef = _service.GetDb().Collection("Users").Document(userId);
+            DocumentReference userRef = db.Collection("Users").Document(userId);
 
             // Firestore'dan belirtilen kullanıcıyı silme
             await userRef.DeleteAsync();

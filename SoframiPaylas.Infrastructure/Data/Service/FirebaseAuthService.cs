@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text.Json;
 using FirebaseAdmin;
 using FirebaseAdmin.Auth;
 using Google.Apis.Auth.OAuth2;
-using Newtonsoft.Json;
+
 using SoframiPaylas.Infrastructure.Data.Config;
 
 namespace SoframiPaylas.Infrastructure.Data.Service
@@ -15,7 +12,7 @@ namespace SoframiPaylas.Infrastructure.Data.Service
         private readonly FirebaseAuth auth;
         public FirebaseAuthService(FireBaseConfig config)
         {
-            string jsonConfig = JsonConvert.SerializeObject(new
+            string jsonConfig = JsonSerializer.Serialize(new
             {
                 type = config.Type,
                 project_id = config.ProjectId,

@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Google.Cloud.Firestore;
 using SoframiPaylas.Domain.Entities;
 using SoframiPaylas.Infrastructure.Data.Service;
@@ -11,16 +7,16 @@ namespace SoframiPaylas.Infrastructure.Repositories
 {
     public class ParticipantRepository : IParticipantRepository
     {
-        private readonly FirebaseService _service;
+        private readonly FirestoreDb db;
         public ParticipantRepository(FirebaseService service)
         {
-            _service = service;
+            db = service.GetDb();
         }
         public async Task<bool> AddParticipantAsync(Participant participant) //Katilma İstegi 
         {
             if (participant == null)
                 throw new ArgumentNullException(nameof(participant), "Participant object must not be null.");
-            CollectionReference reference = _service.GetDb().Collection("Participants");
+            CollectionReference reference = db.Collection("Participants");
             await reference.AddAsync(participant);
             // DocumentReference'in null olup olmadığına bakarak işlem sonucunu kontrol ederiz
             return reference != null;
@@ -28,7 +24,7 @@ namespace SoframiPaylas.Infrastructure.Repositories
 
         public async Task<bool> UpdateParticipantStatus(string postId, string userId, int status)
         {
-            Query query = _service.GetDb().Collection("Participants").
+            Query query = db.Collection("Participants").
             WhereEqualTo("postID", postId).
             WhereEqualTo("userID", userId);
             QuerySnapshot snapshot = await query.GetSnapshotAsync();

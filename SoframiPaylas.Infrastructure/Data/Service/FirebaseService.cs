@@ -3,7 +3,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Cloud.Firestore;
 using Google.Cloud.Firestore.V1;
 using Grpc.Auth;
-using Newtonsoft.Json;
+using System.Text.Json;
 using SoframiPaylas.Infrastructure.Data.Config;
 using Polly;
 using Google.Api.Gax.Grpc;
@@ -16,7 +16,7 @@ namespace SoframiPaylas.Infrastructure.Data.Service
 
         public FirebaseService(FireBaseConfig config)
         {
-            string jsonConfig = JsonConvert.SerializeObject(new
+            string jsonConfig = JsonSerializer.Serialize(new
             {
                 type = config.Type,
                 project_id = config.ProjectId,
@@ -43,7 +43,7 @@ namespace SoframiPaylas.Infrastructure.Data.Service
         {
             return db;
         }
-        /*public async Task<T> ExecuteFirestoreOperationAsync<T>(Func<Task<T>> operation, TimeSpan timeout)
+        public async Task<T> ExecuteFirestoreOperationAsync<T>(Func<Task<T>> operation, TimeSpan timeout)
         {
             var retryPolicy = Policy
                 .Handle<Exception>()
@@ -59,7 +59,7 @@ namespace SoframiPaylas.Infrastructure.Data.Service
             var policyWrap = Policy.WrapAsync(retryPolicy, timeoutPolicy);
 
             return await policyWrap.ExecuteAsync(operation);
-        }*/
+        }
 
     }
 }

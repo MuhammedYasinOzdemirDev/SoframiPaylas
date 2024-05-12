@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Google.Cloud.Firestore;
 using SoframiPaylas.Domain.Entities;
 using SoframiPaylas.Infrastructure.Data.Service;
@@ -11,17 +7,17 @@ namespace SoframiPaylas.Infrastructure.Repositories
 {
     public class FoodRepository : IFoodRepository
     {
-        private readonly FirebaseService _service;
+        private readonly FirestoreDb db;
         public FoodRepository(FirebaseService service)
         {
-            _service = service;
+            db = service.GetDb();
         }
 
         public async Task<string> CreateFoodAsync(Food food)
         {
             string foodId = Guid.NewGuid().ToString();
 
-            await _service.GetDb().Collection("Foods").Document(foodId).SetAsync(food);
+            await db.Collection("Foods").Document(foodId).SetAsync(food);
 
             return foodId;
         }
@@ -31,7 +27,7 @@ namespace SoframiPaylas.Infrastructure.Repositories
             if (string.IsNullOrEmpty(foodId))
                 throw new ArgumentException("Food ID cannot be null or empty.", nameof(foodId));
 
-            DocumentReference foodRef = _service.GetDb().Collection("Foods").Document(foodId);
+            DocumentReference foodRef = db.Collection("Foods").Document(foodId);
             try
             {
                 // Firestore'dan belirtilen kullanıcıyı silme
@@ -47,9 +43,9 @@ namespace SoframiPaylas.Infrastructure.Repositories
 
         public async Task<List<Food>> GetAllFoodsAsync()
         {
-            if (_service == null || _service.GetDb() == null)
+            if (db == null)
                 throw new InvalidOperationException("Database service is not initialized properly.");
-            CollectionReference foodRef = _service.GetDb().Collection("Foods");
+            CollectionReference foodRef = db.Collection("Foods");
             QuerySnapshot snapshots = await foodRef.GetSnapshotAsync();
 
             List<Food> foods = new List<Food>();
@@ -74,12 +70,12 @@ namespace SoframiPaylas.Infrastructure.Repositories
 
         public async Task<Food> GetFoodByIdAsync(string id)
         {
-            if (_service == null || _service.GetDb() == null)
+            if (db == null)
             {
                 throw new InvalidOperationException("Database service is not initialized.");
             }
 
-            DocumentReference eventRef = _service.GetDb().Collection("Foods").Document(id);
+            DocumentReference eventRef = db.Collection("Foods").Document(id);
             DocumentSnapshot snapshot = await eventRef.GetSnapshotAsync();
 
             if (!snapshot.Exists)
@@ -104,7 +100,7 @@ namespace SoframiPaylas.Infrastructure.Repositories
             if (string.IsNullOrEmpty(foodId))
                 throw new ArgumentException("Food ID must not be null or empty.", nameof(foodId));
 
-            DocumentReference foodReference = _service.GetDb().Collection("Foods").Document(foodId);
+            DocumentReference foodReference = db.Collection("Foods").Document(foodId);
             try
             {
                 await foodReference.SetAsync(food, SetOptions.MergeAll);

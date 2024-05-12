@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 using Google.Cloud.Firestore;
-using SoframiPaylas.Application.DTOs.Food;
-using SoframiPaylas.Domain.Entities;
+
 
 namespace SoframiPaylas.Application.DTOs.Post
 {
