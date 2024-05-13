@@ -49,9 +49,9 @@ namespace SoframiPaylas.Infrastructure.Data.Service
                 .Handle<Exception>()
                 .WaitAndRetryAsync(new[]
                 {
+                TimeSpan.FromSeconds(0.5),
                 TimeSpan.FromSeconds(1),
-                TimeSpan.FromSeconds(2),
-                TimeSpan.FromSeconds(4)
+                TimeSpan.FromSeconds(2)
                 });
 
             var timeoutPolicy = Policy.TimeoutAsync(timeout, Polly.Timeout.TimeoutStrategy.Pessimistic);

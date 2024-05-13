@@ -75,6 +75,10 @@ namespace SoframiPaylas.WebUI.Controllers
                 return Json(new { success = false, message = $"Beklenmedik bir hata oluştu: {ex.Message}" });
             }
         }
+        public IActionResult EmailConfirmed()
+        {
+            return View();
+        }
 
 
 

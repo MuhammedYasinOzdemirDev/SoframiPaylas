@@ -90,6 +90,7 @@ builder.Services.AddSingleton<FirebaseAuthService>(serviceProvider =>
 
 
 
+
 //Repository
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IFoodRepository, FoodRepository>();

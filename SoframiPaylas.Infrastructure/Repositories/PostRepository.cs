@@ -18,7 +18,7 @@ namespace SoframiPaylas.Infrastructure.Repositories
         private readonly FirebaseService firebaseService;
         public PostRepository(FirebaseService service)
         {
-            db = firebaseService.GetDb();
+            db = service.GetDb();
             firebaseService = service;
         }
 

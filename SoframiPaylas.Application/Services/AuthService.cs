@@ -5,6 +5,7 @@ using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using AutoMapper;
 using FirebaseAdmin.Auth;
+using Newtonsoft.Json.Linq;
 using SoframiPaylas.Application.DTOs;
 using SoframiPaylas.Application.ExternalServices.Interfaces;
 using SoframiPaylas.Application.Interfaces;
@@ -39,6 +40,20 @@ namespace SoframiPaylas.Application.Services
             await _emailsender.SendEmailAsync(userDto.Email, "Hesabınızı Doğrulayın",
                        $"Lütfen hesabınızı doğrulamak için <a href='{HtmlEncoder.Default.Encode(link)}'>buraya tıklayın</a>.");
             return userId;
+        }
+
+        public async Task<string> AuthenticateAsync(string email, string password)
+        {
+            var signInResult = await _authRepository.SignInWithEmailAndPassword(email, password);
+            var idToken = JObject.Parse(signInResult)["idToken"].ToString();
+            var user = await _authRepository.GetUserDetailsAsync(idToken);
+
+            if (!user.EmailVerified)
+            {
+                throw new Exception("E-posta adresiniz onaylanmamış. Lütfen e-posta adresinizi onaylayın.");
+            }
+
+            return idToken;
         }
     }
 }

@@ -1,6 +1,7 @@
 using FirebaseAdmin.Auth;
 using Microsoft.AspNetCore.Mvc;
 using SoframiPaylas.Application.DTOs;
+using SoframiPaylas.Application.DTOs.User;
 using SoframiPaylas.Application.Interfaces;
 
 
@@ -49,6 +50,19 @@ namespace SoframiPaylas.WebAPI.Controllers
             {
 
                 return StatusCode(500, "Kullanıcı kaydı oluşturulamadı...");
+            }
+        }
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDto request)
+        {
+            try
+            {
+                var token = await _authService.AuthenticateAsync(request.Email, request.Password);
+                return Ok(new { Token = token });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
 

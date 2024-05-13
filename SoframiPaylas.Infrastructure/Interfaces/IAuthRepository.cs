@@ -8,5 +8,7 @@ namespace SoframiPaylas.Infrastructure.Interfaces
         Task<string> RegisterUserAsync(User user, string password);
         Task<string> GenerateEmailVerificationLink(string email);
         Task<bool> GetUserByUsernameAsync(string username);
+        Task<string> SignInWithEmailAndPassword(string email, string password);
+        Task<FirebaseUser> GetUserDetailsAsync(string idToken);
     }
 }
