@@ -5,7 +5,7 @@ namespace SoframiPaylas.Domain.Entities;
 public class FirebaseUser
 {
     [JsonProperty("localId")]
-    public string UserId { get; set; }
+    public string localId { get; set; }
 
     [JsonProperty("email")]
     public string Email { get; set; }

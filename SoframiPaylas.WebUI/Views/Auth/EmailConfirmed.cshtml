@@ -1,0 +1,66 @@
+<div class="text-center">
+    <h1 class="display-4">Teşekkürler!</h1>
+    <p>E-posta adresiniz başarıyla onaylandı.</p>
+    <a class="btn btn-primary" asp-controller="Auth" asp-action="Login">Giriş Yap</a>
+</div>
+<style>
+    .text-center {
+        text-align: center;
+        /* Metni merkeze hizala */
+        padding: 20px;
+        background-color: #f8f8f9;
+        /* Arka plan rengi */
+        border-radius: 8px;
+        /* Kenar yuvarlaklığı */
+        margin-top: 50px;
+        /* Üstten boşluk */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        /* Kutu gölgesi */
+        width: 50%;
+        /* Genişlik */
+        margin-left: auto;
+        /* Otomatik sol marj */
+        margin-right: auto;
+        /* Otomatik sağ marj */
+    }
+
+    .display-4 {
+        font-size: 2.5rem;
+        /* Yazı boyutu */
+        color: #333;
+        /* Yazı rengi */
+        margin-bottom: 20px;
+        /* Altından boşluk */
+    }
+
+    p {
+        font-size: 1.2rem;
+        /* Paragraf yazı boyutu */
+        color: #666;
+        /* Paragraf yazı rengi */
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        /* Düğme arka plan rengi */
+        color: white;
+        /* Düğme yazı rengi */
+        border: none;
+        /* Kenarlık kaldır */
+        padding: 10px 20px;
+        /* İç boşluk */
+        text-decoration: none;
+        /* Metin süslemesini kaldır */
+        font-size: 1rem;
+        /* Yazı boyutu */
+        border-radius: 5px;
+        /* Kenar yuvarlaklığı */
+        cursor: pointer;
+        /* İmleç düğme üzerindeyken */
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        /* Düğmenin üzerine gelindiğinde arka plan rengi */
+    }
+</style>

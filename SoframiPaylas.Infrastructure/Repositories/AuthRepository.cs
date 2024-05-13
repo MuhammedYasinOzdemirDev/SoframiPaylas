@@ -120,6 +120,7 @@ namespace SoframiPaylas.Infrastructure.Repositories
                 throw new Exception("Failed to retrieve user data: " + response.ReasonPhrase);
             }
             var jsonResponse = await response.Content.ReadAsStringAsync();
+            Console.WriteLine(jsonResponse);
             return JsonConvert.DeserializeObject<List<FirebaseUser>>(JObject.Parse(jsonResponse)["users"].ToString()).FirstOrDefault();
         }
     }

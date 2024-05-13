@@ -1,0 +1,71 @@
+<div class="text-center">
+    <h1 class="display-4">Oops!</h1>
+    <p>Bir hata oluştu.</p>
+    <a class="btn btn-primary" href="@Url.Action(" Index", "Home" )">Anasayfa</a>
+</div>
+<style>
+    .text-center {
+        text-align: center;
+        /* Metinleri ortala */
+        padding: 40px;
+        /* İç boşluk */
+        background-color: #fff3f4;
+        /* Arka plan rengi, hafif kırmızı tonu */
+        border: 1px solid #ffccd5;
+        /* Kenarlık */
+        border-radius: 10px;
+        /* Kenar yuvarlaklığı */
+        margin-top: 50px;
+        /* Üstten boşluk */
+        width: 80%;
+        /* Genişlik */
+        margin-left: auto;
+        /* Otomatik marj, ortalamak için */
+        margin-right: auto;
+        /* Otomatik marj, ortalamak için */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        /* Kutu gölgesi */
+    }
+
+    .display-4 {
+        font-size: 2.5rem;
+        /* Başlık boyutu */
+        color: #d9534f;
+        /* Başlık rengi, kırmızı tonu */
+        margin-bottom: 20px;
+        /* Altından boşluk */
+    }
+
+    p {
+        font-size: 1.2rem;
+        /* Paragraf boyutu */
+        color: #666;
+        /* Paragraf rengi */
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        /* Düğme arka plan rengi */
+        color: white;
+        /* Düğme yazı rengi */
+        border: none;
+        /* Kenarlık yok */
+        padding: 10px 20px;
+        /* İç boşluk */
+        text-decoration: none;
+        /* Metin süslemesini kaldır */
+        font-size: 1rem;
+        /* Yazı boyutu */
+        border-radius: 5px;
+        /* Kenar yuvarlaklığı */
+        cursor: pointer;
+        /* İmleç, düğme üzerindeyken */
+        transition: background-color 0.3s;
+        /* Arka plan rengi geçiş süresi */
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        /* Düğmenin üzerine gelindiğinde arka plan rengi */
+    }
+</style>

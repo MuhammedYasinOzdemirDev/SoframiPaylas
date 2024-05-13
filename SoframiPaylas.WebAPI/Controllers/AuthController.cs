@@ -65,6 +65,19 @@ namespace SoframiPaylas.WebAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpGet("verify-user")]
+        public async Task<IActionResult> VerifyUser(string idToken)
+        {
+            try
+            {
+                var user = await _authService.VerifyUser(idToken);
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
     }
 }

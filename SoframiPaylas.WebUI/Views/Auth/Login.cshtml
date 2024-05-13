@@ -1,67 +1,36 @@
-@model RegisterViewModel
+@model LoginViewModel
 
-<div class="register-container">
-    <h2 class="register-title">Kayıt Ol</h2>
-    <form method="post" class="register-form" id="registerForm">
+<div class="login-container">
+    <h2 class="login-title">Giriş Yap</h2>
+    <form method="post" class="login-form" id="loginForm">
         <div asp-validation-summary="All" class="text-danger"></div>
-        <div class="row">
-            <div class="form-group mb-3 col-6">
-                <label asp-for="Name">Ad:</label>
-                <input type="text" id="Name" asp-for="Name" class="form-control">
-                <span id="NameError" class="text-danger"></span>
-            </div>
-
-            <div class="form-group mb-3 col-6">
-                <label asp-for="Surname">Soyad:</label>
-                <input type="text" id="Surname" asp-for="Surname" class="form-control">
-                <span id="SurnameError" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group mb-3">
-            <label asp-for="UserName">Kullanıcı Adı:</label>
-            <input type="text" id="UserName" asp-for="UserName" class="form-control">
-            <span id="UserNameError" class="text-danger"></span>
-        </div>
-
         <div class="form-group mb-3">
             <label asp-for="Email">E-posta:</label>
             <input type="email" id="Email" asp-for="Email" class="form-control">
             <span id="EmailError" class="text-danger"></span>
         </div>
-
         <div class="form-group mb-3">
             <label asp-for="Password">Şifre:</label>
             <input type="password" id="Password" asp-for="Password" class="form-control">
             <span id="PasswordError" class="text-danger"></span>
         </div>
-
-        <div class="form-group mb-3">
-            <label asp-for="ConfirmPassword">Şifre Tekrar:</label>
-            <input type="password" id="ConfirmPassword" asp-for="ConfirmPassword" class="form-control">
-            <span id="ConfirmPasswordError" class="text-danger"></span>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Kayıt Ol</button>
+        <button type="submit" class="btn btn-primary">Giriş Yap</button>
     </form>
 </div>
 @section Scripts{
 
 <script>
-    document.getElementById('registerForm').addEventListener('submit', function (event) {
+    document.getElementById('loginForm').addEventListener('submit', function (event) {
         event.preventDefault();
-        let isValid = true; // isValid başlangıçta true olarak tanımlanır
+        let isValid = true;
 
-        isValid = validateField('Name', 'Ad alanı gereklidir.', isValid);
-        isValid = validateField('Surname', 'Soyad alanı gereklidir.', isValid);
-        isValid = validateField('UserName', 'Kullanıcı adı gereklidir.', isValid);
-        isValid = validateField('Email', 'Geçerli bir e-posta adresi giriniz.', isValid);
-        isValid = validateField('Password', 'Şifre alanı gereklidir.', isValid);
-        isValid = validateConfirmPassword('Password', 'ConfirmPassword', 'Şifreler eşleşmiyor.', isValid);
+        isValid = validateField('Email', 'Email alanı gereklidir.', isValid);
+        isValid = validateField('Password', 'Password alanı gereklidir.', isValid);
 
         if (isValid) {
             NProgress.start();
             var formData = new FormData(this);
-            fetch('@Url.Action("Register", "Auth")', {
+            fetch('@Url.Action("Login", "Auth")', {
                 method: 'POST',
                 body: formData
             })
@@ -70,7 +39,7 @@
                     if (data.success) {
                         NProgress.done();
                         Swal.fire({
-                            title: 'Success!',
+                            title: 'Giriş Başarılı!',
                             text: data.message,
                             icon: 'success',
                             confirmButtonText: 'OK'
@@ -99,7 +68,7 @@
 
 
     // Alanlara girilen bilgiyi sürekli kontrol etmek
-    document.querySelectorAll('#registerForm input').forEach(input => {
+    document.querySelectorAll('#loginForm input').forEach(input => {
         input.addEventListener('input', function () {
             var errorSpan = this.nextElementSibling;
             if (this.classList.contains('invalid')) {
@@ -117,21 +86,6 @@
             return false; // Eğer hata varsa, isValid false olarak döner
         } else {
             input.classList.remove('invalid');
-            errorSpan.textContent = '';
-            return isValid; // Mevcut isValid değerini döndürür
-        }
-    }
-
-    function validateConfirmPassword(passwordId, confirmPasswordId, errorMessage, isValid) {
-        var password = document.getElementById(passwordId);
-        var confirmPassword = document.getElementById(confirmPasswordId);
-        var errorSpan = document.getElementById(confirmPasswordId + 'Error');
-        if (confirmPassword.value.trim() !== password.value.trim()) {
-            confirmPassword.classList.add('invalid');
-            errorSpan.textContent = errorMessage;
-            return false; // Eğer hata varsa, isValid false olarak döner
-        } else {
-            confirmPassword.classList.remove('invalid');
             errorSpan.textContent = '';
             return isValid; // Mevcut isValid değerini döndürür
         }
@@ -174,7 +128,7 @@
         /* Doğrulama geçtiğinde sınır rengi */
     }
 
-    .register-container {
+    .login-container {
         max-width: 800px;
 
         /* Maksimum genişlik */
@@ -189,7 +143,7 @@
         /* Daha belirgin bir gölge */
     }
 
-    .register-title {
+    .login-title {
         margin-bottom: 20px;
         /* Başlık altı boşluk */
         text-align: center;

@@ -15,6 +15,7 @@ namespace SoframiPaylas.WebUI.Mappings
         {
             // ViewModel'den DTO'ya dönüşüm
             CreateMap<PostViewModel, PostDto>().ReverseMap().ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+            CreateMap<UserProfileViewModel, UserDto>().ReverseMap().ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
             CreateMap<RegisterViewModel, CreateUserDto>()
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName))
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))

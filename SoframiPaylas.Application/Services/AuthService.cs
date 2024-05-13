@@ -55,5 +55,9 @@ namespace SoframiPaylas.Application.Services
 
             return idToken;
         }
+        public async Task<FirebaseUser> VerifyUser(string idToken)
+        {
+            return await _authRepository.GetUserDetailsAsync(idToken);
+        }
     }
 }
