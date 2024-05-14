@@ -16,7 +16,7 @@ public class UserApiService : IUserApiService
     }
     public async Task<UserProfileViewModel> GetUserProfileAsync(string userId)
     {
-        var url = new UriBuilder(_httpClient.BaseAddress + $"User/users")
+        var url = new UriBuilder(_httpClient.BaseAddress + $"User/user")
         {
             Query = $"userId={userId}"
         };

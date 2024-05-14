@@ -11,7 +11,7 @@ using SoframiPaylas.WebUI.Services.Interfaces;
 
 namespace SoframiPaylas.WebUI.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = "RequireAuthenticatedUser")]
     public class UserController : Controller
     {
         private readonly IUserApiService _userApiService;

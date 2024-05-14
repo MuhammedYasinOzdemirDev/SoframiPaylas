@@ -1,3 +1,7 @@
+@{
+var isAuthenticated = HttpContextAccessor.HttpContext.Request.Cookies.ContainsKey("AuthToken");
+
+}
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
     <a class="navbar-brand" href="#"><i class="bi bi-bing"></i>Sofranı Paylaş</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
@@ -20,13 +24,24 @@
             </li>
         </ul>
         <ul class="navbar-nav ml-auto">
+            @if (isAuthenticated)
+            {
 
+            <li class="nav-item">
+                <form asp-action="Logout" asp-controller="Auth" method="post">
+                    <button type="submit" class="nav-link">Çıkış Yap</button>
+                </form>
+
+            </li>
+            }
+            else{
             <li class="nav-item">
                 <a class="nav-link" asp-controller="Auth" asp-action="Login">Login</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" asp-controller="Auth" asp-action="Register">Register</a>
             </li>
+            }
 
         </ul>
     </div>

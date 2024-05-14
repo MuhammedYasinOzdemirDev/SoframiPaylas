@@ -147,8 +147,13 @@ namespace SoframiPaylas.WebUI.Controllers
                 return Json(new { success = false, message = $"Beklenmedik bir hata oluştu: {ex.Message}" });
             }
         }
-
-
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Logout()
+        {
+            HttpContext.Response.Cookies.Delete("AuthToken");
+            return RedirectToAction("Index", "Home");
+        }
 
     }
 }

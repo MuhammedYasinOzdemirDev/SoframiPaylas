@@ -12,7 +12,7 @@ builder.Services.AddControllersWithViews().AddJsonOptions(options =>
             options.JsonSerializerOptions.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
         }); ;
 
-
+builder.Services.AddHttpContextAccessor();
 //Api Services
 builder.Services.AddScoped<IPostApiService, PostApiService>();
 builder.Services.AddScoped<IAuthService, AuthApiService>();
@@ -32,7 +32,10 @@ builder.Services.AddAuthentication(options =>
     options.DefaultChallengeScheme = "CustomScheme";
 })
 .AddScheme<AuthenticationSchemeOptions, CustomJwtAuthenticationHandler>("CustomScheme", options => { });
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequireAuthenticatedUser", policy => policy.RequireAuthenticatedUser());
+});
 var app = builder.Build();
 
 

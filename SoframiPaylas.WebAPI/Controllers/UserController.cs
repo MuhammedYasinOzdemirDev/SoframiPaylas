@@ -105,7 +105,7 @@ namespace SoframiPaylas.WebAPI.Controllers
         /// <response code="400">Kullanıcı ID'si sağlanmadı.</response>
         /// <response code="404">Belirtilen ID'ye sahip kullanıcı bulunamadı.</response>
         /// <response code="500">Kullanıcı bilgisi getirilirken bir hata meydana geldi.</response>
-        [HttpGet("users/{userId}")]
+        [HttpGet("user")]
         public async Task<IActionResult> GetUserByIdAsync([FromQuery] string userId)
         {
             try

@@ -59,4 +59,5 @@ public class CustomJwtAuthenticationHandler : AuthenticationHandler<Authenticati
             return AuthenticateResult.Fail(ex.Message);
         }
     }
+
 }
