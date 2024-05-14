@@ -81,12 +81,17 @@ namespace SoframiPaylas.WebUI.Controllers
         {
             return View();
         }
-        public IActionResult Login()
+        [HttpGet]
+        public IActionResult Login(string returnUrl = null, string message = null)
         {
+            ViewBag.ReturnUrl = returnUrl;
+            if (!string.IsNullOrEmpty(message))
+                TempData["ErrorMessage"] = message;
+
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
         {
             if (model == null)
             {
@@ -134,7 +139,11 @@ namespace SoframiPaylas.WebUI.Controllers
 
                 HttpContext.Response.Cookies.Append("AuthToken", token, cookieOptions);
                 // Başarılı giriş sonrası JSON olarak başarı mesajı döndür
-                return Json(new { success = true, message = "Giriş başarılı! Ana sayfaya yönlendiriliyorsunuz...", redirectUrl = Url.Action("Index", "Home") });
+                if (returnUrl == null)
+                {
+                    returnUrl = Url.Action("Index", "Home");
+                }
+                return Json(new { success = true, message = "Giriş başarılı! Ana sayfaya yönlendiriliyorsunuz...", redirectUrl = returnUrl });
             }
             catch (HttpRequestException ex)
             {

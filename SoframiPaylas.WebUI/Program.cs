@@ -10,9 +10,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews().AddJsonOptions(options =>
         {
             options.JsonSerializerOptions.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
-        }); ;
+        }).AddSessionStateTempDataProvider();
 
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Session timeout süresini belirleyin
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 //Api Services
 builder.Services.AddScoped<IPostApiService, PostApiService>();
 builder.Services.AddScoped<IAuthService, AuthApiService>();
@@ -32,10 +38,7 @@ builder.Services.AddAuthentication(options =>
     options.DefaultChallengeScheme = "CustomScheme";
 })
 .AddScheme<AuthenticationSchemeOptions, CustomJwtAuthenticationHandler>("CustomScheme", options => { });
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("RequireAuthenticatedUser", policy => policy.RequireAuthenticatedUser());
-});
+builder.Services.AddAuthorization();
 var app = builder.Build();
 
 
@@ -43,8 +46,10 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseSession();
 
 app.UseEndpoints(endpoints =>
 {

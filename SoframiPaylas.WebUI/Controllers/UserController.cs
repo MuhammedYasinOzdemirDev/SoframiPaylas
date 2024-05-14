@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SoframiPaylas.WebUI.ExternalService.Filters;
 using SoframiPaylas.WebUI.Services.Interfaces;
 
 namespace SoframiPaylas.WebUI.Controllers
 {
-    [Authorize(Policy = "RequireAuthenticatedUser")]
+    [CustomAuthorize]
     public class UserController : Controller
     {
         private readonly IUserApiService _userApiService;

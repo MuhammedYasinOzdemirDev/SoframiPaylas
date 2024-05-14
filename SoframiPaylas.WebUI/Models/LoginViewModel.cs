@@ -14,5 +14,6 @@ namespace SoframiPaylas.WebUI.Models
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$", ErrorMessage = "Şifre en az bir büyük harf, bir küçük harf ve bir rakam içermelidir.")]
         [Display(Name = "Şifre")]
         public string Password { get; set; }
+
     }
 }

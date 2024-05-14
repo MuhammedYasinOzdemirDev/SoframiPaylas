@@ -19,6 +19,12 @@
 
     <main>
         <div class="container mt-3">
+            @if (TempData["ErrorMessage"] != null)
+            {
+            <div class="alert alert-danger">
+                @TempData["ErrorMessage"]
+            </div>
+            }
             @RenderBody()
         </div>
     </main>
