@@ -82,6 +82,7 @@
     </div>
 </div>
 @section Scripts {
+
 <script>
     function enableEditing() {
         var formControls = document.querySelectorAll('#profileForm .form-control');
@@ -200,6 +201,43 @@
             return isValid; // Mevcut isValid değerini döndürür
         }
     }
+
+</script>
+
+
+}
+@section Module{
+<script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+        apiKey: "AIzaSyAETB5ou7FUmvOo1tjagQyLA5JgMKah_so",
+        authDomain: "sofrani-paylas.firebaseapp.com",
+        databaseURL: "https://sofrani-paylas-default-rtdb.firebaseio.com",
+        projectId: "sofrani-paylas",
+        storageBucket: "sofrani-paylas.appspot.com",
+        messagingSenderId: "542088840250",
+        appId: "1:542088840250:web:b635167b5919f171556103",
+        measurementId: "G-JK3VHJ4MR9"
+    };
+
+    // Initialize Firebase
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const storage = getStorage(app);
+
+
+    // Initialize Firebase
+
+
     let newImageUrl = '';
     let newImageFile = null;
     let dropzoneInstance;
@@ -210,16 +248,15 @@
         Swal.fire({
             title: 'Resim Yükle',
             html: `
-        <div class="upload-container">
-           
-            <div class="current-avatar-container mb-3">
-                <img src="${document.getElementById('currentAvatar').src}" alt="Current Avatar" class="current-avatar" id="swalCurrentAvatar">
-            </div>
-            <form id="dropzone" class="dropzone">
-                <div class="dz-message">Dosyanızı buraya sürükleyin veya tıklayın</div>
-            </form>
-        </div>
-        `,
+          <div class="upload-container">
+              <div class="current-avatar-container mb-3">
+                  <img src="${document.getElementById('currentAvatar').src}" alt="Current Avatar" class="current-avatar" id="swalCurrentAvatar">
+              </div>
+              <form id="dropzone" class="dropzone">
+                  <div class="dz-message">Dosyanızı buraya sürükleyin veya tıklayın</div>
+              </form>
+          </div>
+          `,
             showCancelButton: true,
             cancelButtonText: 'Geri',
             confirmButtonText: 'Kaydet',
@@ -240,56 +277,57 @@
                             newImageFile = file;
                             newImageUrl = URL.createObjectURL(file);
                             document.getElementById('swalCurrentAvatar').src = newImageUrl; // Güncellenmiş resmi göster
-                            this.removeFile(file); // Dropzone alanından dosyayı kaldır
                         });
 
                         this.on("error", function (file, response) {
                             Swal.fire('Hata', 'Yükleme sırasında bir hata oluştu.', 'error');
-                        });
-
-                        this.on("sending", function () {
-                            Swal.showLoading();
-                        });
-
-                        this.on("success", function (file, response) {
-                            Swal.fire({
-                                title: 'Başarılı!',
-                                text: 'Profil resminiz başarıyla yüklendi.',
-                                icon: 'success',
-                                confirmButtonText: 'Tamam'
-                            }).then(() => {
-                                document.getElementById('currentAvatar').src = newImageUrl; // Ana sayfadaki resmi güncelle
-                            });
                         });
                     }
                 });
             },
             preConfirm: () => {
                 if (newImageFile) {
-                    // Backend'e yeni resmi gönder
-                    const formData = new FormData();
-                    formData.append('file', newImageFile);
+                    // Firebase'e yeni resmi yükle ve URL'yi al
+                    return uploadImageToFirebase(newImageFile).then(url => {
+                        newImageUrl = url;
 
-                    return fetch('/file/upload', {
-                        method: 'POST',
-                        body: formData
-                    })
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Yükleme başarısız oldu');
-                            }
-                            return response.json();
+                        // URL'yi backend'e gönder
+                        return fetch('/User/UploadProfilePicture', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ fileUrl: newImageUrl })
                         })
-                        .then(data => {
-                            if (!data.success) {
-                                throw new Error('Yükleme başarısız oldu');
-                            }
-                            // Başarılı yükleme durumunda success olayını tetikle
-                            dropzoneInstance.emit("success", newImageFile, data);
-                        })
-                        .catch(error => {
-                            Swal.showValidationMessage(`Yükleme başarısız oldu: ${error}`);
-                        });
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Yükleme başarısız oldu');
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                if (!data.success) {
+                                    throw new Error(data.message);
+                                }
+                                Swal.fire({
+                                    title: 'Başarılı!',
+                                    text: 'Profil resminiz başarıyla yüklendi.',
+                                    icon: 'success',
+                                    confirmButtonText: 'Tamam'
+                                }).then(() => {
+                                    document.getElementById('currentAvatar').src = newImageUrl; // Ana sayfadaki resmi güncelle
+                                });
+                                return data;
+                            })
+                            .catch(error => {
+                                Swal.showValidationMessage(`Yükleme başarısız oldu: ${error}`);
+                            });
+
+                    }).catch(error => {
+                        Swal.showValidationMessage(`Yükleme başarısız oldu: ${error}`);
+                    });
+                } else {
+                    Swal.showValidationMessage('Lütfen bir resim seçin.');
                 }
             },
             willClose: () => {
@@ -305,16 +343,19 @@
         });
     });
 
+    async function uploadImageToFirebase(file) {
+        try {
+            const storageRef = ref(storage, `images/${file.name}`);
+            await uploadBytes(storageRef, file);
+            const fileURL = await getDownloadURL(storageRef);
+            return fileURL;
+        } catch (error) {
+            console.error("Error uploading image: ", error);
+            throw error;
+        }
+    }
 
-
-
-</script>
-
-
-
-
-
-}
+</script>}
 
 <style>
     /* Ana Konteyner */

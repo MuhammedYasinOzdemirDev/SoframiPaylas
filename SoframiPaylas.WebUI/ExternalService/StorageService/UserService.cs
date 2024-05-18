@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 public interface IUserService
 {
     UserProfileViewModel GetUser();
+    String GetUserId();
     Task<HttpResponseMessage> UpdateUser(UserProfileViewModel user);
     Task SetUser(string userId);
 }
@@ -30,6 +31,10 @@ public class UserService : IUserService
     {
         // Kullanıcı bilgisini döndürür
         return _currentUser;
+    }
+    public String GetUserId()
+    {
+        return _currentUserId;
     }
 
     public async Task<HttpResponseMessage> UpdateUser(UserProfileViewModel user)

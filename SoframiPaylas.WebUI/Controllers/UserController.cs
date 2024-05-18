@@ -19,9 +19,12 @@ namespace SoframiPaylas.WebUI.Controllers
     public class UserController : Controller
     {
         private readonly IUserService _userService;
-        public UserController(IUserService userService)
+        private readonly IUserApiService _userApiService;
+
+        public UserController(IUserService userService, IUserApiService userApiService)
         {
             _userService = userService;
+            _userApiService = userApiService;
         }
         public IActionResult Profile()
         {
@@ -70,6 +73,55 @@ namespace SoframiPaylas.WebUI.Controllers
             var errorList = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
             return Json(new { success = false, message = "Lütfen tüm alanları doldurunuz", errors = errorList });
         }
+        [HttpPost]
+        public async Task<IActionResult> UploadProfilePicture([FromBody] UploadProfilePictureRequest request)
+        {
+            if (string.IsNullOrEmpty(request.FileUrl))
+            {
+                return Json(new { message = "Dosya URL'si alınamadı", success = false });
+            }
+
+            try
+            {
+                var user = _userService.GetUser();
+                if (user == null)
+                {
+                    return Json(new { success = false, message = "Kullanıcı bilgileri alınamadı." });
+                }
+
+                user.UserName = request.FileUrl;
+
+
+                var response = await _userService.UpdateUser(user);
+                if (!response.IsSuccessStatusCode)
+                {
+                    string errorMessage = response.Content.ReadAsStringAsync().Result;
+                    if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                    {
+                        return Json(new { success = false, message = "Güncelleme sırasında bir hata oluştu: " + errorMessage });
+                    }
+                    else if (response.StatusCode >= System.Net.HttpStatusCode.InternalServerError)
+                    {
+                        return Json(new { success = false, message = "Bir sunucu hatası oluştu, lütfen daha sonra tekrar deneyiniz." });
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "Yükleme sırasında bir hata oluştu: " + errorMessage });
+                    }
+                }
+                return Json(new { success = true, message = "Profil resmi başarıyla güncellendi..." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { message = ex.Message, success = false });
+            }
+        }
+
+        public class UploadProfilePictureRequest
+        {
+            public string FileUrl { get; set; }
+        }
+
 
     }
 }

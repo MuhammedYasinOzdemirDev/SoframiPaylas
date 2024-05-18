@@ -10,5 +10,6 @@ namespace SoframiPaylas.WebUI.Services.Interfaces
     {
         Task<UserProfileViewModel> GetUserProfileAsync(string userId);
         Task<HttpResponseMessage> UpdateUserProfileAsync(UserProfileViewModel model, string userId);
+        Task<HttpResponseMessage> UploadProfilePicture(byte[] file, string userId);
     }
 }

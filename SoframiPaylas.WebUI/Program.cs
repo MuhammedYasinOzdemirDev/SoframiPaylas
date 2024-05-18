@@ -41,9 +41,10 @@ builder.Services.AddAuthentication(options =>
 .AddScheme<AuthenticationSchemeOptions, CustomJwtAuthenticationHandler>("CustomScheme", options => { });
 builder.Services.AddAuthorization();
 
-//Stroge Service
 builder.Services.AddMemoryCache();
+//Stroge Service
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IFileService, FileService>();
 var app = builder.Build();
 
 
