@@ -29,9 +29,10 @@ namespace SoframiPaylas.Application.DTOs
         /// <example>Yeni eklenen hobiler, değişen ilgi alanları gibi bilgiler.</example>
         public string? About { get; set; }
 
-        public string Role { get; set; }
+        public string? Role { get; set; }
 
-        public string Name { get; set; }
-        public string Surname { get; set; }
+        public string? Name { get; set; }
+        public string? Surname { get; set; }
+        public string? Phone { get; set; }
     }
 }

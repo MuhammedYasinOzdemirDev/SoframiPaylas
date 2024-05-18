@@ -214,8 +214,8 @@ namespace SoframiPaylas.WebAPI.Controllers
         /// <response code="200">Kullanıcı başarıyla güncellendi.</response>
         /// <response code="400">Gönderilen verilerin doğrulaması başarısız olduğunda bu hata kodu dönülür.</response>
         /// <response code="500">Kullanıcı güncelleme işlemi sırasında beklenmedik bir hata oluştuğunda bu hata dönülür.</response>
-        [HttpPut("user/{userId}")]
-        public async Task<IActionResult> UpdateUser(string userId, [FromBody] UpdateUserDto userDto)
+        [HttpPut("user")]
+        public async Task<IActionResult> UpdateUser([FromQuery] string userId, [FromBody] UpdateUserDto userDto)
         {
             if (!ModelState.IsValid)
             {
@@ -225,6 +225,7 @@ namespace SoframiPaylas.WebAPI.Controllers
             {
                 await _userService.UpdateUserAsync(userDto, userId);
                 return Ok("Kullanıcı başarıyla güncellendi.");
+
             }
             catch (Exception ex)
             {

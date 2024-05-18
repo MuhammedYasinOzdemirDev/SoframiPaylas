@@ -1,7 +1,576 @@
 @model UserProfileViewModel
+<div class="container mt-3">
+    <div id="alertDiv" class="alert alert-danger" style="display: none;"></div>
+</div>
 
-<h2>Profile</h2>
+<div class="profile-container">
 
 
-<p>Email: @Model.Email</p>
-<p>Name: @Model.Name</p>
+    <div class="profile-sidebar">
+        <div class="profile-avatar-container">
+            <a href="javascript:void(0);" class="profile-avatar-link" id="uploadLink">
+                <img src="https://img-c.udemycdn.com/user/200_H/anonymous_3.png" alt="avatar" class="profile-avatar"
+                    id="currentAvatar">
+            </a>
+
+            <h5 class="profile-name">Muhammed Yasin</h5>
+        </div>
+        <ul class="profile-menu">
+            <li class="profile-menu-item"><a href="/user/yasin-ozdemir-71/">Herkese açık profili görüntüle</a></li>
+            <li class="profile-menu-item active"><a href="/user/edit-profile/">Profil</a></li>
+            <li class="profile-menu-item"><a href="/user/edit-photo/">Fotoğraf</a></li>
+            <li class="profile-menu-item"><a href="/user/edit-account/">Hesap Güvenliği</a></li>
+            <li class="profile-menu-item"><a href="/user/edit-payment-methods/">Ödeme yöntemleri</a></li>
+            <li class="profile-menu-item"><a href="/user/edit-notifications/">Bildirimler</a></li>
+            <li class="profile-menu-item"><a href="/user/close-account/">Hesabı kapat</a></li>
+        </ul>
+    </div>
+    <div class="profile-content">
+        <div class="profile-card">
+            <div class="profile-card-header">Account Details</div>
+            <div class="profile-card-body">
+                <form id="profileForm">
+                    <input type="hidden" asp-for="@Model.ProfilePicture" value="@Model.ProfilePicture">
+                    <div class="form-group">
+                        <label asp-for="UserName">@Html.DisplayNameFor(m => m.UserName)</label>
+                        <input class="form-control" asp-for="UserName" id="UserName" type="text"
+                            placeholder="Kullanıcı adınızı girin" value="@Model.UserName" disabled />
+                        <span id="UserNameError" class="text-danger"></span>
+                    </div>
+                    <div class="form-row mt-3">
+                        <div class="form-group col-md-6">
+                            <label asp-for="Name">@Html.DisplayNameFor(m => m.Name)</label>
+                            <input class="form-control" asp-for="Name" id="Name" type="text" placeholder="Adınızı girin"
+                                value="@Model.Name" disabled />
+                            <span id="NameError" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="Surname">@Html.DisplayNameFor(m => m.Surname)</label>
+                            <input class="form-control" asp-for="Surname" id="Surname" type="text"
+                                placeholder="Soyadınızı girin" value="@Model.Surname" disabled />
+                            <span id="SurnameError" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label asp-for="Email">@Html.DisplayNameFor(m => m.Email)</label>
+                        <input class="form-control" asp-for="Email" id="Email" type="email"
+                            placeholder="Email adresinizi girin" value="@Model.Email" disabled />
+                        <span id="EmailError" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label asp-for="Phone">@Html.DisplayNameFor(m => m.Phone)</label>
+                        <input class="form-control" asp-for="Phone" id="Phone" type="tel"
+                            placeholder="Telefon numaranızı girin" value="@Model.Phone" disabled />
+                        <span id="PhoneError" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label asp-for="About">@Html.DisplayNameFor(m => m.About)</label>
+                        <textarea class="form-control" asp-for="About" id="About" disabled>@Model.About</textarea>
+                        <span id="AboutError" class="text-danger"></span>
+                    </div>
+
+                    <button id="editButton" class="btn btn-primary mt-3" type="button"
+                        onclick="enableEditing()">Düzenle</button>
+                    <button id="saveButton" class="btn btn-primary mt-3" type="submit" onclick="saveChanges()"
+                        style="display:none;">Kaydet</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+<script>
+    function enableEditing() {
+        var formControls = document.querySelectorAll('#profileForm .form-control');
+        formControls.forEach(function (control) {
+            control.disabled = false;
+        });
+        document.getElementById('editButton').style.display = 'none';
+        document.getElementById('saveButton').style.display = 'inline-block';
+    }
+
+    function disableEditing() {
+        var formControls = document.querySelectorAll('#profileForm .form-control');
+        formControls.forEach(function (control) {
+            control.disabled = true;
+        });
+        document.getElementById('editButton').style.display = 'inline-block';
+        document.getElementById('saveButton').style.display = 'none';
+    }
+
+    document.getElementById('profileForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        let isValid = true;
+
+        // Alanları kontrol et
+        isValid = validateField('UserName', 'Kullanıcı adı gereklidir.', isValid);
+        isValid = validateField('Name', 'Ad gereklidir.', isValid);
+        isValid = validateField('Surname', 'Soyad gereklidir.', isValid);
+        isValid = validateField('Email', 'Email adresi gereklidir.', isValid);
+        isValid = validateField('Phone', 'Telefon numarası gereklidir.', isValid);
+        isValid = validateField('About', 'Hakkınızda bilgisi gereklidir.', isValid);
+
+        if (isValid) {
+            NProgress.start();
+            var formData = new FormData(this);
+            fetch('@Url.Action("Profile", "User")', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    NProgress.done();
+                    if (data.success) {
+                        Swal.fire({
+                            title: 'Profil Güncellendi!',
+                            text: data.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                disableEditing();
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Profil Güncellendi!',
+                            text: data.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        })
+                        let errorMessage = data.message;
+                        if (data.errors && data.errors.length > 0) {
+                            errorMessage += '<ul>';
+                            data.errors.forEach(function (error) {
+                                errorMessage += '<li>' + error + '</li>';
+                            });
+                            errorMessage += '</ul>';
+                        }
+                        document.getElementById('alertDiv').innerHTML = errorMessage;
+                        document.getElementById('alertDiv').style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    NProgress.done();
+                    console.error('Error:', error);
+                    Swal.fire({
+                        title: 'Hata!',
+                        text: 'Bir hata oluştu, lütfen daha sonra tekrar deneyiniz.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                });
+        }
+    });
+
+    // Alanlara girilen bilgiyi sürekli kontrol etmek
+    document.querySelectorAll('#profileForm input, #profileForm textarea').forEach(input => {
+        input.addEventListener('input', function () {
+            var errorSpan = this.nextElementSibling;
+            if (this.classList.contains('invalid')) {
+                this.classList.remove('invalid');
+                if (errorSpan) {
+                    errorSpan.textContent = '';
+                }
+            }
+        });
+    });
+
+    function validateField(id, errorMessage, isValid) {
+        var input = document.getElementById(id);
+        var errorSpan = document.getElementById(id + 'Error');
+        if (!input.value.trim()) {
+            input.classList.add('invalid');
+            if (!errorSpan) {
+                errorSpan = document.createElement('span');
+                errorSpan.id = id + 'Error';
+                errorSpan.className = 'text-danger';
+                input.parentNode.appendChild(errorSpan);
+            }
+            errorSpan.textContent = errorMessage;
+            return false; // Eğer hata varsa, isValid false olarak döner
+        } else {
+            input.classList.remove('invalid');
+            if (errorSpan) {
+                errorSpan.textContent = '';
+            }
+            return isValid; // Mevcut isValid değerini döndürür
+        }
+    }
+    let newImageUrl = '';
+    let newImageFile = null;
+    let dropzoneInstance;
+
+    document.getElementById('uploadLink').addEventListener('click', function (event) {
+        event.preventDefault(); // Varsayılan tıklama davranışını engelle
+
+        Swal.fire({
+            title: 'Resim Yükle',
+            html: `
+        <div class="upload-container">
+           
+            <div class="current-avatar-container mb-3">
+                <img src="${document.getElementById('currentAvatar').src}" alt="Current Avatar" class="current-avatar" id="swalCurrentAvatar">
+            </div>
+            <form id="dropzone" class="dropzone">
+                <div class="dz-message">Dosyanızı buraya sürükleyin veya tıklayın</div>
+            </form>
+        </div>
+        `,
+            showCancelButton: true,
+            cancelButtonText: 'Geri',
+            confirmButtonText: 'Kaydet',
+            showConfirmButton: true,
+            width: 600,
+            didOpen: () => {
+                Dropzone.autoDiscover = false;
+                dropzoneInstance = new Dropzone("#dropzone", {
+                    url: "/file/upload", // Dosya yükleme URL'si (gerçek backend olduğunda)
+                    autoProcessQueue: false, // Otomatik olarak dosya yüklemesini durdur
+                    maxFiles: 1,
+                    acceptedFiles: "image/*",
+                    init: function () {
+                        this.on("addedfile", function (file) {
+                            if (this.files.length > 1) {
+                                this.removeFile(this.files[0]);
+                            }
+                            newImageFile = file;
+                            newImageUrl = URL.createObjectURL(file);
+                            document.getElementById('swalCurrentAvatar').src = newImageUrl; // Güncellenmiş resmi göster
+                            this.removeFile(file); // Dropzone alanından dosyayı kaldır
+                        });
+
+                        this.on("error", function (file, response) {
+                            Swal.fire('Hata', 'Yükleme sırasında bir hata oluştu.', 'error');
+                        });
+
+                        this.on("sending", function () {
+                            Swal.showLoading();
+                        });
+
+                        this.on("success", function (file, response) {
+                            Swal.fire({
+                                title: 'Başarılı!',
+                                text: 'Profil resminiz başarıyla yüklendi.',
+                                icon: 'success',
+                                confirmButtonText: 'Tamam'
+                            }).then(() => {
+                                document.getElementById('currentAvatar').src = newImageUrl; // Ana sayfadaki resmi güncelle
+                            });
+                        });
+                    }
+                });
+            },
+            preConfirm: () => {
+                if (newImageFile) {
+                    // Backend'e yeni resmi gönder
+                    const formData = new FormData();
+                    formData.append('file', newImageFile);
+
+                    return fetch('/file/upload', {
+                        method: 'POST',
+                        body: formData
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Yükleme başarısız oldu');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (!data.success) {
+                                throw new Error('Yükleme başarısız oldu');
+                            }
+                            // Başarılı yükleme durumunda success olayını tetikle
+                            dropzoneInstance.emit("success", newImageFile, data);
+                        })
+                        .catch(error => {
+                            Swal.showValidationMessage(`Yükleme başarısız oldu: ${error}`);
+                        });
+                }
+            },
+            willClose: () => {
+                // Modal kapandığında newImageUrl'yi sıfırla
+                if (!Swal.isConfirmed()) {
+                    newImageUrl = '';
+                    newImageFile = null;
+                    if (dropzoneInstance) {
+                        dropzoneInstance.removeAllFiles(true);
+                    }
+                }
+            }
+        });
+    });
+
+
+
+
+</script>
+
+
+
+
+
+}
+
+<style>
+    /* Ana Konteyner */
+    .profile-container {
+        display: flex;
+        margin: 20px auto;
+        max-width: 1200px;
+        width: 100%;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    /* Kenar Çubuğu */
+    .profile-sidebar {
+        width: 300px;
+        background-color: #0056b3;
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+    }
+
+    .profile-avatar-container {
+        text-align: center;
+        position: relative;
+    }
+
+    .profile-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        border: 3px solid #fff;
+        margin-bottom: 10px;
+        transition: transform 0.3s;
+    }
+
+    .profile-avatar:hover {
+        transform: scale(1.1);
+    }
+
+    .profile-avatar-link {
+        display: inline-block;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .profile-name {
+        font-size: 20px;
+        /* Font size adjusted for better readability */
+        font-weight: bold;
+        margin: 10px 0;
+    }
+
+    .profile-menu {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+    }
+
+    .profile-menu-item {
+        width: 100%;
+        text-align: center;
+        padding: 8px 0;
+        /* Increased padding for better spacing */
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .profile-menu-item a {
+        color: #fff;
+        text-decoration: none;
+        display: block;
+        width: 100%;
+        padding: 12px 0;
+        /* Increased padding for better spacing */
+    }
+
+    .profile-menu-item a:hover {
+        background-color: #00408a;
+    }
+
+    .profile-menu-item.active a {
+        background-color: #003d82;
+    }
+
+    /* İçerik Alanı */
+    .profile-content {
+        flex-grow: 1;
+        padding: 30px;
+        /* Increased padding for better spacing */
+    }
+
+    .profile-card {
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    .profile-card-header {
+        background-color: #0056b3;
+        color: #fff;
+        padding: 20px;
+        /* Increased padding for better spacing */
+        font-size: 20px;
+        /* Font size adjusted for better readability */
+        font-weight: bold;
+        text-align: center;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+    }
+
+    .profile-card-body {
+        padding: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        /* Increased margin for better spacing */
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 15px;
+        /* Increased padding for better usability */
+        font-size: 16px;
+        /* Font size adjusted for better readability */
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #0056b3;
+        box-shadow: 0 0 5px rgba(0, 86, 179, 0.2);
+    }
+
+    .btn-primary {
+        background-color: #0056b3;
+        color: #fff;
+        border: none;
+        padding: 12px 25px;
+        /* Increased padding for better usability */
+        font-size: 16px;
+        /* Font size adjusted for better readability */
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #00408a;
+        box-shadow: 0 4px 8px rgba(0, 64, 138, 0.2);
+    }
+
+    .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: -10px;
+    }
+
+    .form-row .form-group {
+        flex: 1;
+        padding: 0 10px;
+    }
+
+    /* Ekstil ve Geçişler */
+    .profile-card:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .profile-card-header:hover {
+        background-color: #00408a;
+    }
+
+    .form-control:hover {
+        border-color: #00408a;
+    }
+
+    /* Butonlar */
+    .btn-primary:active {
+        background-color: #003d82;
+        box-shadow: 0 2px 4px rgba(0, 64, 138, 0.2);
+    }
+
+    /* Hover ve Focus Durumları */
+    .profile-card:hover .profile-card-header {
+        background-color: #00408a;
+    }
+
+    .profile-avatar-container {
+        text-align: center;
+        position: relative;
+    }
+
+    .profile-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        border: 3px solid #fff;
+        margin-bottom: 10px;
+        transition: transform 0.3s;
+    }
+
+    .profile-avatar:hover {
+        transform: scale(1.1);
+    }
+
+    .profile-avatar-link {
+        display: inline-block;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .upload-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .current-avatar-container {
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .current-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        border: 3px solid #fff;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .dropzone {
+        border: 2px dashed #007bff;
+        border-radius: 10px;
+        background: #f8f9fa;
+        padding: 20px;
+        width: 100%;
+    }
+
+    .dropzone .dz-message {
+        font-size: 18px;
+        font-weight: bold;
+        color: #007bff;
+    }
+
+    .swal2-popup .swal2-title {
+        font-size: 24px;
+    }
+
+    .swal2-popup .swal2-actions button {
+        font-size: 16px;
+        padding: 10px 20px;
+    }
+</style>

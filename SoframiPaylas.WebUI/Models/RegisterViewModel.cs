@@ -20,6 +20,9 @@ public class RegisterViewModel
     [EmailAddress(ErrorMessage = "Geçersiz e-posta adresi.")]
     [Display(Name = "E-posta")]
     public string Email { get; set; }
+    [Display(Name = "Telefon")]
+    [Required(ErrorMessage = "Telefon numarası gereklidir.")]
+    public string Phone { get; set; }
 
     [Required(ErrorMessage = "Şifre gereklidir.")]
     [StringLength(100, MinimumLength = 8, ErrorMessage = "Şifre en az 8 karakter olmalıdır.")]

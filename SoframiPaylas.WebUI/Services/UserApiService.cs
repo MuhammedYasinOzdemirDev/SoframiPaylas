@@ -1,3 +1,4 @@
+using System.Text;
 using AutoMapper;
 using Newtonsoft.Json;
 using SoframiPaylas.Application.DTOs;
@@ -16,14 +17,28 @@ public class UserApiService : IUserApiService
     }
     public async Task<UserProfileViewModel> GetUserProfileAsync(string userId)
     {
-        var url = new UriBuilder(_httpClient.BaseAddress + $"User/user")
+        var url = new UriBuilder(_httpClient.BaseAddress + "User/user")
         {
             Query = $"userId={userId}"
         };
         HttpResponseMessage response = await _httpClient.GetAsync(url.Uri);
         string jsonString = await response.Content.ReadAsStringAsync();
-        Console.WriteLine(jsonString);
         var userDto = JsonConvert.DeserializeObject<UserDto>(jsonString);
         return _mapper.Map<UserProfileViewModel>(userDto);
     }
+
+    public async Task<HttpResponseMessage> UpdateUserProfileAsync(UserProfileViewModel model, string userId)
+    {
+        var updateDto = _mapper.Map<UpdateUserDto>(model);
+
+        var url = new UriBuilder(_httpClient.BaseAddress + "User/user")
+        {
+            Query = $"userId={userId}"
+        };
+        var content = new StringContent(JsonConvert.SerializeObject(updateDto), Encoding.UTF8, "application/json");
+        HttpResponseMessage response = await _httpClient.PutAsync(url.Uri, content);
+        return response;
+    }
+
+
 }

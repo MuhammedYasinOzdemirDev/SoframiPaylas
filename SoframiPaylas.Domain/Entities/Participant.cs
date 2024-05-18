@@ -23,6 +23,5 @@ namespace SoframiPaylas.Domain.Entities
 
         [FirestoreProperty("status")]
         public int Status { get; set; } = (int)ParticipationStatus.Pending;
-
     }
 }

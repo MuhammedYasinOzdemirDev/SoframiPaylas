@@ -27,5 +27,7 @@ namespace SoframiPaylas.Domain.Entities
         public string About { get; set; }
         [FirestoreProperty("role")]
         public string Role { get; set; }
+        [FirestoreProperty("phone")]
+        public string Phone { get; set; }
     }
 }

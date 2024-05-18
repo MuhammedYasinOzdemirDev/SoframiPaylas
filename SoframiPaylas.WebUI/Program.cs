@@ -3,6 +3,7 @@ using SoframiPaylas.WebUI.Mappings;
 using SoframiPaylas.WebUI.Services;
 using SoframiPaylas.WebUI.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
+using SoframiPaylas.WebUI.ExternalService.StorageService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +40,10 @@ builder.Services.AddAuthentication(options =>
 })
 .AddScheme<AuthenticationSchemeOptions, CustomJwtAuthenticationHandler>("CustomScheme", options => { });
 builder.Services.AddAuthorization();
+
+//Stroge Service
+builder.Services.AddMemoryCache();
+builder.Services.AddScoped<IUserService, UserService>();
 var app = builder.Build();
 
 

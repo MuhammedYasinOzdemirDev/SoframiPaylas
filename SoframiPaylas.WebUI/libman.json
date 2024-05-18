@@ -26,6 +26,10 @@
       "provider": "unpkg",
       "library": "nprogress@latest",
       "destination": "wwwroot/lib/nprogress"
+    },
+    {
+      "library": "dropzone@5.9.3",
+      "destination": "wwwroot/lib/dropzone"
     }
   ]
 }

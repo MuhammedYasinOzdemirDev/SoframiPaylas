@@ -9,19 +9,22 @@ using System;
 using System.Security.Claims;
 using FirebaseAdmin.Auth;
 using SoframiPaylas.WebUI.Services.Interfaces;
+using SoframiPaylas.WebUI.ExternalService.StorageService;
 
 
 public class CustomJwtAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 {
     private readonly IAuthService _authService;
+    private readonly IUserService _userService;
     public CustomJwtAuthenticationHandler(
         IOptionsMonitor<AuthenticationSchemeOptions> options,
         ILoggerFactory logger,
         UrlEncoder encoder,
-        ISystemClock clock, IAuthService authService)
+        ISystemClock clock, IAuthService authService, IUserService userService)
         : base(options, logger, encoder, clock)
     {
         _authService = authService;
+        _userService = userService;
     }
 
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
@@ -51,7 +54,7 @@ public class CustomJwtAuthenticationHandler : AuthenticationHandler<Authenticati
             var identity = new ClaimsIdentity(claims, Scheme.Name);
             var principal = new ClaimsPrincipal(identity);
             var ticket = new AuthenticationTicket(principal, Scheme.Name);
-
+            await _userService.SetUser(validatedToken.localId);
             return AuthenticateResult.Success(ticket);
         }
         catch (Exception ex)
