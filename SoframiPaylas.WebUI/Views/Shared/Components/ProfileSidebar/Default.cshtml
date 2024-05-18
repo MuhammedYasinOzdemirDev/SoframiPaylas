@@ -1,0 +1,173 @@
+@model ProfileSidebarViewModel
+
+<div class="profile-sidebar">
+        <div class="profile-avatar-container">
+                <a href="javascript:void(0);" class="profile-avatar-link" id="uploadLink">
+                        <img src="@Model.ProfilePicture" alt="avatar" class="profile-avatar" id="currentAvatar">
+                </a>
+                <h5 class="profile-name">@Model.UserName</h5>
+        </div>
+        <ul class="profile-menu">
+
+                <li class="profile-menu-item @(Model.ActivePage == " Profile" ? "active" : "" )"><a
+                                href="/user/edit-profile/">Profil</a></li>
+                <li class="profile-menu-item @(Model.ActivePage == " EditPhoto" ? "active" : "" )"><a
+                                href="/user/edit-photo/">Fotoğraf</a></li>
+                <li class="profile-menu-item @(Model.ActivePage == " EditAccount" ? "active" : "" )"><a
+                                href="/user/edit-account/">Hesap Güvenliği</a></li>
+                <li class="profile-menu-item @(Model.ActivePage == " PaymentMethods" ? "active" : "" )"><a
+                                href="/user/edit-payment-methods/">Ödeme yöntemleri</a></li>
+                <li class="profile-menu-item @(Model.ActivePage == " Notifications" ? "active" : "" )"><a
+                                href="/user/edit-notifications/">Bildirimler</a></li>
+                <li class="profile-menu-item @(Model.ActivePage == " CloseAccount" ? "active" : "" )"><a
+                                href="/user/close-account/">Hesabı kapat</a></li>
+        </ul>
+</div>
+@section Module{
+<script type="module">
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+                apiKey: "AIzaSyAETB5ou7FUmvOo1tjagQyLA5JgMKah_so",
+                authDomain: "sofrani-paylas.firebaseapp.com",
+                databaseURL: "https://sofrani-paylas-default-rtdb.firebaseio.com",
+                projectId: "sofrani-paylas",
+                storageBucket: "sofrani-paylas.appspot.com",
+                messagingSenderId: "542088840250",
+                appId: "1:542088840250:web:b635167b5919f171556103",
+                measurementId: "G-JK3VHJ4MR9"
+        };
+
+        // Initialize Firebase
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const storage = getStorage(app);
+
+
+        // Initialize Firebase
+
+
+        let newImageUrl = '';
+        let newImageFile = null;
+        let dropzoneInstance;
+
+        document.getElementById('uploadLink').addEventListener('click', function (event) {
+                event.preventDefault(); // Varsayılan tıklama davranışını engelle
+
+                Swal.fire({
+                        title: 'Resim Yükle',
+                        html: `
+                          <div class="upload-container">
+                              <div class="current-avatar-container mb-3">
+                                  <img src="${document.getElementById('currentAvatar').src}" alt="Current Avatar" class="current-avatar" id="swalCurrentAvatar">
+                              </div>
+                              <form id="dropzone" class="dropzone">
+                                  <div class="dz-message">Dosyanızı buraya sürükleyin veya tıklayın</div>
+                              </form>
+                          </div>
+                        `,
+                        showCancelButton: true,
+                        cancelButtonText: 'Geri',
+                        confirmButtonText: 'Kaydet',
+                        showConfirmButton: true,
+                        width: 600,
+                        didOpen: () => {
+                                Dropzone.autoDiscover = false;
+                                dropzoneInstance = new Dropzone("#dropzone", {
+                                        url: "/file/upload", // Dosya yükleme URL'si (gerçek backend olduğunda)
+                                        autoProcessQueue: false, // Otomatik olarak dosya yüklemesini durdur
+                                        maxFiles: 1,
+                                        acceptedFiles: "image/*",
+                                        init: function () {
+                                                this.on("addedfile", function (file) {
+                                                        if (this.files.length > 1) {
+                                                                this.removeFile(this.files[0]);
+                                                        }
+                                                        newImageFile = file;
+                                                        newImageUrl = URL.createObjectURL(file);
+                                                        document.getElementById('swalCurrentAvatar').src = newImageUrl; // Güncellenmiş resmi göster
+                                                });
+
+                                                this.on("error", function (file, response) {
+                                                        Swal.fire('Hata', 'Yükleme sırasında bir hata oluştu.', 'error');
+                                                });
+                                        }
+                                });
+                        },
+                        preConfirm: () => {
+                                if (newImageFile) {
+                                        // Firebase'e yeni resmi yükle ve URL'yi al
+                                        return uploadImageToFirebase(newImageFile).then(url => {
+                                                newImageUrl = url;
+
+                                                // URL'yi backend'e gönder
+                                                return fetch('/User/UploadProfilePicture', {
+                                                        method: 'POST',
+                                                        headers: {
+                                                                'Content-Type': 'application/json'
+                                                        },
+                                                        body: JSON.stringify({ fileUrl: newImageUrl })
+                                                })
+                                                        .then(response => {
+                                                                if (!response.ok) {
+                                                                        throw new Error('Yükleme başarısız oldu');
+                                                                }
+                                                                return response.json();
+                                                        })
+                                                        .then(data => {
+                                                                if (!data.success) {
+                                                                        throw new Error(data.message);
+                                                                }
+                                                                Swal.fire({
+                                                                        title: 'Başarılı!',
+                                                                        text: 'Profil resminiz başarıyla yüklendi.',
+                                                                        icon: 'success',
+                                                                        confirmButtonText: 'Tamam'
+                                                                }).then(() => {
+                                                                        document.getElementById('currentAvatar').src = newImageUrl; // Ana sayfadaki resmi güncelle
+                                                                });
+                                                                return data;
+                                                        })
+                                                        .catch(error => {
+                                                                Swal.showValidationMessage(`Yükleme başarısız oldu: ${error}`);
+                                                        });
+
+                                        }).catch(error => {
+                                                Swal.showValidationMessage(`Yükleme başarısız oldu: ${error}`);
+                                        });
+                                } else {
+                                        Swal.showValidationMessage('Lütfen bir resim seçin.');
+                                }
+                        },
+                        willClose: () => {
+                                // Modal kapandığında newImageUrl'yi sıfırla
+                                newImageUrl = '';
+                                newImageFile = null;
+                                if (dropzoneInstance) {
+                                        dropzoneInstance.destroy(); // Dropzone örneğini yok et
+                                        dropzoneInstance = null;
+                                }
+                        }
+                });
+        });
+
+        async function uploadImageToFirebase(file) {
+                try {
+                        const storageRef = ref(storage, `images/${file.name}`);
+                        await uploadBytes(storageRef, file);
+                        const fileURL = await getDownloadURL(storageRef);
+                        return fileURL;
+                } catch (error) {
+                        console.error("Error uploading image: ", error);
+                        throw error;
+                }
+        }
+</script>}

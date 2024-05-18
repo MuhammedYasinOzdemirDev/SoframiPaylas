@@ -89,7 +89,7 @@ namespace SoframiPaylas.WebUI.Controllers
                     return Json(new { success = false, message = "Kullanıcı bilgileri alınamadı." });
                 }
 
-                user.UserName = request.FileUrl;
+                user.ProfilePicture = request.FileUrl;
 
 
                 var response = await _userService.UpdateUser(user);
@@ -117,9 +117,10 @@ namespace SoframiPaylas.WebUI.Controllers
             }
         }
 
-        public class UploadProfilePictureRequest
+
+        public IActionResult Security()
         {
-            public string FileUrl { get; set; }
+            return View();
         }
 
 

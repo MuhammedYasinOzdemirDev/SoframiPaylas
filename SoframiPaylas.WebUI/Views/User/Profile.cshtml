@@ -1,16 +1,22 @@
 @model UserProfileViewModel
+<link rel="stylesheet" href="~/css/profile.css">
+
 <div class="container mt-3">
     <div id="alertDiv" class="alert alert-danger" style="display: none;"></div>
 </div>
+@{
+ViewBag.Title = "Profil";
 
+ViewBag.ActivePage = "Profile";
+}
 <div class="profile-container">
 
 
-    <div class="profile-sidebar">
+    <!--<div class="profile-sidebar">
+
         <div class="profile-avatar-container">
             <a href="javascript:void(0);" class="profile-avatar-link" id="uploadLink">
-                <img src="https://img-c.udemycdn.com/user/200_H/anonymous_3.png" alt="avatar" class="profile-avatar"
-                    id="currentAvatar">
+                <img src="@Model.ProfilePicture" alt="avatar" class="profile-avatar" id="currentAvatar">
             </a>
 
             <h5 class="profile-name">Muhammed Yasin</h5>
@@ -24,7 +30,11 @@
             <li class="profile-menu-item"><a href="/user/edit-notifications/">Bildirimler</a></li>
             <li class="profile-menu-item"><a href="/user/close-account/">Hesabı kapat</a></li>
         </ul>
-    </div>
+
+    </div>-->
+
+    @await Component.InvokeAsync("ProfileSidebar", new { profilePicture = Model.ProfilePicture, userName =
+    Model.UserName, activePage = ViewBag.ActivePage })
     <div class="profile-content">
         <div class="profile-card">
             <div class="profile-card-header">Account Details</div>
@@ -81,6 +91,7 @@
         </div>
     </div>
 </div>
+
 @section Scripts {
 
 <script>
@@ -206,275 +217,9 @@
 
 
 }
-@section Module{
-<script type="module">
 
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
-    // TODO: Add SDKs for Firebase products that you want to use
-    // https://firebase.google.com/docs/web/setup#available-libraries
-
-    // Your web app's Firebase configuration
-    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-    const firebaseConfig = {
-        apiKey: "AIzaSyAETB5ou7FUmvOo1tjagQyLA5JgMKah_so",
-        authDomain: "sofrani-paylas.firebaseapp.com",
-        databaseURL: "https://sofrani-paylas-default-rtdb.firebaseio.com",
-        projectId: "sofrani-paylas",
-        storageBucket: "sofrani-paylas.appspot.com",
-        messagingSenderId: "542088840250",
-        appId: "1:542088840250:web:b635167b5919f171556103",
-        measurementId: "G-JK3VHJ4MR9"
-    };
-
-    // Initialize Firebase
-
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-    const storage = getStorage(app);
-
-
-    // Initialize Firebase
-
-
-    let newImageUrl = '';
-    let newImageFile = null;
-    let dropzoneInstance;
-
-    document.getElementById('uploadLink').addEventListener('click', function (event) {
-        event.preventDefault(); // Varsayılan tıklama davranışını engelle
-
-        Swal.fire({
-            title: 'Resim Yükle',
-            html: `
-          <div class="upload-container">
-              <div class="current-avatar-container mb-3">
-                  <img src="${document.getElementById('currentAvatar').src}" alt="Current Avatar" class="current-avatar" id="swalCurrentAvatar">
-              </div>
-              <form id="dropzone" class="dropzone">
-                  <div class="dz-message">Dosyanızı buraya sürükleyin veya tıklayın</div>
-              </form>
-          </div>
-          `,
-            showCancelButton: true,
-            cancelButtonText: 'Geri',
-            confirmButtonText: 'Kaydet',
-            showConfirmButton: true,
-            width: 600,
-            didOpen: () => {
-                Dropzone.autoDiscover = false;
-                dropzoneInstance = new Dropzone("#dropzone", {
-                    url: "/file/upload", // Dosya yükleme URL'si (gerçek backend olduğunda)
-                    autoProcessQueue: false, // Otomatik olarak dosya yüklemesini durdur
-                    maxFiles: 1,
-                    acceptedFiles: "image/*",
-                    init: function () {
-                        this.on("addedfile", function (file) {
-                            if (this.files.length > 1) {
-                                this.removeFile(this.files[0]);
-                            }
-                            newImageFile = file;
-                            newImageUrl = URL.createObjectURL(file);
-                            document.getElementById('swalCurrentAvatar').src = newImageUrl; // Güncellenmiş resmi göster
-                        });
-
-                        this.on("error", function (file, response) {
-                            Swal.fire('Hata', 'Yükleme sırasında bir hata oluştu.', 'error');
-                        });
-                    }
-                });
-            },
-            preConfirm: () => {
-                if (newImageFile) {
-                    // Firebase'e yeni resmi yükle ve URL'yi al
-                    return uploadImageToFirebase(newImageFile).then(url => {
-                        newImageUrl = url;
-
-                        // URL'yi backend'e gönder
-                        return fetch('/User/UploadProfilePicture', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({ fileUrl: newImageUrl })
-                        })
-                            .then(response => {
-                                if (!response.ok) {
-                                    throw new Error('Yükleme başarısız oldu');
-                                }
-                                return response.json();
-                            })
-                            .then(data => {
-                                if (!data.success) {
-                                    throw new Error(data.message);
-                                }
-                                Swal.fire({
-                                    title: 'Başarılı!',
-                                    text: 'Profil resminiz başarıyla yüklendi.',
-                                    icon: 'success',
-                                    confirmButtonText: 'Tamam'
-                                }).then(() => {
-                                    document.getElementById('currentAvatar').src = newImageUrl; // Ana sayfadaki resmi güncelle
-                                });
-                                return data;
-                            })
-                            .catch(error => {
-                                Swal.showValidationMessage(`Yükleme başarısız oldu: ${error}`);
-                            });
-
-                    }).catch(error => {
-                        Swal.showValidationMessage(`Yükleme başarısız oldu: ${error}`);
-                    });
-                } else {
-                    Swal.showValidationMessage('Lütfen bir resim seçin.');
-                }
-            },
-            willClose: () => {
-                // Modal kapandığında newImageUrl'yi sıfırla
-                if (!Swal.isConfirmed()) {
-                    newImageUrl = '';
-                    newImageFile = null;
-                    if (dropzoneInstance) {
-                        dropzoneInstance.removeAllFiles(true);
-                    }
-                }
-            }
-        });
-    });
-
-    async function uploadImageToFirebase(file) {
-        try {
-            const storageRef = ref(storage, `images/${file.name}`);
-            await uploadBytes(storageRef, file);
-            const fileURL = await getDownloadURL(storageRef);
-            return fileURL;
-        } catch (error) {
-            console.error("Error uploading image: ", error);
-            throw error;
-        }
-    }
-
-</script>}
 
 <style>
-    /* Ana Konteyner */
-    .profile-container {
-        display: flex;
-        margin: 20px auto;
-        max-width: 1200px;
-        width: 100%;
-        background-color: #fff;
-        border-radius: 8px;
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-    }
-
-    /* Kenar Çubuğu */
-    .profile-sidebar {
-        width: 300px;
-        background-color: #0056b3;
-        color: #fff;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 20px;
-    }
-
-    .profile-avatar-container {
-        text-align: center;
-        position: relative;
-    }
-
-    .profile-avatar {
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        border: 3px solid #fff;
-        margin-bottom: 10px;
-        transition: transform 0.3s;
-    }
-
-    .profile-avatar:hover {
-        transform: scale(1.1);
-    }
-
-    .profile-avatar-link {
-        display: inline-block;
-        text-decoration: none;
-        color: inherit;
-    }
-
-    .profile-name {
-        font-size: 20px;
-        /* Font size adjusted for better readability */
-        font-weight: bold;
-        margin: 10px 0;
-    }
-
-    .profile-menu {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        width: 100%;
-    }
-
-    .profile-menu-item {
-        width: 100%;
-        text-align: center;
-        padding: 8px 0;
-        /* Increased padding for better spacing */
-        transition: background-color 0.3s ease, color 0.3s ease;
-    }
-
-    .profile-menu-item a {
-        color: #fff;
-        text-decoration: none;
-        display: block;
-        width: 100%;
-        padding: 12px 0;
-        /* Increased padding for better spacing */
-    }
-
-    .profile-menu-item a:hover {
-        background-color: #00408a;
-    }
-
-    .profile-menu-item.active a {
-        background-color: #003d82;
-    }
-
-    /* İçerik Alanı */
-    .profile-content {
-        flex-grow: 1;
-        padding: 30px;
-        /* Increased padding for better spacing */
-    }
-
-    .profile-card {
-        background: #fff;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        margin-bottom: 20px;
-    }
-
-    .profile-card-header {
-        background-color: #0056b3;
-        color: #fff;
-        padding: 20px;
-        /* Increased padding for better spacing */
-        font-size: 20px;
-        /* Font size adjusted for better readability */
-        font-weight: bold;
-        text-align: center;
-        border-top-left-radius: 8px;
-        border-top-right-radius: 8px;
-    }
-
-    .profile-card-body {
-        padding: 20px;
-    }
-
     .form-group {
         margin-bottom: 20px;
         /* Increased margin for better spacing */
@@ -523,95 +268,5 @@
     .form-row .form-group {
         flex: 1;
         padding: 0 10px;
-    }
-
-    /* Ekstil ve Geçişler */
-    .profile-card:hover {
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    }
-
-    .profile-card-header:hover {
-        background-color: #00408a;
-    }
-
-    .form-control:hover {
-        border-color: #00408a;
-    }
-
-    /* Butonlar */
-    .btn-primary:active {
-        background-color: #003d82;
-        box-shadow: 0 2px 4px rgba(0, 64, 138, 0.2);
-    }
-
-    /* Hover ve Focus Durumları */
-    .profile-card:hover .profile-card-header {
-        background-color: #00408a;
-    }
-
-    .profile-avatar-container {
-        text-align: center;
-        position: relative;
-    }
-
-    .profile-avatar {
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        border: 3px solid #fff;
-        margin-bottom: 10px;
-        transition: transform 0.3s;
-    }
-
-    .profile-avatar:hover {
-        transform: scale(1.1);
-    }
-
-    .profile-avatar-link {
-        display: inline-block;
-        text-decoration: none;
-        color: inherit;
-    }
-
-    .upload-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .current-avatar-container {
-        text-align: center;
-        margin-top: 10px;
-    }
-
-    .current-avatar {
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        border: 3px solid #fff;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .dropzone {
-        border: 2px dashed #007bff;
-        border-radius: 10px;
-        background: #f8f9fa;
-        padding: 20px;
-        width: 100%;
-    }
-
-    .dropzone .dz-message {
-        font-size: 18px;
-        font-weight: bold;
-        color: #007bff;
-    }
-
-    .swal2-popup .swal2-title {
-        font-size: 24px;
-    }
-
-    .swal2-popup .swal2-actions button {
-        font-size: 16px;
-        padding: 10px 20px;
     }
 </style>
