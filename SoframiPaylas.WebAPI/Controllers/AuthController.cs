@@ -78,6 +78,27 @@ namespace SoframiPaylas.WebAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangeUserPassword([FromBody] ChangeUserPasswordDto dto)
+        {
 
+            try
+            {
+                var result = await _authService.ChangeUserPassword(dto);
+                if (result)
+                {
+                    return Ok("Password changed successfully.");
+                }
+                else
+                {
+                    return BadRequest("Password change failed.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
     }
 }

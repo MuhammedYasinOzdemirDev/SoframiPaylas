@@ -7,6 +7,7 @@ using AutoMapper;
 using FirebaseAdmin.Auth;
 using Newtonsoft.Json.Linq;
 using SoframiPaylas.Application.DTOs;
+using SoframiPaylas.Application.DTOs.User;
 using SoframiPaylas.Application.ExternalServices.Interfaces;
 using SoframiPaylas.Application.Interfaces;
 using SoframiPaylas.Domain.Entities;
@@ -58,6 +59,20 @@ namespace SoframiPaylas.Application.Services
         public async Task<FirebaseUser> VerifyUser(string idToken)
         {
             return await _authRepository.GetUserDetailsAsync(idToken);
+        }
+        public async Task<bool> ChangeUserPassword(ChangeUserPasswordDto dto)
+        {
+            var signInResult = await _authRepository.SignInWithEmailAndPassword(dto.Email, dto.OldPassword);
+            if (signInResult == null)
+            {
+                throw new Exception("Eski şifreniz yanlış.");
+            }
+            if (await _authRepository.ChangeUserPassword(dto.UserId, dto.NewPassword))
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

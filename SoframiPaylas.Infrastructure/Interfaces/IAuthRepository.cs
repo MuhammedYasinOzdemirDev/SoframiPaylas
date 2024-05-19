@@ -10,5 +10,6 @@ namespace SoframiPaylas.Infrastructure.Interfaces
         Task<bool> GetUserByUsernameAsync(string username);
         Task<string> SignInWithEmailAndPassword(string email, string password);
         Task<FirebaseUser> GetUserDetailsAsync(string idToken);
+        Task<bool> ChangeUserPassword(string userId, string newPassword);
     }
 }

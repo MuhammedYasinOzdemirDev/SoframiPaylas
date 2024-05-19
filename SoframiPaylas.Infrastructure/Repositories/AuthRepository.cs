@@ -123,5 +123,27 @@ namespace SoframiPaylas.Infrastructure.Repositories
             Console.WriteLine(jsonResponse);
             return JsonConvert.DeserializeObject<List<FirebaseUser>>(JObject.Parse(jsonResponse)["users"].ToString()).FirstOrDefault();
         }
+        public async Task<bool> ChangeUserPassword(string userId, string newPassword)
+        {
+            try
+            {
+                UserRecord user = await auth.GetUserAsync(userId);
+
+                UserRecordArgs args = new UserRecordArgs()
+                {
+                    Uid = userId,
+                    Password = newPassword
+                };
+                UserRecord updatedUser = await auth.UpdateUserAsync(args);
+
+                return true;
+            }
+            catch (FirebaseAuthException ex)
+            {
+                Console.WriteLine($"Hata: {ex.Message}");
+                return false;
+            }
+        }
+
     }
 }

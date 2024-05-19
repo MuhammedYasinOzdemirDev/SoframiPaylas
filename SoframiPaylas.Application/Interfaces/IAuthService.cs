@@ -1,5 +1,6 @@
 
 using SoframiPaylas.Application.DTOs;
+using SoframiPaylas.Application.DTOs.User;
 using SoframiPaylas.Domain.Entities;
 
 namespace SoframiPaylas.Application.Interfaces
@@ -10,5 +11,6 @@ namespace SoframiPaylas.Application.Interfaces
         Task<bool> GetUserByUsernameAsync(string username);
         Task<string> AuthenticateAsync(string email, string password);
         Task<FirebaseUser> VerifyUser(string idToken);
+        Task<bool> ChangeUserPassword(ChangeUserPasswordDto dto);
     }
 }
