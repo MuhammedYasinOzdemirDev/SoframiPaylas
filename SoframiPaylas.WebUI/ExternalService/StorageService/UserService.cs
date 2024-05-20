@@ -8,7 +8,9 @@ using System.Threading.Tasks;
 public interface IUserService
 {
     UserProfileViewModel GetUser();
-    String GetUserId();
+    string GetUserId();
+    string GetEmail();
+    string GetProfilePicture();
     Task<HttpResponseMessage> UpdateUser(UserProfileViewModel user);
     Task SetUser(string userId);
 }
@@ -32,7 +34,7 @@ public class UserService : IUserService
         // Kullanıcı bilgisini döndürür
         return _currentUser;
     }
-    public String GetUserId()
+    public string GetUserId()
     {
         return _currentUserId;
     }
@@ -68,5 +70,14 @@ public class UserService : IUserService
                 AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1) // Cache süresi 1 saat
             });
         }
+    }
+
+    public string GetEmail()
+    {
+        return _currentUser.Email;
+    }
+    public string GetProfilePicture()
+    {
+        return _currentUser.ProfilePicture;
     }
 }
