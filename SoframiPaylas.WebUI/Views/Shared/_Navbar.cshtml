@@ -2,86 +2,138 @@
 var isAuthenticated = HttpContextAccessor.HttpContext.User.Identity.IsAuthenticated;
 
 }
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
-    <a class="navbar-brand" href="#"><i class="bi bi-bing"></i>Sofranı Paylaş</a>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+    <a class="navbar-brand" href="#"><i class="bi bi-bing"></i> Sofranı Paylaş</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="/">Home </a>
+    <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+        <ul class="navbar-nav mx-auto">
+            <li class="nav-item active d-flex align-items-center">
+                <a class="nav-link" href="/">Home</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item d-flex align-items-center">
                 <a class="nav-link" href="/Post/List">Posts</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item d-flex align-items-center">
                 <a class="nav-link" href="#">About</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item d-flex align-items-center">
                 <a class="nav-link" href="#">Contact</a>
             </li>
         </ul>
-        <ul class="navbar-nav ml-auto">
-            @if (isAuthenticated)
+        <ul class="navbar-nav">
+            @if (!isAuthenticated)
             {
-
-            <li class="nav-item">
-                <form asp-action="Logout" asp-controller="Auth" method="post">
-                    <button type="submit" class="nav-link">Çıkış Yap</button>
-                </form>
-
+            <li class="nav-item d-flex align-items-center">
+                <a class="nav-link btn btn-outline-primary" asp-controller="Auth" asp-action="Register">Register</a>
+            </li>
+            <li class="nav-item d-flex align-items-center">
+                <a class="nav-link btn btn-outline-success ml-2" asp-controller="Auth" asp-action="Login">Login</a>
             </li>
             }
-            else{
-            <li class="nav-item">
-                <a class="nav-link" asp-controller="Auth" asp-action="Login">Login</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" asp-controller="Auth" asp-action="Register">Register</a>
-            </li>
+            else
+            {
+            @await Component.InvokeAsync("UserProfile")
             }
-
         </ul>
     </div>
 </nav>
 
 
+
+
+
 <style>
     /* Navbar özelleştirmeleri */
     .navbar {
-        background-color: #ff6a00 !important;
-        /* Bootstrap mavi yerine turuncu renk */
+        background-color: #ffffff !important;
+        /* Arka plan rengi */
+        padding: 15px 30px;
         width: 96%;
-        /* Genişliği sayfanın tamamına yay */
-        padding: 8px 16px;
         margin: auto;
         border-radius: 8px;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-weight: 500;
+        font-size: 1em;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s, box-shadow 0.3s;
     }
 
+    .navbar-brand {
+        font-size: 1.5em;
+        font-weight: bold;
+        color: #333;
+        transition: color 0.3s;
+    }
 
-    .navbar-brand,
+    .navbar-brand i {
+        margin-right: 10px;
+    }
+
     .navbar-nav .nav-link {
-        color: #fff !important;
+        color: #333 !important;
+        margin-right: 15px;
+        transition: color 0.3s, background-color 0.3s;
     }
 
     .navbar-nav .nav-link:hover {
-        color: #cce5ff !important;
+        color: #007bff !important;
+        background-color: #f1f1f1;
+        text-decoration: underline;
+        border-radius: 4px;
+
     }
 
     .navbar-toggler {
-        border-color: #0056b3;
+        border-color: #007bff;
+        transition: border-color 0.3s;
     }
 
     .navbar-toggler-icon {
-        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255, 255, 255, 0.5)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(0, 123, 255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+    }
+
+    .nav-link.btn {
+        text-decoration: none !important;
+        padding: 5px 15px;
+        border-radius: 25px;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .nav-link.btn-outline-primary {
+        border-color: #007bff;
+        color: #007bff !important;
+    }
+
+    .nav-link.btn-outline-primary:hover {
+        background-color: #007bff;
+        color: #fff !important;
+    }
+
+    .nav-link.btn-outline-success {
+        border-color: #28a745;
+        color: #28a745 !important;
+    }
+
+    .nav-link.btn-outline-success:hover {
+        background-color: #28a745;
+        color: #fff !important;
     }
 
     .navbar-profile-image {
-        width: 40px;
-        height: 40px;
+        width: 60px;
+        height: 60px;
         border-radius: 50%;
         object-fit: cover;
+        margin-right: 8px;
+        border: 2px solid #fff;
+        transition: border-color 0.3s;
+    }
+
+    .navbar-profile-image:hover {
+        border-color: #007bff;
     }
 </style>
