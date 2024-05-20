@@ -12,7 +12,7 @@ public class PostViewModel
     public string FormattedDate { get; set; }
     public string Time { get; set; }
     public int MaxParticipants { get; set; }
-    public List<string> Images { get; set; }
+    public string Image { get; set; }
     public bool PostStatus { get; set; }
     public List<string> RelatedFoods { get; set; }
 

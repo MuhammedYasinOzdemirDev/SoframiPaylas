@@ -26,8 +26,8 @@ namespace SoframiPaylas.Domain.Entities
         [FirestoreProperty("maxParticipants")]
         public int MaxParticipants { get; set; }
 
-        [FirestoreProperty("images")]
-        public List<string> Images { get; set; }
+        [FirestoreProperty("image")]
+        public string Image { get; set; }
 
         [FirestoreProperty("eventStatus")]
         public bool PostStatus { get; set; }

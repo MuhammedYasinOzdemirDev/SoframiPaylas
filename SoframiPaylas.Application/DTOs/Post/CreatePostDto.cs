@@ -51,8 +51,8 @@ namespace SoframiPaylas.Application.DTOs.Post
         /// <summary>
         /// Gönderi ile ilişkili resimlerin listesi.
         /// </summary>
-        /// <example>["https://example.com/images/event1.jpg", "https://example.com/images/event2.jpg"]</example>
-        public List<string> Images { get; set; }
+        /// <example>"https://example.com/images/event2.jpg"</example>
+        public string Image { get; set; }
 
         /// <summary>
         /// Gönderinin aktif olup olmadığını gösterir.

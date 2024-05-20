@@ -141,7 +141,7 @@ namespace SoframiPaylas.WebAPI.Controllers
         ///        "formattedDate": "01/10/2024",
         ///        "time": "12:00",
         ///        "maxParticipants": 100,
-        ///        "images": ["https://example.com/images/festival1.jpg", "https://example.com/images/festival2.jpg"],
+        ///        "images": "https://example.com/images/festival1.jpg",
         ///        "postStatus": true,
         ///        "relatedFoods": ["Sushi", "Taco", "Pizza"],
         ///        "participants": ["user1", "user2"]

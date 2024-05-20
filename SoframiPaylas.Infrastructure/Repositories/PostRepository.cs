@@ -79,7 +79,7 @@ namespace SoframiPaylas.Infrastructure.Repositories
                             Date = postDict.ContainsKey("date") ? (Timestamp)postDict["date"] : new Timestamp(),
                             Time = postDict.ContainsKey("time") ? postDict["time"].ToString() : null,
                             MaxParticipants = postDict.ContainsKey("maxParticipants") ? Convert.ToInt32(postDict["maxParticipants"]) : 0,
-                            Images = postDict.ContainsKey("images") ? ((List<object>)postDict["images"]).ConvertAll(obj => obj.ToString()) : new List<string>(),
+                            Image = postDict.ContainsKey("image") ? postDict["image"].ToString() : null,
                             PostStatus = postDict.ContainsKey("eventStatus") ? Convert.ToBoolean(postDict["eventStatus"]) : false,
                             RelatedFoods = postDict.ContainsKey("relatedFoods") && postDict["relatedFoods"] is List<string> ? (List<string>)postDict["relatedFoods"] : null,
                             Participants = postDict.ContainsKey("participants") && postDict["participants"] is List<string> ? (List<string>)postDict["participants"] : null
@@ -120,7 +120,7 @@ namespace SoframiPaylas.Infrastructure.Repositories
                     Date = postDict.ContainsKey("date") ? (Timestamp)postDict["date"] : new Timestamp(),
                     Time = postDict.ContainsKey("time") ? postDict["time"].ToString() : null,
                     MaxParticipants = postDict.ContainsKey("maxParticipants") ? Convert.ToInt32(postDict["maxParticipants"]) : 0,
-                    Images = postDict.ContainsKey("images") ? ((List<object>)postDict["images"]).ConvertAll(obj => obj.ToString()) : new List<string>(),
+                    Image = postDict.ContainsKey("image") ? postDict["image"].ToString() : null,
                     PostStatus = postDict.ContainsKey("eventStatus") ? Convert.ToBoolean(postDict["eventStatus"]) : false,
                     RelatedFoods = postDict.ContainsKey("relatedFoods") && postDict["relatedFoods"] is List<string> ? (List<string>)postDict["relatedFoods"] : null,
                     Participants = postDict.ContainsKey("participants") && postDict["participants"] is List<string> ? (List<string>)postDict["participants"] : null
