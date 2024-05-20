@@ -1,33 +1,129 @@
 @model List<PostViewModel>
+    @{
+    bool isAuthenticated = User.Identity.IsAuthenticated;
+    }
     <div class="container">
-        <!-- Yemek Paylaşım İlanları ve Etkinlikler -->
-        <div class="row mt-4">
-            <div class="col-md-8">
-                <h2>Yemek Paylaşım İlanları</h2>
-                @foreach (var post in Model){
-                <!-- İlan Kartı -->
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">@post.Title</h5>
-                        <p class="card-text">@post.Description</p>
-                        <a href="#" class="btn btn-primary">Katıl</a>
-                    </div>
-                </div>}
-
+        <div class="jumbotron jumbotron-fluid custom-jumbotron">
+            <div class="container text-center">
+                @if (isAuthenticated)
+                {
+                <h1 class="display-4">Hoş Geldiniz, @User.Identity.Name!</h1>
+                <p class="lead">Sofranı Paylaş ile toplulukla yemek paylaşmanın tadını çıkarın.</p>
+                <hr class="my-4">
+                <p>Sofranı Paylaş, kullanıcıların yemeklerini paylaşmalarını ve toplulukla bağ kurmalarını sağlar. Yemek
+                    ilanları ve etkinlikler ile kullanıcılar, lezzetli yemeklerin tadını çıkarabilir ve yeni
+                    arkadaşlıklar
+                    kurabilirler.</p>
+                <a class="btn btn-primary btn-lg" href="#" role="button">Paylaşım Yap</a>
+                }
+                else
+                {
+                <h1 class="display-4">Sofranı Paylaş</h1>
+                <p class="lead">Toplumu bir araya getiren ve yemek paylaşımını teşvik eden yenilikçi bir platform.</p>
+                <hr class="my-4">
+                <p>Sofranı Paylaş, kullanıcıların yemeklerini paylaşmalarını ve toplulukla bağ kurmalarını sağlar. Yemek
+                    ilanları ve etkinlikler ile kullanıcılar, lezzetli yemeklerin tadını çıkarabilir ve yeni
+                    arkadaşlıklar
+                    kurabilirler.</p>
+                <a class="btn btn-primary btn-lg" href="/Account/Login" role="button">Giriş Yap</a>
+                <a class="btn btn-secondary btn-lg" href="/Account/Register" role="button">Kayıt Ol</a>
+                }
             </div>
-            <div class="col-md-4">
-                <h2>Etkinlikler</h2>
-                <!-- Etkinlik Listesi -->
-                <ul class="list-group">
-                    <li class="list-group-item">Açık Hava Sineması</li>
-                    <li class="list-group-item">Kitap Kulübü Buluşması</li>
-                </ul>
-                <div>
+        </div>
+        <hr>
+        <div class="row mt-4">
+            <div class="col-md-3">
+                <div class="card mb-3 card-recent-posts">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Son Eklenen Postlar</h5>
+                    </div>
+                    <div class="card-body">
+                        @foreach (var post in Model){
+                        <div class="mb-3">
+                            <h6 class="mb-0">
+                                <a href="">@post.Title</a>
+                            </h6>
+                        </div>
+                        }
+                    </div>
+                </div>
+                <div class="filter-section mb-3 card">
                     <h2>Arama Yap</h2>
                     <input type="text" class="form-control" placeholder="Etkinlik veya yemek arayın">
-                    <button class="btn btn-primary mt-2">Ara</button>
+                    <button class="btn btn-primary mt-2 form-control">Ara</button>
                 </div>
+
+
+                <div class="filter-section mb-3 card">
+                    <h2>Filtrele</h2>
+                    <form>
+
+                        <div class="form-group">
+                            <label for="location">Konum</label>
+                            <input type="text" class="form-control" id="location" placeholder="Konum girin">
+                        </div>
+                        <div class="form-group">
+                            <label for="date">Tarih</label>
+                            <input type="date" class="form-control" id="date">
+                        </div>
+                        <div class="form-group">
+                            <label for="participants">Katılımcı Sayısı</label>
+                            <input type="number" class="form-control" id="participants"
+                                placeholder="Minimum katılımcı sayısı">
+                        </div>
+                        <button type="submit" class="btn btn-primary form-control">Filtrele</button>
+                    </form>
+                </div>
+
+
             </div>
+            <div class="col-md-9">
+                <h2>Yemek Paylaşım İlanları</h2>
+                <div class="posts-container">
+                    @foreach (var post in Model)
+                    {
+                    @{
+
+                    var latitude = @post.Location.Latitude;
+                    var longitude = @post.Location.Longitude;
+                    var googleMapsUrl = $"https://www.google.com/maps/search/?api=1&query={latitude},{longitude}";
+                    }
+                    <!-- İlan Kartı -->
+                    <div class="card bg-transparent border-0 mb-3">
+                        <div class="card-header bg-white border-bottom-0">
+                            <h5 class="card-title">@post.Title</h5>
+                            <p class="card-subtitle text-muted"><a href="">Muhammed Yasin</a> </p>
+                        </div>
+                        <img src="@post.Image" class="card-img-top" alt="@post.Title">
+                        <div class="card-body">
+                            <p class="card-text">@post.Description</p>
+
+                            <p class="card-text">
+                                <small class="text-muted">Saat: @post.Time</small>
+                            </p>
+                            <p class="card-text">
+                                <small class="text-muted">Katılımcılar: @post.Participants.Count /
+                                    @post.MaxParticipants</small>
+                            </p>
+                            <p class="card-text">
+                                <small class="text-muted"> <i style="color: #dc3545;
+                                    margin-right: 5px;" class="bi bi-geo-alt-fill"></i> Konum: <a href="@googleMapsUrl"
+                                        target="_blank">Etkinlik Konumunu Görüntüle</a></small>
+                            </p>
+                            <a href="#" class="btn btn-primary">Katıl</a>
+                            <a href="#" class="btn btn-secondary">Detaylar</a>
+                        </div>
+                    </div>
+                    }
+
+                </div>
+
+
+            </div>
+
+
+
+
         </div>
 
 
@@ -42,3 +138,263 @@
             </div>
         </div>
     </div>
+    <style>
+        .container {
+            max-width: 1200px;
+        }
+
+        .custom-jumbotron {
+            background-color: #f8f9fa;
+            padding: 2rem 1rem;
+            border-radius: 0.5rem;
+        }
+
+        .custom-jumbotron h1 {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #343a40;
+        }
+
+        .custom-jumbotron .lead {
+            font-size: 1.5rem;
+            color: #6c757d;
+        }
+
+        .custom-jumbotron .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            margin-top: 20px;
+        }
+
+        .custom-jumbotron .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        .custom-jumbotron .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+            margin-top: 20px;
+        }
+
+        .custom-jumbotron .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+        }
+
+        .custom-jumbotron hr {
+            border-top: 1px solid #e0e0e0;
+            width: 50%;
+            margin: 2rem auto;
+        }
+
+        h2 {
+
+            margin-bottom: 30px;
+            color: #343a40;
+        }
+
+        .posts-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: baseline;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 20px;
+            background-color: #fff;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-header {
+            padding: 10px 20px;
+        }
+
+        .card-title {
+            font-size: 1.5em;
+            margin-bottom: 0.5em;
+            color: #333;
+            transition: color 0.2s;
+        }
+
+
+        .card-subtitle {
+            font-size: 1em;
+            color: #6c757d;
+        }
+
+        .card-subtitle a {
+            color: #007bff;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .card-subtitle a:hover {
+            color: #0056b3;
+            text-decoration: underline;
+        }
+
+        .card-img-top {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-text {
+            margin-bottom: 10px;
+            color: #6c757d;
+        }
+
+        .card-text a {
+            color: #007bff;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .card-text a:hover {
+            color: #0056b3;
+            text-decoration: underline;
+        }
+
+        .btn {
+            margin-right: 10px;
+            padding: 8px 16px;
+            font-size: 1em;
+            border-radius: 5px;
+            transition: background-color 0.2s, border-color 0.2s, transform 0.2s;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+            color: #fff;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .filter-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-section h2 {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            color: #343a40;
+        }
+
+        .filter-section .form-group {
+            margin-bottom: 15px;
+        }
+
+        .filter-section .btn-block {
+            width: 80%;
+        }
+
+        .card-recent-posts {
+            background: #fff;
+            /* Beyaz arka plan */
+            border-radius: 0.5rem;
+            /* Yuvarlak köşeler */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            /* Hafif bir gölge */
+        }
+
+        /* Kart başlığı */
+        .card-recent-posts .card-header {
+            background-color: #f7f7f7;
+            /* Hafif gri arka plan */
+            border-bottom: 1px solid #eaeaea;
+            /* Başlık altında ince bir çizgi */
+        }
+
+        /* Kart başlığı için başlık stil ayarlamaları */
+        .card-recent-posts .card-title {
+            color: #333;
+            /* Başlık yazı rengi */
+            font-size: 1.2rem;
+            /* Başlık font boyutu */
+            margin-bottom: 0.75rem;
+            /* Başlık altı boşluk */
+        }
+
+        /* Post başlıkları */
+        .card-recent-posts h6 {
+            font-size: 1rem;
+            /* Post başlık font boyutu */
+            color: #007bff;
+            /* Post başlık rengi */
+            font-weight: 500;
+            /* Biraz kalın */
+            margin-bottom: 0.5rem;
+            /* Post başlıkları altındaki boşluk */
+            transition: color 0.3s ease-in-out;
+            /* Renk geçiş animasyonu */
+        }
+
+        /* Post başlıklarının üzerine gelindiğinde */
+        .card-recent-posts h6:hover {
+            color: #0056b3;
+            /* Hover rengi */
+            text-decoration: none;
+            /* Altı çizili olmaktan çıkar */
+            cursor: pointer;
+            /* İmleç işareti */
+        }
+
+        /* Her post arasındaki ayırıcı için */
+        .card-recent-posts .mb-3 {
+            padding-bottom: 0.75rem;
+            /* Alt padding */
+            border-bottom: 1px solid #eaeaea;
+            /* İnce çizgi ayırıcı */
+        }
+
+        /* Son post için alt çizgiyi kaldır */
+        .card-recent-posts .mb-3:last-child {
+            border-bottom: none;
+        }
+
+        .card-recent-posts .card-body a {
+            text-decoration: none;
+        }
+    </style>
