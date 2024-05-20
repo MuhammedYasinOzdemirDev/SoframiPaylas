@@ -54,5 +54,13 @@ namespace SoframiPaylas.WebUI.Services
             string jsonString = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<FirebaseUser>(jsonString);
         }
+        public async Task<HttpResponseMessage> ChangePasswordAsync(ChangePasswordRequest model)
+        {
+            var passwordDto = _mapper.Map<ChangeUserPasswordDto>(model);
+            var url = new Uri(_httpClient.BaseAddress + "Auth/change-password");
+
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync(url, passwordDto);
+            return response;
+        }
     }
 }

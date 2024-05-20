@@ -2,6 +2,7 @@ using System.Text;
 using AutoMapper;
 using Newtonsoft.Json;
 using SoframiPaylas.Application.DTOs;
+using SoframiPaylas.Application.DTOs.User;
 using SoframiPaylas.WebUI.Models;
 using SoframiPaylas.WebUI.Services.Interfaces;
 
@@ -39,33 +40,7 @@ public class UserApiService : IUserApiService
         HttpResponseMessage response = await _httpClient.PutAsync(url.Uri, content);
         return response;
     }
-    public async Task<HttpResponseMessage> UploadProfilePicture(byte[] file, string userId)
-    {
 
-        if (file == null || file.Length == 0)
-        {
-            throw new ArgumentException("Dosya geçersiz.");
-        }
 
-        var url = new UriBuilder(_httpClient.BaseAddress + "User/UploadProfilePicture")
-        {
-            Query = $"userId={userId}"
-        };
-
-        byte[] fileBytes;
-        /*using (var ms = new MemoryStream())
-        {
-            await file.CopyToAsync(ms);
-            fileBytes = ms.ToArray();
-        }*/
-
-        var content = new ByteArrayContent(file);
-        content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
-
-        // HTTP PUT isteği yapın
-        HttpResponseMessage response = await _httpClient.PutAsync(url.Uri, content);
-        return response;
-
-    }
 
 }

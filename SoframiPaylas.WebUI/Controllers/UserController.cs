@@ -120,8 +120,15 @@ namespace SoframiPaylas.WebUI.Controllers
 
         public IActionResult Security()
         {
-            return View();
+            var user = _userService.GetUser();
+            var securitViewModel = new SecurityViewModel
+            {
+                UserName = user.Name,
+                ProfilePicture = user.ProfilePicture
+            };
+            return View(securitViewModel);
         }
+
 
 
     }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using SoframiPaylas.WebUI.ExternalService.StorageService;
 using SoframiPaylas.WebUI.Models;
 using SoframiPaylas.WebUI.Services.Interfaces;
 
@@ -15,10 +16,12 @@ namespace SoframiPaylas.WebUI.Controllers
     public class AuthController : Controller
     {
         private readonly IAuthService _authService;
+        private readonly IUserService _userService;
 
-        public AuthController(IAuthService authService)
+        public AuthController(IAuthService authService, IUserService userService)
         {
             _authService = authService;
+            _userService = userService;
         }
         [HttpGet]
         public IActionResult Register()
@@ -163,6 +166,82 @@ namespace SoframiPaylas.WebUI.Controllers
             HttpContext.Response.Cookies.Delete("AuthToken");
             return RedirectToAction("Index", "Home");
         }
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordViewModel model)
+        {
 
+            if (model == null)
+            {
+                return Json(new { message = "Please enter your current password and new password", success = false });
+            }
+            if (model.NewPassword != model.ConfirmNewPassword)
+            {
+                return Json(new { message = "Parola eşleşmiyor", success = false });
+            }
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var email = _userService.GetEmail();
+                    var userId = _userService.GetUserId();
+                    var request = new ChangePasswordRequest
+                    {
+                        Email = email,
+                        UserId = userId,
+                        NewPassword = model.NewPassword,
+                        OldPassword = model.CurrentPassword
+                    };
+                    var response = await _authService.ChangePasswordAsync(request);
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        string errorMessage = response.Content.ReadAsStringAsync().Result;
+                        if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                        {
+                            return Json(new { success = false, message = "Güncelleme sırasında bir hata oluştu: " });
+                        }
+                        else if (response.StatusCode >= System.Net.HttpStatusCode.InternalServerError)
+                        {
+                            return Json(new { success = false, message = "Bir sunucu hatası oluştu, lütfen daha sonra tekrar deneyiniz." });
+                        }
+                        else
+                        {
+                            return Json(new { success = false, message = "Yükleme sırasında bir hata oluştu: " + errorMessage });
+                        }
+                    }
+                    var LoginViewModel = new LoginViewModel
+                    {
+                        Email = email,
+                        Password = model.NewPassword
+                    };
+                    var response2 = await _authService.LoginAsync(LoginViewModel);
+                    if (response2.IsSuccessStatusCode)
+                    {
+                        var responseContent = await response2.Content.ReadAsStringAsync();
+                        dynamic jsonResponse = JsonConvert.DeserializeObject<dynamic>(responseContent);
+                        string token = jsonResponse?.token;
+
+                        var cookieOptions = new CookieOptions
+                        {
+                            HttpOnly = true,
+                            Secure = true,
+                            SameSite = SameSiteMode.Strict, // Burada Lax da kullanılabilir, kullanım durumunuza bağlı.
+                            Expires = DateTimeOffset.UtcNow.AddDays(1) // 1 gün sonra sona erecek
+                        };
+
+                        HttpContext.Response.Cookies.Append("AuthToken", token, cookieOptions);
+                        return Json(new { success = true, message = "Paralo  başarıyla güncellendi...", isLogin = true });
+                    }
+                    else
+                    {
+                        return Json(new { success = true, message = "Paralo  başarıyla güncellendi...", isLogin = false });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { message = ex.Message, success = false });
+                }
+            }
+            return Json(new { message = "Please enter your current password and new password", success = false });
+        }
     }
 }
