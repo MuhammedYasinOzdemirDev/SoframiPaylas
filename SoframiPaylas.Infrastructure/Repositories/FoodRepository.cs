@@ -67,10 +67,10 @@ namespace SoframiPaylas.Infrastructure.Repositories
                             Dictionary<string, object> foodDict = document.ToDictionary();
                             var food = new Food
                             {
-                                PostID = foodDict.ContainsKey("postID") ? foodDict["postID"].ToString() : null,
+
                                 Title = foodDict.ContainsKey("title") ? foodDict["title"].ToString() : null,
                                 Description = foodDict.ContainsKey("description") ? foodDict["description"].ToString() : null,
-                                Images = foodDict.ContainsKey("images") ? foodDict["images"].ToString() : null,
+
                             };
                             foods.Add(food);
                         }
@@ -99,10 +99,10 @@ namespace SoframiPaylas.Infrastructure.Repositories
                     Dictionary<string, object> foodDict = snapshot.ToDictionary();
                     return new Food
                     {
-                        PostID = foodDict.ContainsKey("postID") ? foodDict["postID"].ToString() : null,
+
                         Title = foodDict.ContainsKey("title") ? foodDict["title"].ToString() : null,
                         Description = foodDict.ContainsKey("description") ? foodDict["description"].ToString() : null,
-                        Images = foodDict.ContainsKey("images") ? foodDict["images"].ToString() : null,
+
                     };
                 }, TimeSpan.FromSeconds(20));
         }
