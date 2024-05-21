@@ -3,6 +3,7 @@ using Google.Cloud.Firestore;
 namespace SoframiPaylas.WebUI.Models;
 public class PostViewModel
 {
+    public string PostId { get; set; }
     public string HostID { get; set; }
 
     public string Title { get; set; }

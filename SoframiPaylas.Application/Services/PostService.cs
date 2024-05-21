@@ -40,7 +40,12 @@ namespace SoframiPaylas.Application.Services
         public async Task<IEnumerable<PostDto>> GetAllPostsAsync()
         {
             var posts = await _postRepository.GetPostAllAsync();
-            return posts.Select(e => _mapper.Map<PostDto>(e));
+            return posts.Select(e =>
+    {
+        var postDto = _mapper.Map<PostDto>(e.post);
+        postDto.PostId = e.Id;
+        return postDto;
+    });
         }
 
         public async Task<PostDto> GetPostByIdAsync(string id)

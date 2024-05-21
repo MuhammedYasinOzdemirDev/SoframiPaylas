@@ -55,7 +55,7 @@ namespace SoframiPaylas.Infrastructure.Repositories
                        }, TimeSpan.FromSeconds(20));
         }
 
-        public async Task<List<Post>> GetPostAllAsync()
+        public async Task<List<(Post post, string Id)>> GetPostAllAsync()
         {
             return await firebaseService.ExecuteFirestoreOperationAsync(async () =>
             {
@@ -64,12 +64,13 @@ namespace SoframiPaylas.Infrastructure.Repositories
                 CollectionReference postRef = db.Collection("Posts");
                 QuerySnapshot snapshots = await postRef.GetSnapshotAsync();
 
-                List<Post> posts = new List<Post>();
+                List<(Post post, string Id)> posts = new List<(Post post, string Id)>();
                 foreach (DocumentSnapshot document in snapshots.Documents)
                 {
                     if (document.Exists)
                     {
                         Dictionary<string, object> postDict = document.ToDictionary();
+                        var id = document.Id;
                         var postItem = new Post
                         {
                             HostID = postDict.ContainsKey("hostID") ? postDict["hostID"].ToString() : null,
@@ -85,7 +86,7 @@ namespace SoframiPaylas.Infrastructure.Repositories
                             Participants = postDict.ContainsKey("participants") && postDict["participants"] is List<string> ? (List<string>)postDict["participants"] : null
                         };
 
-                        posts.Add(postItem);
+                        posts.Add((postItem, id));
                     }
                 }
 

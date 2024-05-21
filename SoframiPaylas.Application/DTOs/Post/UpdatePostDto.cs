@@ -6,6 +6,7 @@ namespace SoframiPaylas.Application.DTOs.Post
 {
     public class UpdatePostDto
     {
+        public string PostId { get; set; }
         /// <summary>
         /// Gönderiyi oluşturan kullanıcının ID'si.
         /// </summary>
