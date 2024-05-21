@@ -1,0 +1,563 @@
+<div class="container mt-4">
+    <h2 class="text-center">Yeni Yemek Paylaşım İlanı Oluştur</h2>
+    <div class="row">
+        <!-- Form Section -->
+        <div class="col-md-7">
+            <div class="post-sharing-form">
+                <h4>Post Oluştur</h4>
+                <form id="postForm" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="title">Başlık</label>
+                        <input type="text" class="form-control" id="title" name="title" placeholder="Başlık girin"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Açıklama</label>
+                        <textarea class="form-control" id="description" name="description" rows="3"
+                            placeholder="Açıklama girin" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="location">Konum</label>
+                        <input type="hidden" class="form-control" id="location" name="location"
+                            placeholder="Konum seçmek için haritaya tıklayın" required>
+                    </div>
+                    <div id="map"></div>
+                    <div class="form-group">
+                        <input id="pac-input" class="form-control" type="text" placeholder="Konum ara">
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label for="formattedDate">Tarih</label>
+                            <input type="date" class="form-control" id="formattedDate" name="formattedDate" required>
+                        </div>
+                        <div class="form-group col-6">
+                            <label for="time">Zaman</label>
+                            <input type="time" class="form-control" id="time" name="time" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="maxParticipants">Maksimum Katılımcı Sayısı</label>
+                        <input type="number" class="form-control" id="maxParticipants" name="maxParticipants"
+                            placeholder="Maksimum katılımcı sayısını girin" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="image">Resim Yükle</label>
+                        <input type="file" class="form-control-file" id="image" name="image" accept="image/*" required>
+                        <input type="hidden" id="imageUrl" name="imageUrl">
+                    </div>
+                    <button type="button" class="btn btn-primary btn-block" id="uploadButton">Paylaş</button>
+                </form>
+            </div>
+        </div>
+
+
+        <!-- Food List Section -->
+        <div class="col-md-5">
+
+            <div class="post-sharing-form">
+
+                <h4>Yemek Ekle</h4>
+                <form id="foodForm" method="post">
+                    <div class="form-group">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="foodTitle" name="title"
+                                placeholder="Yemek adı girin" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea class="form-control" id="foodDescription" name="description" rows="3"
+                                placeholder="Açıklama girin" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" class="btn btn-primary btn-block" id="addFoodButton">Ekle</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="food-list ">
+                <h4>Eklenen Yemekler</h4>
+                <ul id="foodList">
+                    @foreach (var food in ViewBag.FoodList)
+                    {
+                    <li>
+                        <span class="food-name">@food</span>
+                        <button class="remove-food btn btn-danger btn-sm" data-food-id="@food.Id">Sil</button>
+                    </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<style>
+    .text-center {
+        text-align: center;
+        color: #343a40;
+        margin-bottom: 30px;
+    }
+
+    .post-sharing-form {
+        background: #f8f9fa;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+    }
+
+    .post-sharing-form h4 {
+        margin-bottom: 20px;
+        font-size: 1.5em;
+        color: #343a40;
+        text-align: center;
+    }
+
+    .post-sharing-form .form-group {
+        margin-bottom: 15px;
+    }
+
+    .post-sharing-form .form-control,
+    .post-sharing-form .form-control-file,
+    .post-sharing-form .form-select {
+        border: 1px solid #e0e0e0;
+        border-radius: 5px;
+        padding: 10px;
+        transition: border-color 0.2s;
+    }
+
+    .post-sharing-form .form-control:focus,
+    .post-sharing-form .form-control-file:focus,
+    .post-sharing-form .form-select:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    .post-sharing-form .btn {
+        background-color: #007bff;
+        border-color: #007bff;
+        color: #fff;
+        margin-top: 20px;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 1em;
+        transition: background-color 0.2s, border-color 0.2s, transform 0.2s;
+    }
+
+    .post-sharing-form .btn:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+        transform: translateY(-2px);
+    }
+
+    .post-sharing-form .btn:active {
+        transform: translateY(1px);
+    }
+
+    .post-sharing-form .btn-block {
+        width: 100%;
+    }
+
+    #map {
+        height: 320px;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .food-list {
+        margin-top: 10px;
+    }
+
+    .food-list ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+
+
+    .pac-container {
+        z-index: 1050 !important;
+    }
+
+    .food-list ul li {
+        background: #fff;
+        margin: 5px 0;
+        padding: 10px 15px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: background-color 0.2s, transform 0.2s;
+    }
+
+    .food-list ul li:hover {
+        background: #f8f9fa;
+        transform: translateY(-2px);
+    }
+
+    .food-name {
+        font-weight: bold;
+        color: #343a40;
+    }
+
+    .remove-food {
+        background: #dc3545;
+        border: none;
+        color: white;
+        border-radius: 5px;
+        padding: 5px 10px;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.2s;
+    }
+
+    .remove-food:hover {
+        background: #c82333;
+        transform: scale(1.1);
+    }
+</style>
+@section Scripts {
+
+
+<script>
+    function initMap() {
+        var defaultLat = 41.0082;
+        var defaultLng = 28.9784;
+        document.getElementById('location').value = defaultLat + "," + defaultLng;
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: 41.0082, lng: 28.9784 },
+            zoom: 8
+        });
+
+        var marker = new google.maps.Marker({
+            position: { lat: 41.0082, lng: 28.9784 },
+            map: map,
+            draggable: true
+        });
+
+        var input = document.getElementById('pac-input');
+        var autocomplete = new google.maps.places.Autocomplete(input);
+        autocomplete.bindTo('bounds', map);
+
+        autocomplete.addListener('place_changed', function () {
+            var place = autocomplete.getPlace();
+            if (!place.geometry) {
+                console.log("No details available for input: '" + place.name + "'");
+                return;
+            }
+
+            // If the place has a geometry, then present it on a map.
+            if (place.geometry.viewport) {
+                map.fitBounds(place.geometry.viewport);
+            } else {
+                map.setCenter(place.geometry.location);
+                map.setZoom(17);  // Why 17? Because it looks good.
+            }
+
+            marker.setPosition(place.geometry.location);
+            document.getElementById('location').value = place.geometry.location.lat() + "," + place.geometry.location.lng();
+        });
+
+        google.maps.event.addListener(map, 'click', function (event) {
+            var latitude = event.latLng.lat();
+            var longitude = event.latLng.lng();
+            document.getElementById('location').value = latitude + "," + longitude;
+            marker.setPosition(event.latLng);
+        });
+
+        google.maps.event.addListener(marker, 'dragend', function (event) {
+            var latitude = event.latLng.lat();
+            var longitude = event.latLng.lng();
+            document.getElementById('location').value = latitude + "," + longitude;
+        });
+    }
+
+    google.maps.event.addDomListener(window, 'load', initMap);
+
+
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const addFoodButton = document.getElementById('addFoodButton');
+        const foodInput = document.getElementById('foodTitle');
+        const descriptionInput = document.getElementById('foodDescription');
+        const foodList = document.getElementById('foodList');
+
+        addFoodButton.addEventListener('click', function () {
+            const foodName = foodInput ? foodInput.value.trim() : '';
+            const description = descriptionInput ? descriptionInput.value.trim() : '';
+
+            if (foodName && description) {
+                $.ajax({
+                    url: '/Post/AddFood',
+                    type: 'POST',
+                    data: { title: foodName, description: description },
+                    success: function (response) {
+                        if (response.success) {
+                            if (foodInput) foodInput.value = '';
+                            if (descriptionInput) descriptionInput.value = '';
+                            console.log(response.foodList);
+                            updateFoodList(response.foodList);
+                            Swal.fire('Eklendi!', 'Yemek eklendi.', 'success');
+                        } else {
+                            Swal.fire({
+                                title: 'Hata!',
+                                text: response.message,
+                                icon: 'error',
+                                confirmButtonText: 'Tamam'
+                            });
+                        }
+                    }
+                });
+            } else {
+                Swal.fire({
+                    title: 'Hata!',
+                    text: 'Yemek adı ve açıklama girmelisiniz.',
+                    icon: 'error',
+                    confirmButtonText: 'Tamam'
+                });
+            }
+        });
+
+        $(document).on('click', '.remove-food', function () {
+            const foodId = $(this).data('food-id');
+            $.ajax({
+                url: '/Post/RemoveFood',
+                type: 'POST',
+                data: { foodId: foodId },
+                success: function (response) {
+                    if (response.success) {
+                        updateFoodList(response.foodList);
+                        Swal.fire('Silindi!', 'Yemek silindi.', 'success');
+                    } else {
+                        Swal.fire({
+                            title: 'Hata!',
+                            text: 'Yemek silinemedi.',
+                            icon: 'error',
+                            confirmButtonText: 'Tamam'
+                        });
+                    }
+                }
+            });
+        });
+
+        function updateFoodList(foodList) {
+            const foodListElement = document.getElementById('foodList');
+            foodListElement.innerHTML = '';
+            foodList.forEach(function (food) {
+                const listItem = document.createElement('li');
+                listItem.className = 'food-item';
+                const foodNameSpan = document.createElement('span');
+                foodNameSpan.className = 'food-name';
+                foodNameSpan.textContent = food.title;
+                const foodDescriptionSpan = document.createElement('span');
+                foodDescriptionSpan.className = 'food-description';
+
+                const removeButton = document.createElement('button');
+                removeButton.className = 'remove-food btn btn-danger btn-sm';
+                removeButton.textContent = 'Sil';
+                removeButton.dataset.foodId = food.id;
+                listItem.appendChild(foodNameSpan);
+                listItem.appendChild(foodDescriptionSpan);
+                listItem.appendChild(removeButton);
+                foodListElement.appendChild(listItem);
+            });
+        }
+    });
+</script>
+
+<script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+        apiKey: "AIzaSyAETB5ou7FUmvOo1tjagQyLA5JgMKah_so",
+        authDomain: "sofrani-paylas.firebaseapp.com",
+        databaseURL: "https://sofrani-paylas-default-rtdb.firebaseio.com",
+        projectId: "sofrani-paylas",
+        storageBucket: "sofrani-paylas.appspot.com",
+        messagingSenderId: "542088840250",
+        appId: "1:542088840250:web:b635167b5919f171556103",
+        measurementId: "G-JK3VHJ4MR9"
+    };
+
+    // Initialize Firebase
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const storage = getStorage(app);
+    document.addEventListener('DOMContentLoaded', function () {
+        const uploadButton = document.getElementById('uploadButton');
+        const postForm = document.getElementById('postForm');
+        const imageInput = document.getElementById('image');
+        const imageUrlInput = document.getElementById('imageUrl');
+        const locationInput = document.getElementById('location');
+        const titleInput = document.getElementById('title');
+        const descriptionInput = document.getElementById('description');
+        const formattedDateInput = document.getElementById('formattedDate');
+        const timeInput = document.getElementById('time');
+        const maxParticipantsInput = document.getElementById('maxParticipants');
+        const foodList = document.getElementById('foodList');
+
+        uploadButton.addEventListener('click', function () {
+            if (!validateForm() || !validateFoodList()) {
+                return;
+            }
+            const file = imageInput.files[0];
+            if (file) {
+                uploadImageToFirebase(file).then(url => {
+                    imageUrlInput.value = url;
+                    submitForm();
+                }).catch(error => {
+                    Swal.fire({
+                        title: 'Hata!',
+                        text: 'Resim yüklenirken bir hata oluştu: ' + error,
+                        icon: 'error',
+                        confirmButtonText: 'Tamam'
+                    });
+                });
+            } else {
+                Swal.fire({
+                    title: 'Hata!',
+                    text: 'Lütfen bir resim seçin.',
+                    icon: 'error',
+                    confirmButtonText: 'Tamam'
+                });
+            }
+        });
+        function validateFoodList() {
+            if (foodList.children.length === 0) {
+                Swal.fire({
+                    title: 'Hata!',
+                    text: 'En az bir yemek eklemelisiniz.',
+                    icon: 'error',
+                    confirmButtonText: 'Tamam'
+                });
+                return false;
+            }
+            return true;
+        }
+        function validateForm() {
+            if (!titleInput.value.trim()) {
+                Swal.fire({
+                    title: 'Hata!',
+                    text: 'Başlık alanı boş olamaz.',
+                    icon: 'error',
+                    confirmButtonText: 'Tamam'
+                });
+                return false;
+            }
+
+            if (!descriptionInput.value.trim()) {
+                Swal.fire({
+                    title: 'Hata!',
+                    text: 'Açıklama alanı boş olamaz.',
+                    icon: 'error',
+                    confirmButtonText: 'Tamam'
+                });
+                return false;
+            }
+
+            if (!locationInput.value.trim()) {
+                Swal.fire({
+                    title: 'Hata!',
+                    text: 'Konum alanı boş olamaz.',
+                    icon: 'error',
+                    confirmButtonText: 'Tamam'
+                });
+                return false;
+            }
+
+            if (!formattedDateInput.value.trim()) {
+                Swal.fire({
+                    title: 'Hata!',
+                    text: 'Tarih alanı boş olamaz.',
+                    icon: 'error',
+                    confirmButtonText: 'Tamam'
+                });
+                return false;
+            }
+
+            if (!timeInput.value.trim()) {
+                Swal.fire({
+                    title: 'Hata!',
+                    text: 'Zaman alanı boş olamaz.',
+                    icon: 'error',
+                    confirmButtonText: 'Tamam'
+                });
+                return false;
+            }
+
+            if (!maxParticipantsInput.value.trim()) {
+                Swal.fire({
+                    title: 'Hata!',
+                    text: 'Maksimum katılımcı sayısı alanı boş olamaz.',
+                    icon: 'error',
+                    confirmButtonText: 'Tamam'
+                });
+                return false;
+            }
+
+            return true;
+        }
+        function submitForm() {
+            const formData = new FormData(postForm);
+
+            $.ajax({
+                url: postForm.action,
+                type: postForm.method,
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            title: 'Başarılı!',
+                            text: 'Post başarıyla paylaşıldı.',
+                            icon: 'success',
+                            confirmButtonText: 'Tamam'
+                        }).then(() => {
+                            window.location.href = '/'; // Ana sayfaya yönlendirme
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Hata!',
+                            text: response.message,
+                            icon: 'error',
+                            confirmButtonText: 'Tamam'
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    Swal.fire({
+                        title: 'Hata!',
+                        text: 'Bir hata oluştu, lütfen daha sonra tekrar deneyiniz.',
+                        icon: 'error',
+                        confirmButtonText: 'Tamam'
+                    });
+                }
+            });
+        }
+
+        async function uploadImageToFirebase(file) {
+            try {
+                const storageRef = ref(storage, `images/${file.name}`);
+                await uploadBytes(storageRef, file);
+                const fileURL = await getDownloadURL(storageRef);
+                return fileURL;
+            } catch (error) {
+                console.error("Error uploading image: ", error);
+                throw error;
+            }
+        }
+    });
+</script>
+
+
+}
