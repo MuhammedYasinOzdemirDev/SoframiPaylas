@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Google.Cloud.Firestore;
 using SoframiPaylas.Application.DTOs;
 using SoframiPaylas.Application.DTOs.Post;
 using SoframiPaylas.Application.DTOs.User;
@@ -40,6 +42,33 @@ namespace SoframiPaylas.WebUI.Mappings
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.Surname, opt => opt.MapFrom(src => src.Surname)).ForSourceMember(src => src.Password, opt => opt.DoNotValidate()) // Password dönüşüme dahil edilmiyor
                 .ForSourceMember(src => src.ConfirmPassword, opt => opt.DoNotValidate());
+
+            CreateMap<CreatePostViewModel, PostDto>()
+               .ForMember(dest => dest.RelatedFoods, opt => opt.Ignore())
+               .ForMember(dest => dest.Participants, opt => opt.Ignore()).
+               ForMember(dest => dest.Location, opt => opt.Ignore()).
+               ForMember(dest => dest.FormattedDate, opt => opt.MapFrom(src => FormatDate(src.FormattedDate)))
+               .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.ImageUrl))
+
+            .ForMember(dest => dest.Time, opt => opt.MapFrom(src => FormatTime(src.Time)));
+
+        }
+        private string FormatDate(string date)
+        {
+            if (DateTime.TryParseExact(date, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate))
+            {
+                return parsedDate.ToString("yyyy-MM-dd");
+            }
+            return date;
+        }
+
+        private string FormatTime(string time)
+        {
+            if (DateTime.TryParseExact(time, "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedTime))
+            {
+                return parsedTime.ToString("HH:mm");
+            }
+            return time;
         }
     }
 }

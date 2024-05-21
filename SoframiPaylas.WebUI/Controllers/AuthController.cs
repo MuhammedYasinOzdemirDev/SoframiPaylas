@@ -146,7 +146,7 @@ namespace SoframiPaylas.WebUI.Controllers
                 {
                     returnUrl = Url.Action("Index", "Home");
                 }
-                return Json(new { success = true, message = "Giriş başarılı! Ana sayfaya yönlendiriliyorsunuz...", redirectUrl = returnUrl });
+                return Json(new { success = true, message = "Giriş başarılı!", redirectUrl = returnUrl });
             }
             catch (HttpRequestException ex)
             {
