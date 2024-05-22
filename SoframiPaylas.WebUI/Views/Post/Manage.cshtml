@@ -1,0 +1,177 @@
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+    }
+
+    .dashboard {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .dashboard .card {
+        flex: 1;
+        margin: 0 10px;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        background-color: #ffffff;
+        text-align: center;
+    }
+
+    .dashboard .card h3 {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+    }
+
+    .post-list {
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    .post-list h2 {
+        font-size: 2em;
+        margin-bottom: 20px;
+        color: #343a40;
+    }
+
+    .post-card {
+        background: #f8f9fa;
+        border: none;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: background 0.3s ease-in-out;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .post-card:hover {
+        background: #e2e6ea;
+    }
+
+    .post-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .post-header div {
+        max-width: 70%;
+    }
+
+    .post-header a {
+        text-decoration: none;
+        color: #007bff;
+        font-size: 1.2em;
+        transition: color 0.3s ease-in-out;
+    }
+
+    .post-header a:hover {
+        color: #0056b3;
+    }
+
+    .btn {
+        padding: 10px 15px;
+        width: 150px;
+        border: none;
+        border-radius: 5px;
+        font-size: 0.9em;
+        cursor: pointer;
+        transition: background 0.3s ease-in-out;
+        color: #ffffff;
+        margin-right: 10px;
+    }
+
+    .btn-manage {
+        background-color: #007bff;
+    }
+
+    .btn-manage:hover {
+        background-color: #0056b3;
+    }
+
+    .btn-requests {
+        background-color: #28a745;
+    }
+
+    .btn-requests:hover {
+        background-color: #218838;
+    }
+
+    .btn-delete {
+        background-color: #dc3545;
+    }
+
+    .btn-delete:hover {
+        background-color: #c82333;
+    }
+
+    .btn-edit-meal {
+        background-color: #ffc107;
+        color: #343a40;
+    }
+
+    .btn-edit-meal:hover {
+        background-color: #e0a800;
+    }
+
+    .btn-container {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: flex-end;
+        align-items: center;
+    }
+</style>
+
+
+
+<div class="container">
+    <!-- Dashboard Cards -->
+    <div class="dashboard">
+        <div class="card">
+            <h3>Toplam Paylaşım</h3>
+            <p>ViewBag.TotalPosts</p>
+        </div>
+        <div class="card">
+            <h3>Toplam Katılım İsteği</h3>
+            <p>ViewBag.TotalRequests</p>
+        </div>
+        <div class="card">
+            <h3>Bekleyen İstekler</h3>
+            <p>ViewBag.PendingRequests</p>
+        </div>
+        <div class="card">
+            <h3>Toplam Yemek</h3>
+            <p>ViewBag.TotalMeals</p>
+        </div>
+    </div>
+
+    <!-- Post List Section -->
+    <div class="post-list">
+        <h2 class="text-center">Paylaşımlar</h2>
+        <div class="post-card">
+            <div class="post-header">
+                <div>
+                    <a href="/post/details/post.PostId"><strong>post.Title</strong></a>
+                    <p>post.FormattedDate post.Time</p>
+                </div>
+            </div>
+            <div class="btn-container">
+                <button class="btn btn-manage" onclick="window.location.href='/post/edit/post.PostId'">Düzenle</button>
+                <button class="btn btn-requests"
+                    onclick="window.location.href='/post/requests/post.PostId'">Katılımcılar (200)</button>
+                <button class="btn btn-edit-meal" onclick="window.location.href='/meal/list/post.PostId'">Yemekler
+                    (300)</button>
+                <button class="btn btn-delete" onclick="deletePost('post.PostId')">Sil</button>
+            </div>
+        </div>
+        <!-- Repeat Post Cards -->
+    </div>
+</div>
