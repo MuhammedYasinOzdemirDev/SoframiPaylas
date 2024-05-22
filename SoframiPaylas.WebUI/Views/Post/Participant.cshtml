@@ -1,0 +1,272 @@
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .container {
+        margin-top: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    .participant-management {
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        width: 100%;
+        max-width: 600px;
+    }
+
+    .participant-management h2 {
+        font-size: 2em;
+        margin-bottom: 20px;
+        color: #343a40;
+        text-align: center;
+    }
+
+    .participant-management .form-group {
+        margin-bottom: 20px;
+    }
+
+    .participant-management .form-group label {
+        font-weight: bold;
+        color: #343a40;
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .participant-management .input-group {
+        display: flex;
+        align-items: center;
+    }
+
+    .participant-management .input-group input {
+        flex: 1;
+        padding: 10px;
+        border-radius: 5px 0 0 5px;
+        border: 1px solid #ced4da;
+    }
+
+    .participant-management .input-group .btn {
+        padding: 10px 20px;
+        border-radius: 0 5px 5px 0;
+        border: 1px solid #007bff;
+        background-color: #007bff;
+        color: #fff;
+        cursor: pointer;
+        transition: background 0.3s ease-in-out, border-color 0.3s ease-in-out, transform 0.3s;
+    }
+
+    .participant-management .input-group .btn:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+        transform: translateY(-2px);
+    }
+
+    .participant-management .input-group .btn:active {
+        transform: translateY(1px);
+    }
+
+    .participant-list,
+    .request-list {
+        margin-top: 20px;
+    }
+
+    .participant-list h4,
+    .request-list h4 {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+        color: #343a40;
+    }
+
+    .list-group {
+        padding: 0;
+        list-style: none;
+    }
+
+    .list-group-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+
+    .list-group-item span {
+        font-size: 1.1em;
+        color: #343a40;
+    }
+
+    .btn-accept {
+        background-color: #28a745;
+        border-color: #28a745;
+        color: #fff;
+        padding: 5px 10px;
+        margin-right: 5px;
+    }
+
+    .btn-accept:hover {
+        background-color: #218838;
+        border-color: #218838;
+    }
+
+    .btn-decline {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: #fff;
+        padding: 5px 10px;
+    }
+
+    .btn-decline:hover {
+        background-color: #c82333;
+        border-color: #c82333;
+    }
+
+    .btn-remove {
+        background-color: #ffc107;
+        border-color: #ffc107;
+        color: #343a40;
+        padding: 5px 10px;
+    }
+
+    .btn-remove:hover {
+        background-color: #e0a800;
+        border-color: #e0a800;
+    }
+</style>
+
+<div class="container">
+    <div class="participant-management">
+        <h2>Katılımcı Yönetimi</h2>
+        <div class="form-group">
+            <label for="maxParticipants">Maksimum Katılımcı Sayısı</label>
+            <div class="input-group">
+                <input type="number" class="form-control" id="maxParticipants" value="post.MaxParticipants" required>
+                <button type="button" class="btn btn-primary" onclick="updateMaxParticipants()">Güncelle</button>
+            </div>
+        </div>
+
+        <!-- Request List Section -->
+        <div class="request-list">
+            <h4>Bekleyen İstekler</h4>
+            <ul class="list-group">
+                <!-- Repeat Request Items -->
+                <li class="list-group-item">
+                    <span>Katılımcı Adı</span>
+                    <div>
+                        <button class="btn btn-accept btn-sm" onclick="acceptRequest('requestId')">Kabul Et</button>
+                        <button class="btn btn-decline btn-sm" onclick="declineRequest('requestId')">Reddet</button>
+                    </div>
+                </li>
+                <!-- End Repeat -->
+            </ul>
+        </div>
+
+        <!-- Participant List Section -->
+        <div class="participant-list">
+            <h4>Mevcut Katılımcılar</h4>
+            <ul class="list-group">
+                <!-- Repeat Participant Items -->
+                <li class="list-group-item">
+                    <span>Katılımcı Adı</span>
+                    <button class="btn btn-remove btn-sm" onclick="removeParticipant('participantId')">Çıkar</button>
+                </li>
+                <!-- End Repeat -->
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function updateMaxParticipants() {
+        var maxParticipants = document.getElementById('maxParticipants').value;
+
+        fetch('/api/post/updateMaxParticipants', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ postId: 'post.PostId', maxParticipants: maxParticipants })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message === 'Max participants updated successfully') {
+                    alert('Maksimum katılımcı sayısı başarıyla güncellendi.');
+                } else {
+                    alert('Maksimum katılımcı sayısı güncellenemedi.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    function acceptRequest(requestId) {
+        fetch('/api/post/acceptRequest', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ requestId: requestId })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message === 'Request accepted successfully') {
+                    alert('İstek başarıyla kabul edildi.');
+                    location.reload(); // Sayfayı yenileyin
+                } else {
+                    alert('İstek kabul edilemedi.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    function declineRequest(requestId) {
+        fetch('/api/post/declineRequest', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ requestId: requestId })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message === 'Request declined successfully') {
+                    alert('İstek başarıyla reddedildi.');
+                    location.reload(); // Sayfayı yenileyin
+                } else {
+                    alert('İstek reddedilemedi.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    function removeParticipant(participantId) {
+        fetch('/api/post/removeParticipant', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ participantId: participantId })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message === 'Participant removed successfully') {
+                    alert('Katılımcı başarıyla çıkarıldı.');
+                    location.reload(); // Sayfayı yenileyin
+                } else {
+                    alert('Katılımcı çıkarılamadı.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+</script>

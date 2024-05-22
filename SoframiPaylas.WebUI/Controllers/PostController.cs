@@ -160,6 +160,21 @@ namespace SoframiPaylas.WebUI.Controllers
             var list = foodList.Select(food => new { Title = food.Title, Id = food.Id });
             return Json(new { success = true, foodList = list });
         }
-
+        public IActionResult Manage()
+        {
+            return View();
+        }
+        public IActionResult Edit()
+        {
+            return View();
+        }
+        public IActionResult Participant()
+        {
+            return View();
+        }
+        public IActionResult Meal()
+        {
+            return View();
+        }
     }
 }
