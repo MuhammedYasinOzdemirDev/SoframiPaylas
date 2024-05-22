@@ -17,19 +17,19 @@ namespace SoframiPaylas.Application.Services
         {
             _repository = repository;
         }
-        public async Task<bool> AddParticipantAsync(string postId, JoinParticipantDto joinParticipantDto)
+        public async Task<bool> AddParticipantAsync(ParticipantDto participantDto)
         {
             return await _repository.AddParticipantAsync(new Participant
             {
-                PostId = postId,
-                UserID = joinParticipantDto.UserID,
-                Status = joinParticipantDto.Status
+                PostId = participantDto.PostID,
+                UserID = participantDto.UserID,
+                Status = (int)ParticipationStatus.Pending
             });
         }
 
-        public async Task<bool> UpdateParticipantStatus(string postId, string userId)
+        public async Task<bool> UpdateParticipantStatus(ParticipantDto participantDto)
         {
-            return await _repository.UpdateParticipantStatus(postId, userId, (int)ParticipationStatus.Confirmed);
+            return await _repository.UpdateParticipantStatus(participantDto.PostID, participantDto.UserID, (int)ParticipationStatus.Confirmed);
         }
         public enum ParticipationStatus
         {

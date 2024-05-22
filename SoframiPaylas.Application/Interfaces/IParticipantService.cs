@@ -5,7 +5,7 @@ namespace SoframiPaylas.Application.Interfaces
 {
     public interface IParticipantService
     {
-        Task<bool> AddParticipantAsync(string postId, JoinParticipantDto joinParticipantDto);
-        Task<bool> UpdateParticipantStatus(string postId, string userId);
+        Task<bool> AddParticipantAsync(ParticipantDto participantDto);
+        Task<bool> UpdateParticipantStatus(ParticipantDto participantDtype);
     }
 }

@@ -24,6 +24,7 @@ builder.Services.AddSession(options =>
 builder.Services.AddScoped<IPostApiService, PostApiService>();
 builder.Services.AddScoped<IAuthService, AuthApiService>();
 builder.Services.AddScoped<IUserApiService, UserApiService>();
+builder.Services.AddScoped<IParticipantApiService, ParticipantApiService>();
 //Mapping
 builder.Services.AddAutoMapper(typeof(ViewModelToDtoProfile));
 
@@ -40,6 +41,7 @@ builder.Services.AddAuthentication(options =>
 })
 .AddScheme<AuthenticationSchemeOptions, CustomJwtAuthenticationHandler>("CustomScheme", options => { });
 builder.Services.AddAuthorization();
+
 
 builder.Services.AddMemoryCache();
 //Stroge Service
