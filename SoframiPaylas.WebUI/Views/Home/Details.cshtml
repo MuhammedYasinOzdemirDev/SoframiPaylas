@@ -1,0 +1,316 @@
+@model PostViewModel
+@using System.Globalization
+@{
+var isAuthenticated = HttpContextAccessor.HttpContext.User.Identity.IsAuthenticated;
+
+}
+
+<div class="container">
+    <div class="row">
+        <!-- Post Details Section -->
+        <div class="col-md-8">
+            <div class="post-detail">
+                <h2 class="text-center">@Model.Title</h2>
+                <div class="post-image">
+                    <img src="@Model.Image" alt="@Model.Title" class="img-fluid">
+                </div>
+                <div class="post-info mt-3">
+                    <p><strong>Davet Adı:</strong> @Model.Title</p>
+                    <p><strong>Açıklama:</strong> @Model.Description</p>
+
+                    <div id="map" style="height: 400px; margin-bottom: 20px;"></div>
+                    <p><strong>Tarih:</strong> @{
+                        DateTime date;
+                        string formattedDate = string.Empty;
+                        if (DateTime.TryParse(Model.FormattedDate, out date))
+                        {
+                        formattedDate = date.ToString("dd MMMM yyyy", new CultureInfo("tr-TR"));
+                        }
+                        }
+                        @formattedDate</p>
+                    <p><strong>Zaman:</strong> @{
+                        TimeSpan time;
+                        string formattedTime = string.Empty;
+                        if (TimeSpan.TryParse(Model.Time, out time))
+                        {
+                        formattedTime = time.ToString(@"hh\:mm");
+                        }
+                        }
+                        @formattedTime</p>
+                    <p><strong>Maksimum Katılımcı Sayısı:</strong> @Model.MaxParticipants</p>
+                    <p><strong>Katılımcılar:</strong> @Model.Participants.Count / @Model.MaxParticipants</p>
+                </div>
+                <div class="text-center mt-4" id="content">
+
+                    <button id="participateButton" class="btn-join">Katıl</button>
+                    <div id="loginPrompt">
+                        <p> Katılmak için lütfen giriş yapın.</p>
+                        <button id="loginButton" class="btn-join">Giriş Yap</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="menu">
+                <h4>Menü</h4>
+                <ul class="list-group">
+                    @foreach (var food in ViewBag.RelatedFoods)
+                    {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>@food.Title</strong>
+                            <p>@food.Description</p>
+                        </div>
+
+                    </li>
+                    }
+                </ul>
+            </div>
+            <div class="participants">
+                <h4>Katılımcılar</h4>
+                <ul class="list-group">
+                    <!--foreach (var participant in ViewBag.Participants)
+                    {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>participant.Name</strong>
+                            <p>articipant.Email</p>
+                        </div>
+                        
+                    </li>
+                    }-->
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>Yasin</strong>
+
+                        </div>
+
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    #loginPrompt {
+        display: none;
+        color: red;
+        font-size: 18px;
+        margin-top: 20px;
+    }
+
+
+
+    body {
+        font-family: 'Arial', sans-serif;
+
+        box-sizing: border-box;
+    }
+
+    .container {
+        margin-top: 30px;
+    }
+
+    .post-detail {
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .post-detail:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .post-detail h2 {
+        font-size: 2em;
+        margin-bottom: 20px;
+        color: #343a40;
+    }
+
+    .post-image img {
+        width: 100%;
+        height: auto;
+        max-height: 500px;
+        object-fit: cover;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .post-image img:hover {
+        transform: scale(1.05);
+    }
+
+    .post-info p {
+        margin-bottom: 10px;
+        font-size: 1.1em;
+        color: #555;
+    }
+
+    .menu,
+    .participants {
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        max-height: 300px;
+        /* Sabit yükseklik */
+        overflow-y: auto;
+        /* Dikey kaydırma */
+    }
+
+    .menu:hover,
+    .participants:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .menu h4,
+    .participants h4 {
+        margin-bottom: 20px;
+        font-size: 1.5em;
+        color: #343a40;
+    }
+
+    .list-group-item {
+        background: #f8f9fa;
+        border: none;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: background 0.3s ease-in-out;
+    }
+
+    .list-group-item:hover {
+        background: #e2e6ea;
+    }
+
+    .list-group-item div {
+        max-width: 70%;
+    }
+
+    .img-thumbnail {
+        border-radius: 5px;
+        margin-left: 10px;
+        max-width: 60px;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .img-thumbnail:hover {
+        transform: scale(1.1);
+    }
+
+    .btn-join {
+        background-color: #28a745;
+        color: #ffffff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 1.1em;
+        cursor: pointer;
+        transition: background 0.3s ease-in-out;
+    }
+
+    .btn-join:hover {
+        background-color: #218838;
+    }
+</style>
+@section Scripts {
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const isAuthenticated = '@isAuthenticated' === 'True';
+        const participateButton = document.getElementById('participateButton');
+        const loginPrompt = document.getElementById('loginPrompt');
+        const loginButton = document.getElementById('loginButton');
+
+        if (isAuthenticated) {
+            participateButton.style.display = 'inline-block';
+            loginPrompt.style.display = 'none';
+            loginButton.style.display = 'none';
+        } else {
+            loginPrompt.style.display = 'block';
+            loginButton.style.display = 'inline-block';
+            participateButton.style.display = 'none';
+        }
+
+        loginButton.addEventListener('click', function () {
+            const currentUrl = window.location.href;
+            window.location.href = '@Url.Action("Login", "Auth")' + '?returnUrl=' + encodeURIComponent(currentUrl);
+        });
+
+        participateButton.addEventListener('click', function () {
+
+
+            fetch('@Url.Action("Join","Participant", new { postId = Model.PostId })', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        NProgress.done();
+                        Swal.fire({
+                            title: 'Katılma isteği başarıyla gönderildi!',
+                            text: data.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        })
+                    } else {
+                        NProgress.done();
+                        Swal.fire({
+                            title: 'Error!',
+                            text: data.message || "An error occurred.",
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                })
+                .catch(error => {
+                    NProgress.done();
+                    console.error('Error:', error);
+                    alert('Bir hata oluştu, lütfen daha sonra tekrar deneyiniz.');
+                });
+        });
+    });
+</script>
+<script>
+    function initMap() {
+        // Razor ile elde edilen Latitude ve Longitude değerlerini JavaScript değişkenlerine atayın
+        var latitude = parseFloat('@Model.Latitude');
+        var longitude = parseFloat('@Model.Longitude');
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: latitude, lng: longitude },
+            zoom: 12
+        });
+
+        var marker = new google.maps.Marker({
+            position: { lat: latitude, lng: longitude },
+            map: map
+        });
+    }
+
+    // Google Maps API yüklemesi
+    function loadGoogleMaps() {
+        var script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyB8fnr_8wb9KuVpwj1b1hhtJGCMpQ9td5k&callback=initMap`;
+        script.defer = true;
+        document.head.appendChild(script);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        loadGoogleMaps();
+    });
+
+</script>
+}

@@ -29,7 +29,9 @@ namespace SoframiPaylas.Application.DTOs.Post
         /// Gönderinin gerçekleşeceği lokasyon.
         /// </summary>
         /// <example>{ Latitude = 41.0082, Longitude = 28.9784 }</example>
-        public GeoPoint Location { get; set; }
+        public Double Latitude { get; set; }
+
+        public Double Longitude { get; set; }
 
         /// <summary>
         /// Gönderinin tarih bilgisi.

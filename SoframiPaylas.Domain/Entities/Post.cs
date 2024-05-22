@@ -14,8 +14,10 @@ namespace SoframiPaylas.Domain.Entities
         [FirestoreProperty("description")]
         public string Description { get; set; }
 
-        [FirestoreProperty("location")]
-        public GeoPoint Location { get; set; }
+        [FirestoreProperty("latitude")]
+        public Double Latitude { get; set; }
+        [FirestoreProperty("longitude")]
+        public Double Longitude { get; set; }
 
         [FirestoreProperty("date")]
         public Timestamp Date { get; set; }
