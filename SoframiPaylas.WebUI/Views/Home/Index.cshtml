@@ -1,4 +1,5 @@
 @model List<PostViewModel>
+    @using System.Globalization
     @{
     bool isAuthenticated = User.Identity.IsAuthenticated;
     }
@@ -82,12 +83,12 @@
                 <div class="posts-container">
                     @foreach (var post in Model)
                     {
-                    @{
 
-                    var latitude = @post.Location.Latitude;
-                    var longitude = @post.Location.Longitude;
+
+                    var latitude = @post.Latitude;
+                    var longitude = @post.Longitude;
                     var googleMapsUrl = $"https://www.google.com/maps/search/?api=1&query={latitude},{longitude}";
-                    }
+
                     <!-- İlan Kartı -->
                     <div class="card bg-transparent border-0 mb-3">
                         <div class="card-header bg-white border-bottom-0">
@@ -96,22 +97,42 @@
                         </div>
                         <img src="@post.Image" class="card-img-top" alt="@post.Title">
                         <div class="card-body">
-                            <p class="card-text">@post.Description</p>
+                            <p class="card-text"><small class="text-muted"><strong>Tarih:</strong>
+                                    @{
+                                    DateTime date;
+                                    string formattedDate = string.Empty;
+                                    if (DateTime.TryParse(post.FormattedDate, out date))
+                                    {
+                                    formattedDate = date.ToString("dd MMMM yyyy", new CultureInfo("tr-TR"));
+                                    }
+                                    }
+                                    @formattedDate</small></p>
 
                             <p class="card-text">
-                                <small class="text-muted">Saat: @post.Time</small>
+                                <small class="text-muted"><strong>Saat:</strong>
+                                    @{
+                                    TimeSpan time;
+                                    string formattedTime = string.Empty;
+                                    if (TimeSpan.TryParse(post.Time, out time))
+                                    {
+                                    formattedTime = time.ToString(@"hh\:mm");
+                                    }
+                                    }
+                                    @formattedTime</small>
                             </p>
+
                             <p class="card-text">
-                                <small class="text-muted">Katılımcılar: @post.Participants.Count /
+                                <small class="text-muted"><strong>Katılımcılar:</strong> @post.Participants.Count /
                                     @post.MaxParticipants</small>
                             </p>
                             <p class="card-text">
-                                <small class="text-muted"> <i style="color: #dc3545;
-                                    margin-right: 5px;" class="bi bi-geo-alt-fill"></i> Konum: <a href="@googleMapsUrl"
-                                        target="_blank">Etkinlik Konumunu Görüntüle</a></small>
+                                <small class="text-muted"> <strong><i style="color: #dc3545;
+                                    margin-right: 5px;" class="bi bi-geo-alt-fill"></i> Konum:</strong> <a
+                                        href="@googleMapsUrl" target="_blank">Etkinlik Konumunu Görüntüle</a></small>
                             </p>
-                            <a href="#" class="btn btn-primary">Katıl</a>
-                            <a href="#" class="btn btn-secondary">Detaylar</a>
+
+                            <a asp-action="Details" asp-controller="Home" asp-route-postId="@post.PostId"
+                                class="btn btn-secondary">Detaylar</a>
                         </div>
                     </div>
                     }

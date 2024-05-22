@@ -46,7 +46,6 @@ namespace SoframiPaylas.WebUI.Mappings
             CreateMap<CreatePostViewModel, PostDto>()
                .ForMember(dest => dest.RelatedFoods, opt => opt.Ignore())
                .ForMember(dest => dest.Participants, opt => opt.Ignore()).
-               ForMember(dest => dest.Location, opt => opt.Ignore()).
                ForMember(dest => dest.FormattedDate, opt => opt.MapFrom(src => FormatDate(src.FormattedDate)))
                .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.ImageUrl))
 

@@ -11,5 +11,6 @@ namespace SoframiPaylas.Application.Interfaces
         Task<string> CreateFoodAsync(CreateFoodDto foodDto);
         Task<bool> UpdateFoodAsync(UpdateFoodDto foodDto, string foodId);
         Task<bool> DeleteFoodAsync(string foodId);
+        Task<IEnumerable<FoodDto>> GetFoodByIdsAsync(List<string> foodIds);
     }
 }

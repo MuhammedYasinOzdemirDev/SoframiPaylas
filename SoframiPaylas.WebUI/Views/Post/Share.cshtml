@@ -287,7 +287,7 @@
             const foodName = foodInput ? foodInput.value.trim() : '';
             const description = descriptionInput ? descriptionInput.value.trim() : '';
 
-            if (foodName && description) {
+            if (foodName) {
                 $.ajax({
                     url: '/Post/AddFood',
                     type: 'POST',

@@ -9,7 +9,9 @@ public class PostViewModel
     public string Title { get; set; }
 
     public string Description { get; set; }
-    public GeoPoint Location { get; set; }
+    public Double Latitude { get; set; }
+
+    public Double Longitude { get; set; }
     public string FormattedDate { get; set; }
     public string Time { get; set; }
     public int MaxParticipants { get; set; }

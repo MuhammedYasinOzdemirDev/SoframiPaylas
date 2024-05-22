@@ -53,6 +53,15 @@ namespace SoframiPaylas.Application.Services
             }
             return _mapper.Map<FoodDto>(food);
         }
+        public async Task<IEnumerable<FoodDto>> GetFoodByIdsAsync(List<string> foodIds)
+        {
+            var foods = await _foodrepository.GetFoodsByIdsAsync(foodIds);
+            if (foods == null)
+            {
+                throw new KeyNotFoundException($"No food found ");
+            }
+            return foods.Select(p => _mapper.Map<FoodDto>(p));
+        }
 
         public async Task<bool> UpdateFoodAsync(UpdateFoodDto foodDto, string foodId)
         {
