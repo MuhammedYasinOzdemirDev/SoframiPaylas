@@ -66,6 +66,24 @@ namespace SoframiPaylas.WebAPI
 
             }
         }
+        [HttpPost("foods")]
+        public async Task<IActionResult> GetFoodByIds([FromBody] List<string> foodIds)
+        {
+            try
+            {
+                var foods = await _service.GetFoodByIdsAsync(foodIds);
+                if (foods == null || !foods.Any())
+                {
+                    return NotFound("Hiç yiyecek bulunamadı.");
+                }
+                return Ok(foods);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Yiyecek güncellenirken bir hata meydana geldi.");
+
+            }
+        }
         /// <summary>
         /// Belirtilen ID'ye sahip yiyeceği getirir.
         /// </summary>
@@ -236,12 +254,12 @@ namespace SoframiPaylas.WebAPI
         /// <response code="204">Yiyecek başarıyla silindi. İçerik dönmez.</response>
         /// <response code="404">Belirtilen ID'ye sahip yiyecek bulunamadı.</response>
         /// <response code="500">Silme işlemi sırasında beklenmedik bir hata oluştuğunda bu hata döner.</response>
-        [HttpDelete("food/{foodID}")]
-        public async Task<IActionResult> DeleteFoodById(string foodID)
+        [HttpDelete("food")]
+        public async Task<IActionResult> DeleteFoodById([FromQuery] string foodId)
         {
             try
             {
-                var deleteResult = await _service.DeleteFoodAsync(foodID);
+                var deleteResult = await _service.DeleteFoodAsync(foodId);
                 if (!deleteResult)
                     return NotFound("Silinecek yiyecek bulunamadı.");
                 return NoContent();

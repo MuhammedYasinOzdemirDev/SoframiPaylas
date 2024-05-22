@@ -106,6 +106,33 @@ namespace SoframiPaylas.Infrastructure.Repositories
                     };
                 }, TimeSpan.FromSeconds(20));
         }
+        public async Task<List<Food>> GetFoodsByIdsAsync(List<string> foodIds)
+        {
+            if (db == null)
+                throw new InvalidOperationException("Database service is not initialized properly.");
+
+            var foods = new List<Food>();
+
+            foreach (var foodId in foodIds)
+            {
+                DocumentReference docRef = db.Collection("Foods").Document(foodId);
+                DocumentSnapshot snapshot = await docRef.GetSnapshotAsync();
+
+                if (snapshot.Exists)
+                {
+                    Dictionary<string, object> foodDict = snapshot.ToDictionary();
+                    var food = new Food
+                    {
+                        Title = foodDict.ContainsKey("title") ? foodDict["title"].ToString() : null,
+                        Description = foodDict.ContainsKey("description") ? foodDict["description"].ToString() : null,
+                        // Diğer gerekli alanlar
+                    };
+                    foods.Add(food);
+                }
+            }
+
+            return foods;
+        }
 
         public async Task<bool> UpdateFoodAsync(Food food, string foodId)
         {

@@ -76,14 +76,19 @@ namespace SoframiPaylas.Infrastructure.Repositories
                             HostID = postDict.ContainsKey("hostID") ? postDict["hostID"].ToString() : null,
                             Title = postDict.ContainsKey("title") ? postDict["title"].ToString() : null,
                             Description = postDict.ContainsKey("description") ? postDict["description"].ToString() : null,
-                            Location = postDict.ContainsKey("location") ? (GeoPoint)postDict["location"] : new GeoPoint(0, 0),
+                            Longitude = postDict.ContainsKey("longitude") ? Convert.ToDouble(postDict["longitude"]) : 0,
+                            Latitude = postDict.ContainsKey("latitude") ? Convert.ToDouble(postDict["latitude"]) : 0,
                             Date = postDict.ContainsKey("date") ? (Timestamp)postDict["date"] : new Timestamp(),
                             Time = postDict.ContainsKey("time") ? postDict["time"].ToString() : null,
                             MaxParticipants = postDict.ContainsKey("maxParticipants") ? Convert.ToInt32(postDict["maxParticipants"]) : 0,
                             Image = postDict.ContainsKey("image") ? postDict["image"].ToString() : null,
                             PostStatus = postDict.ContainsKey("eventStatus") ? Convert.ToBoolean(postDict["eventStatus"]) : false,
-                            RelatedFoods = postDict.ContainsKey("relatedFoods") && postDict["relatedFoods"] is List<string> ? (List<string>)postDict["relatedFoods"] : null,
-                            Participants = postDict.ContainsKey("participants") && postDict["participants"] is List<string> ? (List<string>)postDict["participants"] : null
+                            RelatedFoods = postDict.ContainsKey("relatedFoods") && postDict["relatedFoods"] is IEnumerable<object> relatedFoods
+                        ? relatedFoods.Select(f => f.ToString()).ToList()
+                        : new List<string>(),
+                            Participants = postDict.ContainsKey("participants") && postDict["participants"] is IEnumerable<object> participants
+                        ? participants.Select(f => f.ToString()).ToList()
+                        : new List<string>()
                         };
 
                         posts.Add((postItem, id));
@@ -112,19 +117,25 @@ namespace SoframiPaylas.Infrastructure.Repositories
                 }
 
                 Dictionary<string, object> postDict = snapshot.ToDictionary();
+
                 return new Post
                 {
                     HostID = postDict.ContainsKey("hostID") ? postDict["hostID"].ToString() : null,
                     Title = postDict.ContainsKey("title") ? postDict["title"].ToString() : null,
                     Description = postDict.ContainsKey("description") ? postDict["description"].ToString() : null,
-                    Location = postDict.ContainsKey("location") ? (GeoPoint)postDict["location"] : new GeoPoint(0, 0),
+                    Longitude = postDict.ContainsKey("longitude") ? Convert.ToDouble(postDict["longitude"]) : 0,
+                    Latitude = postDict.ContainsKey("latitude") ? Convert.ToDouble(postDict["latitude"]) : 0,
                     Date = postDict.ContainsKey("date") ? (Timestamp)postDict["date"] : new Timestamp(),
                     Time = postDict.ContainsKey("time") ? postDict["time"].ToString() : null,
                     MaxParticipants = postDict.ContainsKey("maxParticipants") ? Convert.ToInt32(postDict["maxParticipants"]) : 0,
                     Image = postDict.ContainsKey("image") ? postDict["image"].ToString() : null,
                     PostStatus = postDict.ContainsKey("eventStatus") ? Convert.ToBoolean(postDict["eventStatus"]) : false,
-                    RelatedFoods = postDict.ContainsKey("relatedFoods") && postDict["relatedFoods"] is List<string> ? (List<string>)postDict["relatedFoods"] : null,
-                    Participants = postDict.ContainsKey("participants") && postDict["participants"] is List<string> ? (List<string>)postDict["participants"] : null
+                    RelatedFoods = postDict.ContainsKey("relatedFoods") && postDict["relatedFoods"] is IEnumerable<object> relatedFoods
+                        ? relatedFoods.Select(f => f.ToString()).ToList()
+                        : new List<string>(),
+                    Participants = postDict.ContainsKey("participants") && postDict["participants"] is IEnumerable<object> participants
+                        ? participants.Select(f => f.ToString()).ToList()
+                        : new List<string>()
                 };
             }, TimeSpan.FromSeconds(20));
         }

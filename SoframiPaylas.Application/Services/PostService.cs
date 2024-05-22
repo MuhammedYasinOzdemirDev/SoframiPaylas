@@ -23,6 +23,7 @@ namespace SoframiPaylas.Application.Services
         public async Task<string> CreatePostAsync(CreatePostDto postDto)
         {
             var postItem = _mapper.Map<Post>(postDto);
+
             return await _postRepository.CreatePostAsync(postItem);
         }
 
@@ -55,7 +56,9 @@ namespace SoframiPaylas.Application.Services
             {
                 throw new KeyNotFoundException($"No post found with ID {id}");
             }
-            return _mapper.Map<PostDto>(e);
+            var postDto = _mapper.Map<PostDto>(e);
+            postDto.PostId = id;
+            return postDto;
         }
 
         public async Task<bool> UpdatePostAsync(string id, UpdatePostDto postDto)

@@ -109,8 +109,8 @@ namespace SoframiPaylas.WebAPI.Controllers
         /// <response code="200">Gönderi başarıyla bulundu ve döndürüldü.</response>
         /// <response code="404">Belirtilen ID'ye sahip gönderi bulunamadı.</response>
         /// <response code="500">Gönderi bilgisi getirilirken bir hata meydana geldi.</response>
-        [HttpGet("post/{postId}")]
-        public async Task<IActionResult> GetPostByIdAsync(string postId)
+        [HttpGet("post")]
+        public async Task<IActionResult> GetPostByIdAsync([FromQuery] string postId)
         {
             try
             {
@@ -295,12 +295,12 @@ namespace SoframiPaylas.WebAPI.Controllers
         /// <response code="204">Katılım isteği başarıyla işlendi.</response>
         /// <response code="400">Belirtilen gönderi bulunamadı veya veri doğrulaması başarısız oldu.</response>
         /// <response code="500">Katılım işlemi sırasında beklenmedik bir hata oluştuğunda bu hata dönülür.</response>
-        [HttpPost("{postId}/join")]
-        public async Task<IActionResult> RequestJoinEvent(string postId, [FromBody] JoinParticipantDto joinRequest)
+        [HttpPost("join")]
+        public async Task<IActionResult> RequestJoinEvent([FromBody] ParticipantDto joinRequest)
         {
             try
             {
-                var joinResult = await _participantService.AddParticipantAsync(postId, joinRequest);
+                var joinResult = await _participantService.AddParticipantAsync(joinRequest);
                 if (!joinResult)
                     return BadRequest("Belirtilen gönderi bulunamadı veya veri doğrulaması başarısız oldu.");
                 return NoContent();
@@ -339,13 +339,13 @@ namespace SoframiPaylas.WebAPI.Controllers
         /// <response code="200">Katılımcı başarıyla onaylandı.</response>
         /// <response code="404">Belirtilen katılımcı veya gönderi bulunamadı.</response>
         /// <response code="500">Katılımcı onaylama işlemi sırasında beklenmedik bir hata oluştuğunda bu hata dönülür.</response>
-        [HttpPut("{postId}/confirm-participant/{userId}")]
-        public async Task<IActionResult> ConfirmParticipant(string postId, string userId)
+        [HttpPut("confirm-participant")]
+        public async Task<IActionResult> ConfirmParticipant([FromBody] ParticipantDto confirmRequest)
         {
             try
             {
                 // Katılımcının durumunu güncelle
-                var success = await _participantService.UpdateParticipantStatus(postId, userId);
+                var success = await _participantService.UpdateParticipantStatus(confirmRequest);
 
                 if (!success)
                 {

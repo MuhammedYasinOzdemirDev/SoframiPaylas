@@ -50,8 +50,9 @@ namespace SoframiPaylas.WebUI.Controllers
             try
 
             {
-                var foodList = HttpContext.Session.GetObjectFromJson<List<(string Title, string Id)>>("FoodList").Select(f => f.Title).ToList();
+                var foodList = HttpContext.Session.GetObjectFromJson<List<(string Title, string Id)>>("FoodList").Select(f => f.Id).ToList();
                 var hostId = _userService.GetUserId();
+
                 HttpResponseMessage response = await _apiService.CreatePost(model, foodList, hostId);
                 // API'den başarısız yanıt gelmesi durumunda hataları işle
                 if (!response.IsSuccessStatusCode)
@@ -87,9 +88,6 @@ namespace SoframiPaylas.WebUI.Controllers
         }
 
 
-
-
-
         [HttpPost]
         public async Task<IActionResult> AddFood(string title, string description)
         {
@@ -119,12 +117,12 @@ namespace SoframiPaylas.WebUI.Controllers
                 }
                 var id = await response.Content.ReadAsStringAsync();
                 var foodList = HttpContext.Session.GetObjectFromJson<List<(string Title, string Id)>>("FoodList") ?? new List<(string Title, string Id)>();
-                var foodIdList = HttpContext.Session.GetObjectFromJson<List<string>>("FoodIdList") ?? new List<string>();
+
                 foodList.Add((title, id));
                 foodIdList.Add(id);
 
                 HttpContext.Session.SetObjectAsJson("FoodList", foodList);
-                HttpContext.Session.SetObjectAsJson("FoodIdList", foodIdList);
+
 
                 var list = foodList.Select(food => new { Title = food.Title, Id = food.Id });
 
@@ -134,14 +132,31 @@ namespace SoframiPaylas.WebUI.Controllers
         }
 
         [HttpPost]
-        public IActionResult RemoveFood(string foodId)
+        public async Task<IActionResult> RemoveFood(string foodId)
         {
+            var response = await _apiService.RemoveFood(foodId);
+            if (!response.IsSuccessStatusCode)
+            {
+                string errorMessage = response.Content.ReadAsStringAsync().Result;
+                if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                {
+                    return Json(new { success = false, message = "Silme sırasında bir hata oluştu: " + errorMessage });
+                }
+                else if (response.StatusCode >= System.Net.HttpStatusCode.InternalServerError)
+                {
+                    return Json(new { success = false, message = "Bir sunucu hatası oluştu, lütfen daha sonra tekrar deneyiniz." });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Yükleme sırasında bir hata oluştu: " + errorMessage });
+                }
+            }
+
             var foodList = HttpContext.Session.GetObjectFromJson<List<(string Title, string Id)>>("FoodList") ?? new List<(string Title, string Id)>();
             foodList.RemoveAll(f => f.Id == foodId);
-            var foodIdList = HttpContext.Session.GetObjectFromJson<List<string>>("FoodIdList") ?? new List<string>();
-            foodIdList.Remove(foodId);
+
             HttpContext.Session.SetObjectAsJson("FoodList", foodList);
-            HttpContext.Session.SetObjectAsJson("FoodIdList", foodIdList);
+
             var list = foodList.Select(food => new { Title = food.Title, Id = food.Id });
             return Json(new { success = true, foodList = list });
         }
