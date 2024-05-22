@@ -1,0 +1,346 @@
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+
+    }
+
+
+
+    .post-edit-form {
+        background: #f8f9fa;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+    }
+
+    .post-edit-form h4 {
+        margin-bottom: 20px;
+        font-size: 1.5em;
+        color: #343a40;
+        text-align: center;
+    }
+
+    .post-edit-form .form-group {
+        margin-bottom: 15px;
+    }
+
+    .post-edit-form .form-control,
+    .post-edit-form .form-control-file,
+    .post-edit-form .form-select {
+        border: 1px solid #e0e0e0;
+        border-radius: 5px;
+        padding: 10px;
+        transition: border-color 0.2s;
+    }
+
+    .post-edit-form .form-control:focus,
+    .post-edit-form .form-control-file:focus,
+    .post-edit-form .form-select:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    .post-edit-form .btn {
+
+
+        color: #fff;
+        margin-top: 20px;
+        margin-left: 120px;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 1em;
+        transition: background-color 0.2s, border-color 0.2s, transform 0.2s;
+    }
+
+    .post-edit-form .btn:hover {
+
+        transform: translateY(-2px);
+    }
+
+    .post-edit-form .btn:active {
+        transform: translateY(1px);
+    }
+
+    .post-edit-form .btn-block {
+        width: 36%;
+    }
+
+    #map {
+        height: 320px;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+</style>
+
+
+<div class="container">
+    <div class="post-edit-form">
+        <h4>Post Düzenle</h4>
+        <form id="postForm" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="title">Başlık</label>
+                <input type="text" class="form-control" id="title" name="title" value="post.Title" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Açıklama</label>
+                <textarea class="form-control" id="description" name="description" rows="3"
+                    required>post.Description</textarea>
+            </div>
+            <div class="form-group">
+                <label for="location">Konum</label>
+                <input type="hidden" class="form-control" id="location" name="location" value="post.Location" required>
+            </div>
+            <div id="map"></div>
+            <div class="form-group">
+                <input id="pac-input" class="form-control" type="text" placeholder="Konum ara">
+            </div>
+            <div class="row">
+                <div class="form-group col-6">
+                    <label for="formattedDate">Tarih</label>
+                    <input type="date" class="form-control" id="formattedDate" name="formattedDate"
+                        value="post.FormattedDate" required>
+                </div>
+                <div class="form-group col-6">
+                    <label for="time">Zaman</label>
+                    <input type="time" class="form-control" id="time" name="time" value="post.Time" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="image">Resim Yükle</label>
+                <input type="file" class="form-control-file" id="image" name="image" accept="image/*">
+                <input type="hidden" id="imageUrl" name="imageUrl" value="post.ImageUrl">
+            </div>
+            <div style="margin: auto;">
+                <button type="button" class="btn btn-primary btn-block" id="uploadButton">Güncelle</button>
+                <button type="button" class="btn btn-secondary btn-block"
+                    onclick="window.location.href='/post/list'">İptal</button>
+            </div>
+        </form>
+    </div>
+</div>
+@section Scripts{
+<script>
+    function initMap() {
+        var defaultLat = 41.0082;
+        var defaultLng = 28.9784;
+        document.getElementById('location').value = defaultLat + "," + defaultLng;
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: defaultLat, lng: defaultLng },
+            zoom: 8
+        });
+
+        var marker = new google.maps.Marker({
+            position: { lat: defaultLat, lng: defaultLng },
+            map: map,
+            draggable: true
+        });
+
+        var input = document.getElementById('pac-input');
+        var autocomplete = new google.maps.places.Autocomplete(input);
+        autocomplete.bindTo('bounds', map);
+
+        autocomplete.addListener('place_changed', function () {
+            var place = autocomplete.getPlace();
+            if (!place.geometry) {
+                console.log("No details available for input: '" + place.name + "'");
+                return;
+            }
+
+            if (place.geometry.viewport) {
+                map.fitBounds(place.geometry.viewport);
+            } else {
+                map.setCenter(place.geometry.location);
+                map.setZoom(17);
+            }
+
+            marker.setPosition(place.geometry.location);
+            document.getElementById('location').value = place.geometry.location.lat() + "," + place.geometry.location.lng();
+        });
+
+        google.maps.event.addListener(map, 'click', function (event) {
+            var latitude = event.latLng.lat();
+            var longitude = event.latLng.lng();
+            document.getElementById('location').value = latitude + "," + longitude;
+            marker.setPosition(event.latLng);
+        });
+
+        google.maps.event.addListener(marker, 'dragend', function (event) {
+            var latitude = event.latLng.lat();
+            var longitude = event.latLng.lng();
+            document.getElementById('location').value = latitude + "," + longitude;
+        });
+    }
+
+    google.maps.event.addDomListener(window, 'load', initMap);
+</script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_AUTH_DOMAIN",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_STORAGE_BUCKET",
+        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+        appId: "YOUR_APP_ID",
+        measurementId: "YOUR_MEASUREMENT_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const storage = getStorage(app);
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const uploadButton = document.getElementById('uploadButton');
+        const postForm = document.getElementById('postForm');
+        const imageInput = document.getElementById('image');
+        const imageUrlInput = document.getElementById('imageUrl');
+        const locationInput = document.getElementById('location');
+        const titleInput = document.getElementById('title');
+        const descriptionInput = document.getElementById('description');
+        const formattedDateInput = document.getElementById('formattedDate');
+        const timeInput = document.getElementById('time');
+        const maxParticipantsInput = document.getElementById('maxParticipants');
+
+        uploadButton.addEventListener('click', function () {
+            if (!validateForm()) {
+                return;
+            }
+            const file = imageInput.files[0];
+            if (file) {
+                uploadImageToFirebase(file).then(url => {
+                    imageUrlInput.value = url;
+                    submitForm();
+                }).catch(error => {
+                    Swal.fire({
+                        title: 'Hata!',
+                        text: 'Resim yüklenirken bir hata oluştu: ' + error,
+                        icon: 'error',
+                        confirmButtonText: 'Tamam'
+                    });
+                });
+            } else {
+                submitForm();
+            }
+        });
+
+        function validateForm() {
+            if (!titleInput.value.trim()) {
+                Swal.fire({
+                    title: 'Hata!',
+                    text: 'Başlık alanı boş olamaz.',
+                    icon: 'error',
+                    confirmButtonText: 'Tamam'
+                });
+                return false;
+            }
+
+            if (!descriptionInput.value.trim()) {
+                Swal.fire({
+                    title: 'Hata!',
+                    text: 'Açıklama alanı boş olamaz.',
+                    icon: 'error',
+                    confirmButtonText: 'Tamam'
+                });
+                return false;
+            }
+
+            if (!locationInput.value.trim()) {
+                Swal.fire({
+                    title: 'Hata!',
+                    text: 'Konum alanı boş olamaz.',
+                    icon: 'error',
+                    confirmButtonText: 'Tamam'
+                });
+                return false;
+            }
+
+            if (!formattedDateInput.value.trim()) {
+                Swal.fire({
+                    title: 'Hata!',
+                    text: 'Tarih alanı boş olamaz.',
+                    icon: 'error',
+                    confirmButtonText: 'Tamam'
+                });
+                return false;
+            }
+
+            if (!timeInput.value.trim()) {
+                Swal.fire({
+                    title: 'Hata!',
+                    text: 'Zaman alanı boş olamaz.',
+                    icon: 'error',
+                    confirmButtonText: 'Tamam'
+                });
+                return false;
+            }
+
+            if (!maxParticipantsInput.value.trim()) {
+                Swal.fire({
+                    title: 'Hata!',
+                    text: 'Maksimum katılımcı sayısı alanı boş olamaz.',
+                    icon: 'error',
+                    confirmButtonText: 'Tamam'
+                });
+                return false;
+            }
+
+            return true;
+        }
+
+        function submitForm() {
+            const formData = new FormData(postForm);
+
+            $.ajax({
+                url: postForm.action,
+                type: postForm.method,
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            title: 'Başarılı!',
+                            text: 'Post başarıyla güncellendi.',
+                            icon: 'success',
+                            confirmButtonText: 'Tamam'
+                        }).then(() => {
+                            window.location.href = '/post/list';
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Hata!',
+                            text: response.message,
+                            icon: 'error',
+                            confirmButtonText: 'Tamam'
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    Swal.fire({
+                        title: 'Hata!',
+                        text: 'Bir hata oluştu, lütfen daha sonra tekrar deneyiniz.',
+                        icon: 'error',
+                        confirmButtonText: 'Tamam'
+                    });
+                }
+            });
+        }
+
+        async function uploadImageToFirebase(file) {
+            try {
+                const storageRef = ref(storage, `images/${file.name}`);
+                await uploadBytes(storageRef, file);
+                const fileURL = await getDownloadURL(storageRef);
+                return fileURL;
+            } catch (error) {
+                console.error("Error uploading image: ", error);
+                throw error;
+            }
+        }
+    });
+</script>
+}
