@@ -1,4 +1,5 @@
 
+using System.Globalization;
 using Microsoft.AspNetCore.Mvc;
 using SoframiPaylas.WebUI.ExternalService.Extensions;
 using SoframiPaylas.WebUI.ExternalService.Filters;
@@ -42,7 +43,7 @@ namespace SoframiPaylas.WebUI.Controllers
             {
                 return Json(new { success = false, message = "Model cannot be null." });
             }
-
+            Console.WriteLine(model.FormattedDate);
             if (!ModelState.IsValid)
             {
                 return Json(new { success = false, message = "Geçersiz form verisi" });
@@ -91,7 +92,7 @@ namespace SoframiPaylas.WebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddFood(string title, string description)
         {
-            Console.WriteLine("Title: " + title + " Description: " + description);
+
             if (!string.IsNullOrEmpty(title))
             {
                 if (string.IsNullOrEmpty(description))
@@ -164,17 +165,85 @@ namespace SoframiPaylas.WebUI.Controllers
         {
             return View();
         }
-        public IActionResult Edit()
+        public async Task<IActionResult> Edit([FromQuery] string postId)
         {
-            return View();
+            var response = await _apiService.GetPostByIdAsync(postId);
+            if (!response.IsSuccessStatusCode)
+            {
+                return View("Error");
+            }
+            var content = await response.Content.ReadFromJsonAsync<PostViewModel>();
+
+            var editViewModel = new PostEditViewModel()
+            {
+                Title = content.Title,
+                Description = content.Description,
+                Location = $"{content.Latitude.ToString(CultureInfo.InvariantCulture)}-{content.Longitude.ToString(CultureInfo.InvariantCulture)}",
+                FormattedDate = content.FormattedDate,
+                Time = content.Time,
+                ImageUrl = content.Image
+                ,
+                PostId = content.PostId
+            };
+            return View(editViewModel);
         }
-        public IActionResult Participant()
+        [HttpPost]
+        public async Task<IActionResult> Edit([FromQuery] string postId, PostEditViewModel model)
         {
-            return View();
+            Console.WriteLine(model.Title);
+            Console.WriteLine(model.PostId);
+            Console.WriteLine(model.ImageUrl);
+            Console.WriteLine(model.Description);
+            Console.WriteLine(model.Location);
+            Console.WriteLine(model.Time);
+            Console.WriteLine(model.FormattedDate);
+            if (model == null)
+            {
+                return Json(new { success = false, message = "Model cannot be null." });
+            }
+            if (!ModelState.IsValid)
+            {
+                return Json(new { success = false, message = "Geçersiz form verisi" });
+            }
+            try
+            {
+
+                HttpResponseMessage response = await _apiService.GetPostByIdAsync(postId);
+                if (!response.IsSuccessStatusCode)
+                {
+                    return Json(new { success = false });
+
+                }
+                var locationParts = model.Location.Split('-');
+                double latitude = double.Parse(locationParts[0], System.Globalization.CultureInfo.InvariantCulture);
+                double longitude = double.Parse(locationParts[1], System.Globalization.CultureInfo.InvariantCulture);
+                var content = await response.Content.ReadFromJsonAsync<PostViewModel>();
+                content.Image = model.ImageUrl;
+                content.Title = model.Title;
+                content.Description = model.Description;
+                content.Time = model.Time.ToString();
+                content.Longitude = longitude;
+                content.Latitude = latitude;
+                content.FormattedDate = model.FormattedDate;
+                var response2 = await _apiService.UpdatePost(content);
+                if (response2.IsSuccessStatusCode)
+                {
+                    return Json(new { success = true });
+                }
+                return Json(new { success = false });
+
+            }
+            catch (HttpRequestException ex)
+            {
+                return Json(new { success = false, message = $"Ağ hatası oluştu: {ex.Message}" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Beklenmedik bir hata oluştu: {ex.Message}" });
+            }
         }
-        public IActionResult Meal()
-        {
-            return View();
-        }
+
+
+
     }
 }

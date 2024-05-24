@@ -1,6 +1,18 @@
 <style>
     body {
         font-family: 'Arial', sans-serif;
+        background-color: #f2f2f2;
+        margin: 0;
+        padding: 20px;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
     .dashboard {
@@ -15,8 +27,14 @@
         padding: 20px;
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        background-color: #ffffff;
+        background-color: #007bff;
         text-align: center;
+        color: #ffffff;
+        transition: background 0.3s ease-in-out;
+    }
+
+    .dashboard .card:hover {
+        background-color: #0056b3;
     }
 
     .dashboard .card h3 {
@@ -36,6 +54,7 @@
         font-size: 2em;
         margin-bottom: 20px;
         color: #343a40;
+        text-align: center;
     }
 
     .post-card {
@@ -137,41 +156,56 @@
     <div class="dashboard">
         <div class="card">
             <h3>Toplam Paylaşım</h3>
-            <p>ViewBag.TotalPosts</p>
+            <p>15</p>
         </div>
         <div class="card">
             <h3>Toplam Katılım İsteği</h3>
-            <p>ViewBag.TotalRequests</p>
+            <p>34</p>
         </div>
         <div class="card">
             <h3>Bekleyen İstekler</h3>
-            <p>ViewBag.PendingRequests</p>
+            <p>7</p>
         </div>
         <div class="card">
             <h3>Toplam Yemek</h3>
-            <p>ViewBag.TotalMeals</p>
+            <p>12</p>
         </div>
     </div>
 
     <!-- Post List Section -->
     <div class="post-list">
-        <h2 class="text-center">Paylaşımlar</h2>
+        <h2>Paylaşımlar</h2>
         <div class="post-card">
             <div class="post-header">
                 <div>
-                    <a href="/post/details/post.PostId"><strong>post.Title</strong></a>
-                    <p>post.FormattedDate post.Time</p>
+                    <a href="/post/details/1"><strong>Ev Daveti</strong></a>
+                    <p>Güzel bir akşam yemeği için herkesi bekliyoruz!</p>
                 </div>
             </div>
             <div class="btn-container">
-                <button class="btn btn-manage" onclick="window.location.href='/post/edit/post.PostId'">Düzenle</button>
-                <button class="btn btn-requests"
-                    onclick="window.location.href='/post/requests/post.PostId'">Katılımcılar (200)</button>
-                <button class="btn btn-edit-meal" onclick="window.location.href='/meal/list/post.PostId'">Yemekler
-                    (300)</button>
-                <button class="btn btn-delete" onclick="deletePost('post.PostId')">Sil</button>
+                <button class="btn btn-manage" onclick="window.location.href='/post/edit/1'">Düzenle</button>
+                <button class="btn btn-requests" onclick="window.location.href='/post/requests/1'">Katılımcılar
+                    (5)</button>
+                <button class="btn btn-edit-meal" onclick="window.location.href='/meal/list/1'">Yemekler (3)</button>
+                <button class="btn btn-delete" onclick="deletePost('1')">Sil</button>
             </div>
         </div>
-        <!-- Repeat Post Cards -->
+        <!-- Diğer Post Kartları -->
+        <div class="post-card">
+            <div class="post-header">
+                <div>
+                    <a href="/post/details/2"><strong>Bahçe Pikniği</strong></a>
+                    <p>Doğa ile iç içe bir piknik organizasyonu.</p>
+                </div>
+            </div>
+            <div class="btn-container">
+                <button class="btn btn-manage" onclick="window.location.href='/post/edit/2'">Düzenle</button>
+                <button class="btn btn-requests" onclick="window.location.href='/post/requests/2'">Katılımcılar
+                    (8)</button>
+                <button class="btn btn-edit-meal" onclick="window.location.href='/meal/list/2'">Yemekler (5)</button>
+                <button class="btn btn-delete" onclick="deletePost('2')">Sil</button>
+            </div>
+        </div>
+        <!-- Diğer Post Kartları -->
     </div>
 </div>
