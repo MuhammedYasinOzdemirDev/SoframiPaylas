@@ -100,6 +100,31 @@ namespace SoframiPaylas.WebUI.Services
             HttpResponseMessage response = await _httpClient.PostAsJsonAsync(url, foodIds);
             return response;
         }
+        public async Task<HttpResponseMessage> UpdatePost(PostViewModel model)
+        {
+            var postDto = _mapper.Map<PostDto>(model);
+            var url = new UriBuilder(_httpClient.BaseAddress + "Post/post")
+            {
+                Query = $"postId={model.PostId}"
+            };
+            HttpResponseMessage response = await _httpClient.PutAsJsonAsync(url.Uri, postDto);
+            return response;
+        }
+        public async Task<HttpResponseMessage> UpdateFood(string foodId, string title, string description)
+        {
+            var updateFoodDto = new UpdateFoodDto
+            {
+                Title = title,
+                Description = description
+            };
+            var url = new UriBuilder(_httpClient.BaseAddress + "Food/food")
+            {
+                Query = $"foodID={foodId}"
+            };
+            HttpResponseMessage response = await _httpClient.PutAsJsonAsync(url.Uri, updateFoodDto);
+            return response;
+        }
+
 
     }
 }

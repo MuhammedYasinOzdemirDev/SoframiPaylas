@@ -172,6 +172,7 @@ namespace SoframiPaylas.WebAPI
         {
             try
             {
+
                 var foodId = await _service.CreateFoodAsync(foodDto);
                 if (string.IsNullOrEmpty(foodId))
                     return BadRequest("Yiyecek oluşturulamadı.");
@@ -213,8 +214,8 @@ namespace SoframiPaylas.WebAPI
         /// <response code="400">Gönderilen verilerde eksiklik veya geçersizlik varsa bu hata kodu döner.</response>
         /// <response code="404">Belirtilen ID'ye sahip yiyecek bulunamadı.</response>
         /// <response code="500">Güncelleme işlemi sırasında beklenmedik bir hata oluştuğunda bu hata döner.</response>
-        [HttpPut("food/{foodID}")]
-        public async Task<IActionResult> UpdateFoodById([FromBody] UpdateFoodDto foodDto, string foodID)
+        [HttpPut("food")]
+        public async Task<IActionResult> UpdateFoodById([FromBody] UpdateFoodDto foodDto, [FromQuery] string foodID)
         {
             try
             {

@@ -1,5 +1,7 @@
 
+using System.Globalization;
 using AutoMapper;
+using Google.Cloud.Firestore;
 using SoframiPaylas.Application.DTOs;
 using SoframiPaylas.Application.DTOs.Food;
 using SoframiPaylas.Application.DTOs.Post;
@@ -29,10 +31,21 @@ namespace SoframiPaylas.Application.Mappings
                 .ForMember(dest => dest.FormattedDate, opt => opt.MapFrom(src => src.Date.ToDateTime().ToString("yyyy-MM-dd"))); // Tarih formatlaması
 
             // Post -> CreatePostDto
-            CreateMap<Post, CreatePostDto>().ReverseMap();
+            CreateMap<Post, CreatePostDto>()
+             .ForMember(dest => dest.FormattedDate, opt => opt.MapFrom(src => src.Date.ToDateTime().ToString("yyyy-MM-dd")));
+
+            // CreatePostDto -> Post
+            CreateMap<CreatePostDto, Post>()
+                .ForMember(dest => dest.Date, opt => opt.MapFrom(src => Timestamp.FromDateTime(DateTime.ParseExact(src.FormattedDate, "yyyy-MM-dd", CultureInfo.InvariantCulture).ToUniversalTime())));
 
             // Post -> UpdatePostDto
-            CreateMap<Post, UpdatePostDto>().ReverseMap();
+
+            CreateMap<Post, UpdatePostDto>()
+             .ForMember(dest => dest.FormattedDate, opt => opt.MapFrom(src => src.Date.ToDateTime().ToString("yyyy-MM-dd")));
+
+            // CreatePostDto -> Post
+            CreateMap<UpdatePostDto, Post>()
+                .ForMember(dest => dest.Date, opt => opt.MapFrom(src => Timestamp.FromDateTime(DateTime.ParseExact(src.FormattedDate, "yyyy-MM-dd", CultureInfo.InvariantCulture).ToUniversalTime())));
 
             // Food <-> FoodDto
             CreateMap<Food, FoodDto>().ReverseMap();

@@ -1,10 +1,57 @@
+@model PostEditViewModel
+
+<div class="container">
+    <div class="post-edit-form">
+        <h4>Post Düzenle</h4>
+        <form id="postForm" method="post" asp-action="Edit" enctype="multipart/form-data">
+            <div class="form-group">
+                <label asp-for="Title">Başlık</label>
+                <input type="text" class="form-control" asp-for="Title" value="@Model.Title" required>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description">Açıklama</label>
+                <textarea class="form-control" asp-for="Description" rows="3" value="@Model.Description"
+                    required></textarea>
+            </div>
+            <div class="form-group">
+                <label asp-for="Location">Konum</label>
+                <input type="hidden" class="form-control" asp-for="Location" value="@Model.Location" required>
+            </div>
+            <div id="map"></div>
+            <div class="form-group">
+                <input id="pac-input" class="form-control" type="text" placeholder="Konum ara">
+            </div>
+            <div class="row">
+                <div class="form-group col-6">
+                    <label asp-for="FormattedDate">Tarih</label>
+                    <input type="date" class="form-control" asp-for="FormattedDate" id="formattedDate" required>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="Time">Zaman</label>
+                    <input type="time" class="form-control" asp-for="Time" value="@Model.Time" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="image">Resim Yükle</label>
+                <input type="file" class="form-control-file" id="image" name="image" accept="image/*">
+                <input type="hidden" asp-for="ImageUrl">
+                <div class="image-preview">
+                    <img src="@Model.ImageUrl" alt="Önceki Resim" id="imagePreview">
+                </div>
+            </div>
+            <div class="form-group button-group">
+                <button type="button" class="btn btn-primary" id="uploadButton">Güncelle</button>
+                <button type="button" class="btn btn-secondary" id="cancelButton">İptal</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <style>
-    body {
-        font-family: 'Arial', sans-serif;
-
+    .container {
+        max-width: 800px;
+        ;
     }
-
-
 
     .post-edit-form {
         background: #f8f9fa;
@@ -42,11 +89,7 @@
     }
 
     .post-edit-form .btn {
-
-
         color: #fff;
-        margin-top: 20px;
-        margin-left: 120px;
         padding: 10px 20px;
         border-radius: 5px;
         font-size: 1em;
@@ -54,7 +97,6 @@
     }
 
     .post-edit-form .btn:hover {
-
         transform: translateY(-2px);
     }
 
@@ -62,70 +104,194 @@
         transform: translateY(1px);
     }
 
-    .post-edit-form .btn-block {
-        width: 36%;
+    .post-edit-form .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
     }
+
+    .post-edit-form .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+    }
+
+    .post-edit-form .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+
+    .post-edit-form .btn-secondary:hover {
+        background-color: #5a6268;
+        border-color: #545b62;
+    }
+
+    .post-edit-form .button-group {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .button-group button {
+        margin: 0 10px;
+    }
+
 
     #map {
         height: 320px;
         width: 100%;
         margin-bottom: 20px;
     }
-</style>
+
+    .image-preview {
+        margin-top: 10px;
+        text-align: center;
+        /* Image center alignment */
+    }
+
+    .image-preview img {
+        max-width: 200px;
+        /* Standard width */
+        height: auto;
+        border: 1px solid #e0e0e0;
+        border-radius: 5px;
+    }
+</style>>
+@section Scripts {
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="module">
+
+</script>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+        apiKey: "AIzaSyAETB5ou7FUmvOo1tjagQyLA5JgMKah_so",
+        authDomain: "sofrani-paylas.firebaseapp.com",
+        databaseURL: "https://sofrani-paylas-default-rtdb.firebaseio.com",
+        projectId: "sofrani-paylas",
+        storageBucket: "sofrani-paylas.appspot.com",
+        messagingSenderId: "542088840250",
+        appId: "1:542088840250:web:b635167b5919f171556103",
+        measurementId: "G-JK3VHJ4MR9"
+    };
+
+    // Initialize Firebase
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const storage = getStorage(app);
+    $(document).ready(function () {
+        // Date değerini ayarlamak
+        var dateValue = '@Model.FormattedDate';
+        if (dateValue) {
+            $('#formattedDate').val(new Date(dateValue).toISOString().substring(0, 10));
+        }
+
+        $("#uploadButton").click(function () {
+            var formData = new FormData();
+            formData.append("PostId", "@Model.PostId");
+            formData.append("Title", $("#Title").val());
+            formData.append("Description", $("#Description").val());
+            formData.append("Location", $("#Location").val());
+            formData.append("FormattedDate", $("#formattedDate").val());
+            formData.append("Time", $("#Time").val());
+            var fileInput = $("#image")[0];
+
+            if (fileInput.files.length > 0) {
+                uploadImageToFirebase(fileInput.files[0]).then(url => {
+                    formData.append("ImageUrl", url);
 
 
-<div class="container">
-    <div class="post-edit-form">
-        <h4>Post Düzenle</h4>
-        <form id="postForm" method="post" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="title">Başlık</label>
-                <input type="text" class="form-control" id="title" name="title" value="post.Title" required>
-            </div>
-            <div class="form-group">
-                <label for="description">Açıklama</label>
-                <textarea class="form-control" id="description" name="description" rows="3"
-                    required>post.Description</textarea>
-            </div>
-            <div class="form-group">
-                <label for="location">Konum</label>
-                <input type="hidden" class="form-control" id="location" name="location" value="post.Location" required>
-            </div>
-            <div id="map"></div>
-            <div class="form-group">
-                <input id="pac-input" class="form-control" type="text" placeholder="Konum ara">
-            </div>
-            <div class="row">
-                <div class="form-group col-6">
-                    <label for="formattedDate">Tarih</label>
-                    <input type="date" class="form-control" id="formattedDate" name="formattedDate"
-                        value="post.FormattedDate" required>
-                </div>
-                <div class="form-group col-6">
-                    <label for="time">Zaman</label>
-                    <input type="time" class="form-control" id="time" name="time" value="post.Time" required>
-                </div>
-            </div>
+                    submitForm(formData);
+                }).catch(error => {
+                    Swal.fire({
+                        title: 'Hata!',
+                        text: 'Resim yüklenirken bir hata oluştu: ' + error,
+                        icon: 'error',
+                        confirmButtonText: 'Tamam'
+                    });
+                });
+            } else {
+                formData.append("ImageUrl", '@Model.ImageUrl');
+                submitForm(formData);
+            }
+        });
+        $("#cancelButton").click(function () {
+            window.location.href = '@Url.Action("Manage","Post")';
+        });
+        function submitForm(formData) {
 
-            <div class="form-group">
-                <label for="image">Resim Yükle</label>
-                <input type="file" class="form-control-file" id="image" name="image" accept="image/*">
-                <input type="hidden" id="imageUrl" name="imageUrl" value="post.ImageUrl">
-            </div>
-            <div style="margin: auto;">
-                <button type="button" class="btn btn-primary btn-block" id="uploadButton">Güncelle</button>
-                <button type="button" class="btn btn-secondary btn-block"
-                    onclick="window.location.href='/post/list'">İptal</button>
-            </div>
-        </form>
-    </div>
-</div>
-@section Scripts{
-<script>
+            $.ajax({
+                url: '@Url.Action("Edit","Post")?postId=@Model.PostId', // API endpoint URL
+
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,// JSON string'e çevir
+
+                processData: false,
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            title: 'Başarılı!',
+                            text: 'Post başarıyla güncellendi.',
+                            icon: 'success',
+                            confirmButtonText: 'Tamam'
+                        }).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Hata!',
+                            text: response.message,
+                            icon: 'error',
+                            confirmButtonText: 'Tamam'
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
+                    Swal.fire({
+                        title: 'Hata!',
+                        text: 'Bir hata oluştu, lütfen daha sonra tekrar deneyiniz.',
+                        icon: 'error',
+                        confirmButtonText: 'Tamam'
+                    });
+                }
+            });
+        }
+        async function uploadImageToFirebase(file) {
+            try {
+                const storageRef = ref(storage, `images/${file.name}`);
+                await uploadBytes(storageRef, file);
+                const fileURL = await getDownloadURL(storageRef);
+                return fileURL;
+            } catch (error) {
+                console.error("Error uploading image: ", error);
+                throw error;
+            }
+        }
+
+    });
+
     function initMap() {
+        var location = $("#Location").val();
         var defaultLat = 41.0082;
         var defaultLng = 28.9784;
-        document.getElementById('location').value = defaultLat + "," + defaultLng;
+
+        if (location) {
+            var locParts = location.split('-');
+            if (locParts.length === 2) {
+                defaultLat = parseFloat(locParts[0].replace(',', '.'));
+                defaultLng = parseFloat(locParts[1].replace(',', '.'));
+            }
+        }
 
         var map = new google.maps.Map(document.getElementById('map'), {
             center: { lat: defaultLat, lng: defaultLng },
@@ -157,190 +323,24 @@
             }
 
             marker.setPosition(place.geometry.location);
-            document.getElementById('location').value = place.geometry.location.lat() + "," + place.geometry.location.lng();
+            $("#Location").val(place.geometry.location.lat() + "-" + place.geometry.location.lng());
         });
 
         google.maps.event.addListener(map, 'click', function (event) {
             var latitude = event.latLng.lat();
             var longitude = event.latLng.lng();
-            document.getElementById('location').value = latitude + "," + longitude;
+            $("#Location").val(latitude + "-" + longitude);
             marker.setPosition(event.latLng);
         });
 
         google.maps.event.addListener(marker, 'dragend', function (event) {
             var latitude = event.latLng.lat();
             var longitude = event.latLng.lng();
-            document.getElementById('location').value = latitude + "," + longitude;
+            $("#Location").val(latitude + "-" + longitude);
         });
     }
 
     google.maps.event.addDomListener(window, 'load', initMap);
-</script>
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
-    const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        authDomain: "YOUR_AUTH_DOMAIN",
-        projectId: "YOUR_PROJECT_ID",
-        storageBucket: "YOUR_STORAGE_BUCKET",
-        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-        appId: "YOUR_APP_ID",
-        measurementId: "YOUR_MEASUREMENT_ID"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const storage = getStorage(app);
-
-    document.addEventListener('DOMContentLoaded', function () {
-        const uploadButton = document.getElementById('uploadButton');
-        const postForm = document.getElementById('postForm');
-        const imageInput = document.getElementById('image');
-        const imageUrlInput = document.getElementById('imageUrl');
-        const locationInput = document.getElementById('location');
-        const titleInput = document.getElementById('title');
-        const descriptionInput = document.getElementById('description');
-        const formattedDateInput = document.getElementById('formattedDate');
-        const timeInput = document.getElementById('time');
-        const maxParticipantsInput = document.getElementById('maxParticipants');
-
-        uploadButton.addEventListener('click', function () {
-            if (!validateForm()) {
-                return;
-            }
-            const file = imageInput.files[0];
-            if (file) {
-                uploadImageToFirebase(file).then(url => {
-                    imageUrlInput.value = url;
-                    submitForm();
-                }).catch(error => {
-                    Swal.fire({
-                        title: 'Hata!',
-                        text: 'Resim yüklenirken bir hata oluştu: ' + error,
-                        icon: 'error',
-                        confirmButtonText: 'Tamam'
-                    });
-                });
-            } else {
-                submitForm();
-            }
-        });
-
-        function validateForm() {
-            if (!titleInput.value.trim()) {
-                Swal.fire({
-                    title: 'Hata!',
-                    text: 'Başlık alanı boş olamaz.',
-                    icon: 'error',
-                    confirmButtonText: 'Tamam'
-                });
-                return false;
-            }
-
-            if (!descriptionInput.value.trim()) {
-                Swal.fire({
-                    title: 'Hata!',
-                    text: 'Açıklama alanı boş olamaz.',
-                    icon: 'error',
-                    confirmButtonText: 'Tamam'
-                });
-                return false;
-            }
-
-            if (!locationInput.value.trim()) {
-                Swal.fire({
-                    title: 'Hata!',
-                    text: 'Konum alanı boş olamaz.',
-                    icon: 'error',
-                    confirmButtonText: 'Tamam'
-                });
-                return false;
-            }
-
-            if (!formattedDateInput.value.trim()) {
-                Swal.fire({
-                    title: 'Hata!',
-                    text: 'Tarih alanı boş olamaz.',
-                    icon: 'error',
-                    confirmButtonText: 'Tamam'
-                });
-                return false;
-            }
-
-            if (!timeInput.value.trim()) {
-                Swal.fire({
-                    title: 'Hata!',
-                    text: 'Zaman alanı boş olamaz.',
-                    icon: 'error',
-                    confirmButtonText: 'Tamam'
-                });
-                return false;
-            }
-
-            if (!maxParticipantsInput.value.trim()) {
-                Swal.fire({
-                    title: 'Hata!',
-                    text: 'Maksimum katılımcı sayısı alanı boş olamaz.',
-                    icon: 'error',
-                    confirmButtonText: 'Tamam'
-                });
-                return false;
-            }
-
-            return true;
-        }
-
-        function submitForm() {
-            const formData = new FormData(postForm);
-
-            $.ajax({
-                url: postForm.action,
-                type: postForm.method,
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (response) {
-                    if (response.success) {
-                        Swal.fire({
-                            title: 'Başarılı!',
-                            text: 'Post başarıyla güncellendi.',
-                            icon: 'success',
-                            confirmButtonText: 'Tamam'
-                        }).then(() => {
-                            window.location.href = '/post/list';
-                        });
-                    } else {
-                        Swal.fire({
-                            title: 'Hata!',
-                            text: response.message,
-                            icon: 'error',
-                            confirmButtonText: 'Tamam'
-                        });
-                    }
-                },
-                error: function (xhr, status, error) {
-                    Swal.fire({
-                        title: 'Hata!',
-                        text: 'Bir hata oluştu, lütfen daha sonra tekrar deneyiniz.',
-                        icon: 'error',
-                        confirmButtonText: 'Tamam'
-                    });
-                }
-            });
-        }
-
-        async function uploadImageToFirebase(file) {
-            try {
-                const storageRef = ref(storage, `images/${file.name}`);
-                await uploadBytes(storageRef, file);
-                const fileURL = await getDownloadURL(storageRef);
-                return fileURL;
-            } catch (error) {
-                console.error("Error uploading image: ", error);
-                throw error;
-            }
-        }
-    });
 </script>
 }

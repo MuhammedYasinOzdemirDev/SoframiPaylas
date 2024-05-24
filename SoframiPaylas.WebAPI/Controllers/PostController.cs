@@ -171,6 +171,7 @@ namespace SoframiPaylas.WebAPI.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return StatusCode(500, "Gönderi oluşturma işlemi sırasında beklenmedik bir hata oluştuğunda bu hata dönülür.");
             }
         }
@@ -339,13 +340,13 @@ namespace SoframiPaylas.WebAPI.Controllers
         /// <response code="200">Katılımcı başarıyla onaylandı.</response>
         /// <response code="404">Belirtilen katılımcı veya gönderi bulunamadı.</response>
         /// <response code="500">Katılımcı onaylama işlemi sırasında beklenmedik bir hata oluştuğunda bu hata dönülür.</response>
-        [HttpPut("confirm-participant")]
+        [HttpPut("confirm")]
         public async Task<IActionResult> ConfirmParticipant([FromBody] ParticipantDto confirmRequest)
         {
             try
             {
                 // Katılımcının durumunu güncelle
-                var success = await _participantService.UpdateParticipantStatus(confirmRequest);
+                var success = await _participantService.ConfirmedParticipantStatus(confirmRequest);
 
                 if (!success)
                 {
@@ -359,5 +360,69 @@ namespace SoframiPaylas.WebAPI.Controllers
                 return StatusCode(500, "Katılımcı onaylama işlemi sırasında beklenmedik bir hata oluştuğunda bu hata dönülür.");
             }
         }
+        [HttpPut("decline")]
+        public async Task<IActionResult> DeclinedParticipant([FromBody] ParticipantDto declineRequest)
+        {
+            try
+            {
+                // Katılımcının durumunu güncelle
+                var success = await _participantService.DeclinedParticipantStatus(declineRequest);
+
+                if (!success)
+                {
+                    return NotFound(new { message = "Belirtilen katılımcı veya gönderi bulunamadı." });
+                }
+
+                return Ok(new { message = "Katılımcı başarıyla reddedildi." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Katılımcı onaylama işlemi sırasında beklenmedik bir hata oluştuğunda bu hata dönülür.");
+            }
+        }
+        [HttpGet("pending-participants")]
+        public async Task<IActionResult> PendingParticipants([FromQuery] string postId)
+        {
+            try
+            {
+                var participants = await _participantService.GetPendingPostIdByAsync(postId);
+                if (participants == null || !participants.Any())
+                    return NotFound("Belirtilen ID'ye sahip gönderi bulunamadı.");
+                return Ok(participants);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Katılımcı bilgileri getirilirken bir hata meydana geldi.");
+            }
+        }
+        [HttpGet("confirm-participants")]
+        public async Task<IActionResult> ConfirmedParticipants([FromQuery] string postId)
+        {
+            try
+            {
+                var participants = await _participantService.GetConfirmedPostIdByAsync(postId);
+                if (participants == null || !participants.Any())
+                    return NotFound("Belirtilen ID'ye sahip gönderi bulunamadı.");
+                return Ok(participants);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Katılımcı bilgileri getirilirken bir hata meydana geldi.");
+            }
+        }
+        [HttpGet("check-status")]
+        public async Task<IActionResult> CheckIfRequestExistsAsync([FromQuery] string postId, [FromQuery] string userId)
+        {
+            try
+            {
+                var status = await _participantService.CheckIfRequestExistsAsync(postId, userId);
+                return Ok(status);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, "Status bilgileri getirilirken bir hata meydana geldi.");
+            }
+        }
+
     }
 }
