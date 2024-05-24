@@ -1,0 +1,275 @@
+@model PostFoodListViewModel
+<div class="container">
+    <div class="meal-management">
+        <h2>@Model.PostName Yemek Yönetimi</h2>
+
+        <div class="form-group">
+            <label for="foodName">Yemek Adı</label>
+            <input type="text" class="form-control" id="foodName" required>
+            <label for="foodDescription">Yemek Açıklaması</label>
+            <textarea class="form-control" id="foodDescription" rows="3"></textarea>
+            <button type="button" class="btn btn-primary" onclick="addMeal()">Ekle</button>
+        </div>
+
+        <!-- Meal List Section -->
+        <div class="meal-list">
+            <h4>Mevcut Yemekler</h4>
+            <ul class="list-group">
+                <!-- Repeat Meal Items -->
+                @foreach(var food in Model.FoodList){
+                <li class="list-group-item">
+                    <div class="meal-info">
+                        <span class="meal-name">@food.Title</span>
+                        <span class="meal-description">@food.Description</span>
+
+                    </div>
+                    <div>
+                        <button class="btn btn-update btn-sm"
+                            onclick="updateMeal('@food.FoodId', 'mealName', 'mealDescription')">Güncelle</button>
+                        <button class="btn btn-remove btn-sm" onclick="removeMeal('@food.FoodId')">Sil</button>
+                    </div>
+                </li>}
+
+            </ul>
+        </div>
+    </div>
+</div>
+<style>
+    .container {
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    .meal-management {
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        width: 100%;
+        max-width: 600px;
+    }
+
+    .meal-management h2 {
+        font-size: 2em;
+        margin-bottom: 20px;
+        color: #343a40;
+        text-align: center;
+    }
+
+    .meal-management .form-group {
+        margin-bottom: 20px;
+    }
+
+    .meal-management .form-group label {
+        font-weight: bold;
+        color: #343a40;
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .meal-management .form-group input,
+    .meal-management .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ced4da;
+        margin-bottom: 10px;
+    }
+
+    .meal-management .form-group .btn {
+        padding: 10px 20px;
+        background-color: #007bff;
+        border-color: #007bff;
+        color: #fff;
+        cursor: pointer;
+        transition: background 0.3s ease-in-out, border-color 0.3s ease-in-out, transform 0.3s;
+    }
+
+    .meal-management .form-group .btn:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+        transform: translateY(-2px);
+    }
+
+    .meal-management .form-group .btn:active {
+        transform: translateY(1px);
+    }
+
+    .meal-list {
+        margin-top: 20px;
+    }
+
+    .meal-list h4 {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+        color: #343a40;
+    }
+
+    .list-group {
+        padding: 0;
+        list-style: none;
+    }
+
+    .list-group-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+
+    .meal-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .meal-info .meal-name {
+        font-size: 1.1em;
+        font-weight: bold;
+        color: #343a40;
+    }
+
+    .meal-info .meal-description {
+        font-size: 0.9em;
+        color: #6c757d;
+    }
+
+    .button-group {
+        display: flex;
+        align-items: center;
+    }
+
+    .btn-update {
+        background-color: #17a2b8;
+        border-color: #17a2b8;
+        color: #fff;
+        padding: 5px 10px;
+        margin-right: 5px;
+    }
+
+    .btn-update:hover {
+        background-color: #138496;
+        border-color: #138496;
+    }
+
+    .btn-remove {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: #fff;
+        padding: 5px 10px;
+    }
+
+    .btn-remove:hover {
+        background-color: #c82333;
+        border-color: #c82333;
+    }
+</style>
+<script>
+    function addMeal() {
+        var foodName = document.getElementById('foodName').value;
+        var foodDescription = document.getElementById('foodDescription').value;
+
+
+        fetch('@Url.Action("AddFood", "Food")?postId=@Model.PostId', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ Title: foodName, Description: foodDescription })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        title: 'Yemek başarıyla eklendi.',
+                        text: data.message,
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    })
+                    location.reload();
+                } else {
+                    Swal.fire({
+                        title: 'Yemek  eklenemedi.',
+                        text: data.message,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    })
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    function removeMeal(foodId) {
+        // API çağrısı yaparak yemeği sil
+        fetch('@Url.Action("DeleteFood","Food")?postId=@Model.PostId&foodId=' + foodId, {
+            method: 'Delete',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        title: 'Yemek başarıyla silindi.',
+                        text: data.message,
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    })
+                    location.reload();
+
+                } else {
+                    Swal.fire({
+                        title: 'Yemek silinemedi.',
+                        text: data.message,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    })
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    function updateMeal(foodId, foodName, foodDescription) {
+        var newFoodName = prompt("Yeni Yemek Adı:", foodName);
+        var newFoodDescription = prompt("Yeni Yemek Açıklaması:", foodDescription);
+
+        if (newFoodName !== null) {
+            // API çağrısı yaparak yemeği güncelle
+            fetch('@Url.Action("UpdateFood","Food")?foodId=' + foodId, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ Title: newFoodName, Description: newFoodDescription })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            title: 'Yemek başarıyla güncellendi.',
+                            text: data.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        })
+                        location.reload(); // Sayfayı yenileyin
+                    } else {
+                        Swal.fire({
+                            title: 'Yemek güncellenemedi.',
+                            text: data.message,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        })
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    }
+
+</script>

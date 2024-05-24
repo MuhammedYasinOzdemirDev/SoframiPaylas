@@ -11,7 +11,5 @@ namespace SoframiPaylas.Domain.Entities
 
         [FirestoreProperty("description")]
         public string Description { get; set; }
-
-
     }
 }

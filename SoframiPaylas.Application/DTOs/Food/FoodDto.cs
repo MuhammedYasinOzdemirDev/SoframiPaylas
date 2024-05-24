@@ -4,6 +4,7 @@ namespace SoframiPaylas.Application.DTOs.Food
     public class FoodDto
     {
 
+        public string FoodId { get; set; }
         /// <summary>
         /// Yiyeceğin başlığı.
         /// </summary>

@@ -106,12 +106,12 @@ namespace SoframiPaylas.Infrastructure.Repositories
                     };
                 }, TimeSpan.FromSeconds(20));
         }
-        public async Task<List<Food>> GetFoodsByIdsAsync(List<string> foodIds)
+        public async Task<List<(Food food, string id)>> GetFoodsByIdsAsync(List<string> foodIds)
         {
             if (db == null)
                 throw new InvalidOperationException("Database service is not initialized properly.");
 
-            var foods = new List<Food>();
+            var foods = new List<(Food food, string id)>();
 
             foreach (var foodId in foodIds)
             {
@@ -121,13 +121,14 @@ namespace SoframiPaylas.Infrastructure.Repositories
                 if (snapshot.Exists)
                 {
                     Dictionary<string, object> foodDict = snapshot.ToDictionary();
+                    var id = snapshot.Id;
                     var food = new Food
                     {
                         Title = foodDict.ContainsKey("title") ? foodDict["title"].ToString() : null,
                         Description = foodDict.ContainsKey("description") ? foodDict["description"].ToString() : null,
                         // Diğer gerekli alanlar
                     };
-                    foods.Add(food);
+                    foods.Add((food, id));
                 }
             }
 
@@ -156,5 +157,6 @@ namespace SoframiPaylas.Infrastructure.Repositories
                     }
                 }, TimeSpan.FromSeconds(20));
         }
+
     }
 }

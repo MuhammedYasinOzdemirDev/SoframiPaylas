@@ -60,8 +60,14 @@ namespace SoframiPaylas.Application.Services
             {
                 throw new KeyNotFoundException($"No food found ");
             }
-            return foods.Select(p => _mapper.Map<FoodDto>(p));
+            return foods.Select(e =>
+            {
+                var postDto = _mapper.Map<FoodDto>(e.food);
+                postDto.FoodId = e.id;
+                return postDto;
+            });
         }
+
 
         public async Task<bool> UpdateFoodAsync(UpdateFoodDto foodDto, string foodId)
         {
