@@ -17,11 +17,14 @@ namespace SoframiPaylas.WebUI.Controllers
     {
 
         private readonly IPostApiService _apiService;
+        private readonly IParticipantApiService _participantApiService;
 
-        public HomeController(IPostApiService postApiService)
+        public HomeController(IPostApiService postApiService, IParticipantApiService participantApiService)
         {
             _apiService = postApiService;
+            _participantApiService = participantApiService;
         }
+
         public async Task<IActionResult> Index()
         {
             try

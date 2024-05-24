@@ -222,6 +222,11 @@ var isAuthenticated = HttpContextAccessor.HttpContext.User.Identity.IsAuthentica
     .btn-join:hover {
         background-color: #218838;
     }
+
+    .btn-disabled {
+        background-color: grey;
+        cursor: not-allowed;
+    }
 </style>
 @section Scripts {
 <script>
@@ -232,6 +237,41 @@ var isAuthenticated = HttpContextAccessor.HttpContext.User.Identity.IsAuthentica
         const loginButton = document.getElementById('loginButton');
 
         if (isAuthenticated) {
+            var postId = '@Model.PostId';
+
+            fetch(`@Url.Action("RequestStatus","Participant")?postId=${postId}`)
+                .then(response => response.json())
+                .then(data => {
+
+                    var requestStatus = data.status;
+
+
+                    if (requestStatus === -1) {
+                        // İstek yapılmamış
+                        participateButton.style.display = 'inline-block';
+                        participateButton.disabled = false;
+                        participateButton.textContent = 'Katıl';
+                    } else if (requestStatus === 0) {
+                        // İstek beklemede
+                        participateButton.style.display = 'inline-block';
+                        participateButton.disabled = true;
+                        participateButton.textContent = 'İstek Beklemede';
+                        participateButton.classList.add('btn-disabled');
+                    } else if (requestStatus === 1) {
+                        // İstek onaylanmış
+                        participateButton.style.display = 'inline-block';
+                        participateButton.disabled = true;
+                        participateButton.textContent = 'İstek Onaylanmış';
+                        participateButton.classList.add('btn-disabled');
+                    } else if (requestStatus === 2) {
+                        // İstek reddedilmiş
+                        participateButton.style.display = 'inline-block';
+                        participateButton.disabled = true;
+                        participateButton.textContent = 'İstek Reddedilmiş';
+                        participateButton.classList.add('btn-disabled');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
             participateButton.style.display = 'inline-block';
             loginPrompt.style.display = 'none';
             loginButton.style.display = 'none';
@@ -265,6 +305,7 @@ var isAuthenticated = HttpContextAccessor.HttpContext.User.Identity.IsAuthentica
                             icon: 'success',
                             confirmButtonText: 'OK'
                         })
+                        location.reload();
                     } else {
                         NProgress.done();
                         Swal.fire({
