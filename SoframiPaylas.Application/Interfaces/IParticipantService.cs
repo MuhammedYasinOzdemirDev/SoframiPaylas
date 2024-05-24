@@ -6,6 +6,10 @@ namespace SoframiPaylas.Application.Interfaces
     public interface IParticipantService
     {
         Task<bool> AddParticipantAsync(ParticipantDto participantDto);
-        Task<bool> UpdateParticipantStatus(ParticipantDto participantDtype);
+        Task<bool> ConfirmedParticipantStatus(ParticipantDto participantDto);
+        Task<bool> DeclinedParticipantStatus(ParticipantDto participantDto);
+        Task<IEnumerable<ParticipantViewDto>> GetPendingPostIdByAsync(string postId);
+        Task<int> CheckIfRequestExistsAsync(string postId, string userId);
+        Task<IEnumerable<ParticipantViewDto>> GetConfirmedPostIdByAsync(string postId);
     }
 }

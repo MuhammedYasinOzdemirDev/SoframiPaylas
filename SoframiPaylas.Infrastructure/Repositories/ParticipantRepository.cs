@@ -45,5 +45,60 @@ namespace SoframiPaylas.Infrastructure.Repositories
                 return true;
             }, TimeSpan.FromSeconds(20));
         }
+        public async Task<List<(Participant participant, string id, string userName)>> GetParticipantPostIdAsync(string postId)
+        {
+            return await firebaseService.ExecuteFirestoreOperationAsync(async () =>
+   {
+       Query query = db.Collection("Participants").WhereEqualTo("postID", postId);
+       QuerySnapshot snapshot = await query.GetSnapshotAsync();
+       List<(Participant participant, string id, string userName)> participants = new List<(Participant participant, string id, string userName)>();
+
+       foreach (DocumentSnapshot documentSnapshot in snapshot.Documents)
+       {
+           string id = documentSnapshot.Id;
+           Participant participant = documentSnapshot.ConvertTo<Participant>();
+
+           // `userID` ile `Users` tablosundan `Username` bilgisi alınır
+           DocumentReference userDocRef = db.Collection("Users").Document(participant.UserID);
+           DocumentSnapshot userSnapshot = await userDocRef.GetSnapshotAsync();
+           string userName = userSnapshot.Exists ? userSnapshot.GetValue<string>("userName") : null;
+
+
+           participants.Add((participant: participant, id: id, userName: userName));
+       }
+
+       return participants;
+   }, TimeSpan.FromSeconds(20));
+        }
+        public async Task<bool> CheckIfRequestExistsAsync(string postId, string userId)
+        {
+            return await firebaseService.ExecuteFirestoreOperationAsync(async () =>
+            {
+                Query query = db.Collection("Participants")
+                                .WhereEqualTo("postID", postId)
+                                .WhereEqualTo("userID", userId);
+                QuerySnapshot snapshot = await query.GetSnapshotAsync();
+                return snapshot.Documents.Count > 0;
+            }, TimeSpan.FromSeconds(20));
+        }
+        public async Task<int> CheckRequestStatusAsync(string postId, string userId)
+        {
+            return await firebaseService.ExecuteFirestoreOperationAsync(async () =>
+            {
+                Query query = db.Collection("Participants")
+                                .WhereEqualTo("postID", postId)
+                                .WhereEqualTo("userID", userId);
+                QuerySnapshot snapshot = await query.GetSnapshotAsync();
+
+                if (snapshot.Documents.Count == 0)
+                {
+                    return -1; // İstek yapılmamış
+                }
+
+                DocumentSnapshot documentSnapshot = snapshot.Documents.First();
+                Participant participant = documentSnapshot.ConvertTo<Participant>();
+                return participant.Status;
+            }, TimeSpan.FromSeconds(20));
+        }
     }
 }

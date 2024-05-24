@@ -13,10 +13,13 @@ namespace SoframiPaylas.Application.Services
     public class ParticipantService : IParticipantService
     {
         private IParticipantRepository _repository;
+
         public ParticipantService(IParticipantRepository repository)
         {
             _repository = repository;
+
         }
+
         public async Task<bool> AddParticipantAsync(ParticipantDto participantDto)
         {
             return await _repository.AddParticipantAsync(new Participant
@@ -27,15 +30,60 @@ namespace SoframiPaylas.Application.Services
             });
         }
 
-        public async Task<bool> UpdateParticipantStatus(ParticipantDto participantDto)
+        public async Task<bool> ConfirmedParticipantStatus(ParticipantDto participantDto)
         {
             return await _repository.UpdateParticipantStatus(participantDto.PostID, participantDto.UserID, (int)ParticipationStatus.Confirmed);
         }
+        public async Task<bool> DeclinedParticipantStatus(ParticipantDto participantDto)
+        {
+            return await _repository.UpdateParticipantStatus(participantDto.PostID, participantDto.UserID, (int)ParticipationStatus.Declined);
+        }
+        public async Task<IEnumerable<ParticipantViewDto>> GetPendingPostIdByAsync(string postId)
+        {
+            var participants = await _repository.GetParticipantPostIdAsync(postId);
+            return participants
+                .Where(p => (ParticipationStatus)p.participant.Status == ParticipationStatus.Pending)
+                .Select(p => new ParticipantViewDto
+                {
+                    ParticipantId = p.id,
+                    Status = p.participant.Status,
+                    UserID = p.participant.UserID,
+                    PostID = p.participant.PostId,
+                    UserName = p.userName,
+
+                });
+        }
+        public async Task<IEnumerable<ParticipantViewDto>> GetConfirmedPostIdByAsync(string postId)
+        {
+            var participants = await _repository.GetParticipantPostIdAsync(postId);
+            return participants
+                .Where(p => (ParticipationStatus)p.participant.Status == ParticipationStatus.Confirmed)
+                .Select(p => new ParticipantViewDto
+                {
+                    ParticipantId = p.id,
+                    Status = p.participant.Status,
+                    UserID = p.participant.UserID,
+                    PostID = p.participant.PostId,
+                    UserName = p.userName,
+
+                });
+        }
+        public async Task<int> CheckIfRequestExistsAsync(string postId, string userId)
+        {
+            bool requestExists = await _repository.CheckIfRequestExistsAsync(postId, userId);
+            if (requestExists)
+            {
+                return await _repository.CheckRequestStatusAsync(postId, userId);
+            }
+            return -1;
+        }
+
         public enum ParticipationStatus
         {
             Pending, // Beklemede
             Confirmed, // Onaylandı
             Declined // Reddedildi
         }
+
     }
 }

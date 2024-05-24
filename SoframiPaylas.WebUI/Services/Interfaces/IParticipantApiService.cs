@@ -8,5 +8,10 @@ namespace SoframiPaylas.WebUI.Services.Interfaces
     public interface IParticipantApiService
     {
         Task<HttpResponseMessage> Join(string userId, string postId);
+        Task<HttpResponseMessage> PendingParticipants(string postId);
+        Task<HttpResponseMessage> ConfirmParticipants(string postId);
+        Task<HttpResponseMessage> CheckIfRequestExistsAsync(string postId, string userId);
+        Task<HttpResponseMessage> Decline(string userId, string postId);
+        Task<HttpResponseMessage> Confirm(string userId, string postId);
     }
 }
