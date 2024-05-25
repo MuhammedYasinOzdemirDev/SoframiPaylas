@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Google.Cloud.Firestore;
 using SoframiPaylas.Application.DTOs;
+using SoframiPaylas.Application.DTOs.Comment;
 using SoframiPaylas.Application.DTOs.Post;
 using SoframiPaylas.Application.DTOs.User;
 using SoframiPaylas.WebUI.Models;
@@ -50,6 +51,13 @@ namespace SoframiPaylas.WebUI.Mappings
                .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.ImageUrl))
 
             .ForMember(dest => dest.Time, opt => opt.MapFrom(src => FormatTime(src.Time)));
+
+
+            // CommentDto <-> CommentViewModel
+            CreateMap<CommentDto, CommentViewModel>().ReverseMap();
+
+            // CreateCommentViewModel -> CreateCommentDto
+            CreateMap<CreateCommentViewModel, CreateCommentDto>().ReverseMap();
 
         }
         private string FormatDate(string date)
