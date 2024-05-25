@@ -1,0 +1,216 @@
+<div class="container2">
+    <div class="left-panel">
+        <h1 id="post-title">Post Title</h1>
+        <p id="post-description">Post Description</p>
+        <p id="post-location">Location: Post Location</p>
+        <p id="post-date">Date: Post Date</p>
+        <p id="post-time">Time: Post Time</p>
+        <p id="max-participants">Max Participants: 10</p>
+    </div>
+
+    <div class="right-panel">
+        <div class="message-section">
+            <h2>Mesajlaşma</h2>
+            <ul id="group-message-list"></ul>
+            <div class="message-input">
+                <input type="text" id="group-message-input" placeholder="Mesajınızı yazın...">
+                <button id="send-group-message-btn" class="btn btn-secondary">Gönder</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bottom-panel">
+    <div class="announcement-section">
+        <h2>Duyurular</h2>
+        <ul id="announcement-list"></ul>
+    </div>
+
+    <div class="comments-section">
+        <h2>Yorumlar</h2>
+        <ul id="comments-list"></ul>
+        <div class="comment-input">
+            <input type="text" id="comment-input" placeholder="Yorumunuzu yazın...">
+            <button id="send-comment-btn" class="btn btn-secondary">Gönder</button>
+        </div>
+    </div>
+</div>
+@section Scripts{
+<script>
+    // scripts.js
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const postId = 'your-post-id'; // Replace with the actual post ID
+
+        const sendGroupMessageBtn = document.getElementById('send-group-message-btn');
+        const sendCommentBtn = document.getElementById('send-comment-btn');
+        const groupMessageInput = document.getElementById('group-message-input');
+        const commentInput = document.getElementById('comment-input');
+        const groupMessageList = document.getElementById('group-message-list');
+        const commentsList = document.getElementById('comments-list');
+        const announcementList = document.getElementById('announcement-list');
+
+        sendGroupMessageBtn.addEventListener('click', async () => {
+            const message = groupMessageInput.value;
+            if (message) {
+                try {
+                    await connection.send('SendMessageToGroup', postId, message);
+                    groupMessageInput.value = '';
+                } catch (error) {
+                    alert('Mesaj gönderilirken bir hata oluştu.');
+                }
+            }
+        });
+
+        sendCommentBtn.addEventListener('click', async () => {
+            const comment = commentInput.value;
+            if (comment) {
+                try {
+                    // Gönderilecek yorum API'sini ekle
+                    commentInput.value = '';
+                } catch (error) {
+                    alert('Yorum gönderilirken bir hata oluştu.');
+                }
+            }
+        });
+
+        // Sample code to simulate receiving messages and announcements via SignalR
+        // Replace this with actual SignalR connection handling code
+        const connection = new signalR.HubConnectionBuilder().withUrl('/chathub').build();
+        connection.on('ReceiveGroupMessage', (user, message) => {
+            const li = document.createElement('li');
+            li.textContent = `${user}: ${message}`;
+            groupMessageList.appendChild(li);
+        });
+        connection.on('ReceiveAnnouncement', (announcement) => {
+            const li = document.createElement('li');
+            li.textContent = announcement;
+            announcementList.appendChild(li);
+        });
+        connection.start().catch(err => console.error(err.toString()));
+    });
+
+</script>
+}
+<style>
+    /* styles.css */
+
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container2 {
+        display: flex;
+        flex-direction: row;
+        width: 90%;
+        margin: 20px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .left-panel,
+    .right-panel {
+        flex: 1;
+        margin: 10px;
+    }
+
+    .left-panel {
+        border-right: 1px solid #ddd;
+        padding-right: 20px;
+    }
+
+    .right-panel {
+        padding-left: 20px;
+    }
+
+    h1,
+    h2 {
+        color: #333;
+    }
+
+    p {
+        color: #666;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: background-color 0.3s;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background-color: #565e64;
+    }
+
+    .message-section,
+    .comments-section,
+    .announcement-section {
+        margin-top: 20px;
+    }
+
+    .message-input,
+    .comment-input {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .message-input input,
+    .comment-input input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .message-input button,
+    .comment-input button {
+        padding: 10px 20px;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    li {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .bottom-panel {
+        width: 90%;
+        margin: 20px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .announcement-section,
+    .comments-section {
+        margin-bottom: 20px;
+    }
+</style>

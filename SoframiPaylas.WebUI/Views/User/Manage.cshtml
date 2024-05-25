@@ -1,0 +1,182 @@
+<!--model List<ParticipationViewModel-->
+<div class="container2">
+    <!-- Dashboard Cards -->
+    <div class="dashboard">
+        <div class="card">
+            <h3>Toplam Katıldığım Paylaşım</h3>
+            <p>ViewBag.TotalParticipations</p>
+        </div>
+        <div class="card">
+            <h3>Toplam Mesajlar</h3>
+            <p>ViewBag.TotalMessages</p>
+        </div>
+        <div class="card">
+            <h3>Toplam Yorumlar</h3>
+            <p>ViewBag.TotalComments</p>
+        </div>
+    </div>
+
+    <!-- Participation List Section -->
+    <div class="participation-list">
+        <h2>Katıldığım Paylaşımlar</h2>
+
+        <div class="post-card">
+            <div class="post-header">
+                <div>
+                    <a href="/post/details/participation.PostId"><strong>participation.PostTitle</strong></a>
+                    <p>participation.PostDescription</p>
+                </div>
+            </div>
+            <div class="btn-container">
+                <a class="btn btn-leave" onclick="leavePost('participation.PostId')">Ayrıl</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+<style>
+    /* styles.css */
+
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container2 {
+        max-width: 1250px;
+        margin: 0 auto;
+        padding: 32px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .dashboard {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 36px;
+    }
+
+    .dashboard .card {
+        flex: 1;
+        margin: 0 10px;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        background-color: #007bff;
+        text-align: center;
+        color: #ffffff;
+        transition: background 0.3s ease-in-out;
+    }
+
+    .dashboard .card:hover {
+        background-color: #0056b3;
+    }
+
+    .dashboard .card h3 {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+    }
+
+    .participation-list {
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    .participation-list h2 {
+        font-size: 2em;
+        margin-bottom: 20px;
+        color: #343a40;
+        text-align: center;
+    }
+
+    .post-card {
+        background: #f8f9fa;
+        border: none;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: background 0.3s ease-in-out;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .post-card:hover {
+        background: #e2e6ea;
+    }
+
+    .post-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .post-header div {
+        max-width: 70%;
+    }
+
+    .post-header a {
+        text-decoration: none;
+        color: #007bff;
+        font-size: 1.2em;
+        transition: color 0.3s ease-in-out;
+    }
+
+    .post-header a:hover {
+        color: #0056b3;
+    }
+
+    .btn {
+        padding: 10px 15px;
+        width: 150px;
+        border: none;
+        border-radius: 5px;
+        font-size: 0.9em;
+        cursor: pointer;
+        transition: background 0.3s ease-in-out;
+        color: #ffffff;
+        margin-right: 10px;
+    }
+
+    .btn-leave {
+        background-color: #dc3545;
+    }
+
+    .btn-leave:hover {
+        background-color: #c82333;
+    }
+
+    .btn-container {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: flex-end;
+        align-items: center;
+    }
+</style>
+@section Scripts {
+<script>
+    function leavePost(postId) {
+        if (confirm('Bu paylaşımda katılımınızı iptal etmek istediğinizden emin misiniz?')) {
+            const response = fetch(`/post/leave?postId=${postId}`, {
+                method: 'POST',
+            }).then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Paylaşımdan başarıyla ayrıldınız.');
+                        location.reload(); // Sayfayı yenileyin
+                    } else {
+                        alert('Paylaşımdan ayrılamadınız.');
+                    }
+                })
+        }
+    }
+</script>
+}
