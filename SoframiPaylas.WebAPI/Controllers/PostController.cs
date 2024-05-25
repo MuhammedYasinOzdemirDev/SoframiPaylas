@@ -423,6 +423,35 @@ namespace SoframiPaylas.WebAPI.Controllers
                 return StatusCode(500, "Status bilgileri getirilirken bir hata meydana geldi.");
             }
         }
-
+        [HttpDelete("remove-participant")]
+        public async Task<IActionResult> Delete([FromQuery] string participantId)
+        {
+            try
+            {
+                var deleteResult = await _participantService.DeleteParticipantAsync(participantId);
+                if (!deleteResult)
+                    return NotFound("Belirtilen ID'ye sahip katılımcı bulunamadı.");
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Katılımcı silme işlemi sırasında beklenmedik bir hata oluştuğunda bu hata dönülür.");
+            }
+        }
+        [HttpGet("get-user")]
+        public async Task<IActionResult> GetByUserIdAsync([FromQuery] string userId)
+        {
+            try
+            {
+                var posts = await _postservice.GetByUserIdPostAllAsync(userId);
+                if (posts == null || !posts.Any())
+                    return NotFound("Belirtilen ID'ye sahip gönderi bulunamadı.");
+                return Ok(posts);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Gönderi bilgisi getirilirken bir hata meydana geldi.");
+            }
+        }
     }
 }

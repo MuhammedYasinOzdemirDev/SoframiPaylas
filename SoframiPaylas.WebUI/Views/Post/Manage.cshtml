@@ -1,211 +1,216 @@
-<style>
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: #f2f2f2;
-        margin: 0;
-        padding: 20px;
-    }
-
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px;
-        background-color: #ffffff;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .dashboard {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 20px;
-    }
-
-    .dashboard .card {
-        flex: 1;
-        margin: 0 10px;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        background-color: #007bff;
-        text-align: center;
-        color: #ffffff;
-        transition: background 0.3s ease-in-out;
-    }
-
-    .dashboard .card:hover {
-        background-color: #0056b3;
-    }
-
-    .dashboard .card h3 {
-        font-size: 1.5em;
-        margin-bottom: 10px;
-    }
-
-    .post-list {
-        background: #ffffff;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        margin-bottom: 20px;
-    }
-
-    .post-list h2 {
-        font-size: 2em;
-        margin-bottom: 20px;
-        color: #343a40;
-        text-align: center;
-    }
-
-    .post-card {
-        background: #f8f9fa;
-        border: none;
-        border-radius: 10px;
-        margin-bottom: 20px;
-        padding: 20px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        transition: background 0.3s ease-in-out;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .post-card:hover {
-        background: #e2e6ea;
-    }
-
-    .post-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-    }
-
-    .post-header div {
-        max-width: 70%;
-    }
-
-    .post-header a {
-        text-decoration: none;
-        color: #007bff;
-        font-size: 1.2em;
-        transition: color 0.3s ease-in-out;
-    }
-
-    .post-header a:hover {
-        color: #0056b3;
-    }
-
-    .btn {
-        padding: 10px 15px;
-        width: 150px;
-        border: none;
-        border-radius: 5px;
-        font-size: 0.9em;
-        cursor: pointer;
-        transition: background 0.3s ease-in-out;
-        color: #ffffff;
-        margin-right: 10px;
-    }
-
-    .btn-manage {
-        background-color: #007bff;
-    }
-
-    .btn-manage:hover {
-        background-color: #0056b3;
-    }
-
-    .btn-requests {
-        background-color: #28a745;
-    }
-
-    .btn-requests:hover {
-        background-color: #218838;
-    }
-
-    .btn-delete {
-        background-color: #dc3545;
-    }
-
-    .btn-delete:hover {
-        background-color: #c82333;
-    }
-
-    .btn-edit-meal {
-        background-color: #ffc107;
-        color: #343a40;
-    }
-
-    .btn-edit-meal:hover {
-        background-color: #e0a800;
-    }
-
-    .btn-container {
-        display: flex;
-        flex-wrap: nowrap;
-        justify-content: flex-end;
-        align-items: center;
-    }
-</style>
-
-
-
-<div class="container">
-    <!-- Dashboard Cards -->
-    <div class="dashboard">
-        <div class="card">
-            <h3>Toplam Paylaşım</h3>
-            <p>15</p>
+@model List<PostViewModel>
+    <div class="container2">
+        <!-- Dashboard Cards -->
+        <div class="dashboard">
+            <div class="card">
+                <h3>Toplam Paylaşım</h3>
+                <p>@ViewBag.TotalShares </p>
+            </div>
+            <div class="card">
+                <h3>Toplam Katılım İsteği</h3>
+                <p>@ViewBag.TotalParticipation</p>
+            </div>
+            <div class="card">
+                <h3>Toplam Yorumlar</h3>
+                <p></p>
+            </div>
+            <div class="card">
+                <h3>Toplam Yemek</h3>
+                <p>@ViewBag.TotalFood</p>
+            </div>
         </div>
-        <div class="card">
-            <h3>Toplam Katılım İsteği</h3>
-            <p>34</p>
-        </div>
-        <div class="card">
-            <h3>Bekleyen İstekler</h3>
-            <p>7</p>
-        </div>
-        <div class="card">
-            <h3>Toplam Yemek</h3>
-            <p>12</p>
+
+        <!-- Post List Section -->
+        <div class="post-list">
+            <h2>Paylaşımlar</h2>
+            @foreach (var post in Model){
+            var participation=post.Participants.Count();
+            var foods=post.RelatedFoods.Count();
+            <div class="post-card">
+                <div class="post-header">
+                    <div>
+                        <a href="/post/details/1"><strong>@post.Title</strong></a>
+                        <p>@post.Description</p>
+                    </div>
+                </div>
+                <div class="btn-container">
+                    <a class="btn btn-manage" asp-controller="Post" asp-action="Edit"
+                        asp-route-postId="@post.PostId">Düzenle</a>
+                    <a class="btn btn-requests" asp-controller="Participant" asp-action="Manage"
+                        asp-route-postId="@post.PostId">Katılımcılar
+                        (@participation)</a>
+                    <a class="btn btn-edit-meal" asp-controller="Food" asp-action="Post"
+                        asp-route-postId="@post.PostId">Yemekler
+                        (@foods)</a>
+                    <a class="btn btn-delete" onclick="deletePost('@post.PostId')">Sil</a>
+                </div>
+            </div>}
+
         </div>
     </div>
+    @section Scripts {
+    <script>
+        function deletePost(postId) {
+            if (confirm('Bu paylaşımı silmek istediğinizden emin misiniz?')) {
 
-    <!-- Post List Section -->
-    <div class="post-list">
-        <h2>Paylaşımlar</h2>
-        <div class="post-card">
-            <div class="post-header">
-                <div>
-                    <a href="/post/details/1"><strong>Ev Daveti</strong></a>
-                    <p>Güzel bir akşam yemeği için herkesi bekliyoruz!</p>
-                </div>
-            </div>
-            <div class="btn-container">
-                <button class="btn btn-manage" onclick="window.location.href='/post/edit/1'">Düzenle</button>
-                <button class="btn btn-requests" onclick="window.location.href='/post/requests/1'">Katılımcılar
-                    (5)</button>
-                <button class="btn btn-edit-meal" onclick="window.location.href='/meal/list/1'">Yemekler (3)</button>
-                <button class="btn btn-delete" onclick="deletePost('1')">Sil</button>
-            </div>
-        </div>
-        <!-- Diğer Post Kartları -->
-        <div class="post-card">
-            <div class="post-header">
-                <div>
-                    <a href="/post/details/2"><strong>Bahçe Pikniği</strong></a>
-                    <p>Doğa ile iç içe bir piknik organizasyonu.</p>
-                </div>
-            </div>
-            <div class="btn-container">
-                <button class="btn btn-manage" onclick="window.location.href='/post/edit/2'">Düzenle</button>
-                <button class="btn btn-requests" onclick="window.location.href='/post/requests/2'">Katılımcılar
-                    (8)</button>
-                <button class="btn btn-edit-meal" onclick="window.location.href='/meal/list/2'">Yemekler (5)</button>
-                <button class="btn btn-delete" onclick="deletePost('2')">Sil</button>
-            </div>
-        </div>
-        <!-- Diğer Post Kartları -->
-    </div>
-</div>
+                const response = fetch(`@Url.Action("Delete","Post")?postId=${postId}`, {
+                    method: 'DELETE',
+
+                }).then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Paylaşım başarıyla silindi.');
+                            location.reload(); // Sayfayı yenileyin
+                        } else {
+                            alert('Paylaşım çıkarılamadi.');
+                        }
+                    })
+
+
+            }
+        }
+    </script>
+    }
+    <style>
+        .container2 {
+            max-width: 1250px;
+            margin: 0 auto;
+            padding: 32px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 36px;
+        }
+
+        .dashboard .card {
+            flex: 1;
+            margin: 0 10px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #007bff;
+            text-align: center;
+            color: #ffffff;
+            transition: background 0.3s ease-in-out;
+        }
+
+        .dashboard .card:hover {
+            background-color: #0056b3;
+        }
+
+        .dashboard .card h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .post-list {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .post-list h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #343a40;
+            text-align: center;
+        }
+
+        .post-card {
+            background: #f8f9fa;
+            border: none;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s ease-in-out;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .post-card:hover {
+            background: #e2e6ea;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .post-header div {
+            max-width: 70%;
+        }
+
+        .post-header a {
+            text-decoration: none;
+            color: #007bff;
+            font-size: 1.2em;
+            transition: color 0.3s ease-in-out;
+        }
+
+        .post-header a:hover {
+            color: #0056b3;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            width: 150px;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: background 0.3s ease-in-out;
+            color: #ffffff;
+            margin-right: 10px;
+        }
+
+        .btn-manage {
+            background-color: #007bff;
+        }
+
+        .btn-manage:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-requests {
+            background-color: #28a745;
+        }
+
+        .btn-requests:hover {
+            background-color: #218838;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+        }
+
+        .btn-delete:hover {
+            background-color: #c82333;
+        }
+
+        .btn-edit-meal {
+            background-color: #ffc107;
+            color: #343a40;
+        }
+
+        .btn-edit-meal:hover {
+            background-color: #e0a800;
+        }
+
+        .btn-container {
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: flex-end;
+            align-items: center;
+        }
+    </style>

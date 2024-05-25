@@ -16,5 +16,7 @@ namespace SoframiPaylas.WebUI.Services.Interfaces
         Task<HttpResponseMessage> RemoveFood(string foodId);
         Task<HttpResponseMessage> UpdatePost(PostViewModel model);
         Task<HttpResponseMessage> UpdateFood(string foodId, string title, string description);
+        Task<HttpResponseMessage> GetByUserIdPostAllAsync(string userId);
+        Task<HttpResponseMessage> DeletePost(string postId);
     }
 }

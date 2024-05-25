@@ -161,9 +161,24 @@ namespace SoframiPaylas.WebUI.Controllers
             var list = foodList.Select(food => new { Title = food.Title, Id = food.Id });
             return Json(new { success = true, foodList = list });
         }
-        public IActionResult Manage()
+        public async Task<IActionResult> Manage()
         {
-            return View();
+            var userId = _userService.GetUserId();
+
+            var response = await _apiService.GetByUserIdPostAllAsync(userId);
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadFromJsonAsync<List<PostViewModel>>();
+                if (content.Count() == 0)
+                {
+                    return View(new List<PostViewModel>());
+                }
+                ViewBag.TotalShares = content.Count();
+                ViewBag.TotalParticipation = content.Sum(x => x.Participants.Count());
+                ViewBag.TotalFood = content.Sum(x => x.RelatedFoods.Count());
+                return View(content);
+            }
+            return View("Error");
         }
         public async Task<IActionResult> Edit([FromQuery] string postId)
         {
@@ -232,6 +247,27 @@ namespace SoframiPaylas.WebUI.Controllers
                 }
                 return Json(new { success = false });
 
+            }
+            catch (HttpRequestException ex)
+            {
+                return Json(new { success = false, message = $"Ağ hatası oluştu: {ex.Message}" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Beklenmedik bir hata oluştu: {ex.Message}" });
+            }
+        }
+        [HttpDelete]
+        public async Task<IActionResult> Delete([FromQuery] string postId)
+        {
+            try
+            {
+                var response = await _apiService.DeletePost(postId);
+                if (response.IsSuccessStatusCode)
+                {
+                    return Json(new { success = true });
+                }
+                return Json(new { success = false });
             }
             catch (HttpRequestException ex)
             {

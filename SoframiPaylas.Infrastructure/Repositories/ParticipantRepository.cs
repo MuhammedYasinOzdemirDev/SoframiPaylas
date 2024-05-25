@@ -100,5 +100,28 @@ namespace SoframiPaylas.Infrastructure.Repositories
                 return participant.Status;
             }, TimeSpan.FromSeconds(20));
         }
+        public async Task<bool> DeleteParticipantAsync(string id)
+        {
+            return await firebaseService.ExecuteFirestoreOperationAsync(async () =>
+                       {
+                           if (string.IsNullOrEmpty(id))
+                               throw new ArgumentException("Post ID cannot be null or empty.", nameof(id));
+
+                           DocumentReference postRef = db.Collection("Participants").Document(id);
+
+                           // Firestore'dan belirtilen kullanıcıyı silme
+                           try
+                           {
+                               await postRef.DeleteAsync();
+                               return true;  // Silme işlemi başarılı
+                           }
+                           catch (Exception ex)
+                           {
+                               // Loglama işlemi burada yapılabilir
+                               return false;  // Silme işlemi başarısız
+                           }
+                       }, TimeSpan.FromSeconds(20));
+        }
+
     }
 }

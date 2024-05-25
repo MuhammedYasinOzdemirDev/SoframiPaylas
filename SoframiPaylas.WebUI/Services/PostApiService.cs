@@ -124,7 +124,23 @@ namespace SoframiPaylas.WebUI.Services
             HttpResponseMessage response = await _httpClient.PutAsJsonAsync(url.Uri, updateFoodDto);
             return response;
         }
-
-
+        public async Task<HttpResponseMessage> GetByUserIdPostAllAsync(string userId)
+        {
+            var url = new UriBuilder(_httpClient.BaseAddress + "Post/get-user")
+            {
+                Query = $"userId={userId}"
+            };
+            HttpResponseMessage response = await _httpClient.GetAsync(url.Uri);
+            return response;
+        }
+        public async Task<HttpResponseMessage> DeletePost(string postId)
+        {
+            var url = new UriBuilder(_httpClient.BaseAddress + "Post/post")
+            {
+                Query = $"postId={postId}"
+            };
+            HttpResponseMessage response = await _httpClient.DeleteAsync(url.Uri);
+            return response;
+        }
     }
 }

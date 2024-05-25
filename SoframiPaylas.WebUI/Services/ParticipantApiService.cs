@@ -76,5 +76,14 @@ public class ParticipantApiService : IParticipantApiService
         HttpResponseMessage response = await _httpClient.PutAsJsonAsync(url, declineDto);
         return response;
     }
+    public async Task<HttpResponseMessage> Delete(string participantId)
+    {
+        var url = new UriBuilder(_httpClient.BaseAddress + "Post/remove-participant")
+        {
+            Query = $"participantId={participantId}"
+        };
+        HttpResponseMessage response = await _httpClient.DeleteAsync(url.Uri);
+        return response;
+    }
 
 }
