@@ -19,17 +19,18 @@ namespace SoframiPaylas.WebUI.Controllers
 
         private readonly IUserService _userService;
         private readonly IParticipantApiService _apiservice;
+        private readonly IPostApiService _postapiservice;
 
-
-        public ParticipantController(IUserService userService, IParticipantApiService apiservice)
+        public ParticipantController(IUserService userService, IParticipantApiService apiservice, IPostApiService postapiservice)
         {
             _apiservice = apiservice;
             _userService = userService;
+            _postapiservice = postapiservice;
         }
         public async Task<IActionResult> Manage([FromQuery] string postId)
         {
             var response = await _apiservice.PendingParticipants(postId);
-            Console.WriteLine(await response.Content.ReadAsStringAsync());
+
             if (response.IsSuccessStatusCode)
             {
                 ViewBag.PendingParticipants = await response.Content.ReadFromJsonAsync<List<ParticipantViewModel>>() ?? new List<ParticipantViewModel>();
@@ -49,7 +50,19 @@ namespace SoframiPaylas.WebUI.Controllers
             {
                 ViewBag.ConfirmedParticipants = new List<ParticipantViewModel>();
             }
-            
+            var response3 = await _postapiservice.GetPostByIdAsync(postId);
+            if (response3.IsSuccessStatusCode)
+            {
+                var content = await response3.Content.ReadFromJsonAsync<PostViewModel>();
+                ViewBag.PostId = content.PostId;
+                ViewBag.MaxParticipants = content.MaxParticipants;
+            }
+            else
+            {
+                View("Error");
+            }
+
+
             return View();
         }
 
@@ -128,6 +141,55 @@ namespace SoframiPaylas.WebUI.Controllers
             }
             return Json(new { success = false });
         }
+        [HttpPut]
+        public async Task<IActionResult> UpdateMaxParticipants([FromForm] string postId, [FromForm] int maxParticipants)
+        {
+            var response = await _postapiservice.GetPostByIdAsync(postId);
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadFromJsonAsync<PostViewModel>();
+                content.MaxParticipants = maxParticipants;
+                HttpResponseMessage response2 = await _postapiservice.UpdatePost(content);
+                if (response2.IsSuccessStatusCode)
+                {
+                    return Ok(new { success = true, message = "Max participants updated successfully" });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Post not found" });
+                }
+            }
+            else
+            {
+                return Json(new { success = false, message = "Post not found" });
+            }
+
+        }
+        [HttpDelete]
+        public async Task<IActionResult> Remove([FromQuery] string participantId)
+        {
+
+            try
+            {
+                var response = await _apiservice.Delete(participantId);
+                if (response.IsSuccessStatusCode)
+                {
+                    return Json(new { success = true, message = "Participant removed successfully" });
+                }
+                return Json(new { success = false, message = "Participant not found" });
+            }
+            catch (HttpRequestException ex)
+            {
+
+                return Json(new { success = false, message = $"Ağ hatası oluştu: {ex.Message}" });
+            }
+            catch (Exception ex)
+            {
+
+                return Json(new { success = false, message = $"Beklenmedik bir hata oluştu: {ex.Message}" });
+            }
+        }
+
 
 
     }

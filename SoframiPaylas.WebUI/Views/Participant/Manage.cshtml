@@ -4,9 +4,12 @@
         <div class="form-group">
             <label for="maxParticipants">Maksimum Katılımcı Sayısı</label>
             <div class="input-group">
-                <input type="number" class="form-control" id="maxParticipants" value="post.MaxParticipants" required>
-                <button type="button" class="btn btn-primary" onclick="updateMaxParticipants()">Güncelle</button>
+                <input type="number" class="form-control" id="maxParticipants" value="@ViewBag.MaxParticipants"
+                    required>
+                <button type="button" class="btn btn-primary"
+                    onclick="updateMaxParticipants('@ViewBag.PostId', '@ViewBag.ConfirmedParticipants.Count')">Güncelle</button>
             </div>
+
         </div>
 
         <!-- Request List Section -->
@@ -22,7 +25,8 @@
                     <span>@request.UserName</span>
                     <div>
                         <button class="btn btn-accept btn-sm"
-                            onclick="acceptRequest('@request.UserID','@request.PostID')">Kabul Et</button>
+                            onclick="acceptRequest('@request.UserID','@request.PostID','@ViewBag.ConfirmedParticipants.Count','@ViewBag.MaxParticipants')">Kabul
+                            Et</button>
                         <button class="btn btn-decline btn-sm"
                             onclick="declineRequest('@request.UserID','@request.PostID')">Reddet</button>
                     </div>
@@ -43,7 +47,7 @@
                 <li class="list-group-item">
                     <span>@item.UserName</span>
                     <button class="btn btn-remove btn-sm"
-                        onclick="declineRequest('@item.UserID','@item.PostID')">Çıkar</button>
+                        onclick="removeParticipant('@item.ParticipantId')">Çıkar</button>
                 </li>}
 
                 <!-- End Repeat -->
@@ -54,20 +58,25 @@
 @section Scripts{
 
 <script>
-    function updateMaxParticipants() {
+    function updateMaxParticipants(postId, currentParticipantsCount) {
         var maxParticipants = document.getElementById('maxParticipants').value;
 
-        fetch('/api/post/updateMaxParticipants', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ postId: 'post.PostId', maxParticipants: maxParticipants })
+        if (maxParticipants < currentParticipantsCount) {
+            alert('Maksimum katılımcı sayısı, mevcut katılımcı sayısından düşük olamaz. Lütfen önce bazı katılımcıları çıkarın.');
+            return;
+        }
+        const formData = new FormData();
+        formData.append('postId', postId);
+        formData.append('maxParticipants', maxParticipants);
+        fetch('@Url.Action("UpdateMaxParticipants","Participant")', {
+            method: 'PUT',
+            body: formData
         })
             .then(response => response.json())
             .then(data => {
-                if (data.message === 'Max participants updated successfully') {
+                if (data.success) {
                     alert('Maksimum katılımcı sayısı başarıyla güncellendi.');
+                    location.reload();
                 } else {
                     alert('Maksimum katılımcı sayısı güncellenemedi.');
                 }
@@ -75,10 +84,13 @@
             .catch(error => console.error('Error:', error));
     }
 
-    function acceptRequest(userId, postId) {
+    function acceptRequest(userId, postId, currentParticipantsCount, maxParticipants) {
+        if (currentParticipantsCount >= maxParticipants) {
+            alert('Maksimum katılımcı sayısına ulaşıldı. Daha fazla katılımcı kabul edilemez.');
+            return;
+        }
 
-
-        fetch(`@Url.Action("Confirm","Participant")?userId=${userId}&postId=${postId}`, {
+        fetch(`@Url.Action("Confirm", "Participant")?userId=${userId}&postId=${postId}`, {
             method: 'PUT',
         })
             .then(response => response.json())
@@ -112,16 +124,12 @@
     }
 
     function removeParticipant(participantId) {
-        fetch('/api/post/removeParticipant', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ participantId: participantId })
+        fetch('@Url.Action("Remove","Participant")?participantId=' + participantId, {
+            method: 'DELETE',
         })
             .then(response => response.json())
             .then(data => {
-                if (data.message === 'Participant removed successfully') {
+                if (data.success) {
                     alert('Katılımcı başarıyla çıkarıldı.');
                     location.reload(); // Sayfayı yenileyin
                 } else {

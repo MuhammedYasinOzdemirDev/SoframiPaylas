@@ -77,7 +77,10 @@ namespace SoframiPaylas.Application.Services
             }
             return -1;
         }
-
+        public async Task<bool> DeleteParticipantAsync(string id)
+        {
+            return await _repository.DeleteParticipantAsync(id);
+        }
         public enum ParticipationStatus
         {
             Pending, // Beklemede

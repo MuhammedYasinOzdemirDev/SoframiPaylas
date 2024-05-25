@@ -13,5 +13,6 @@ namespace SoframiPaylas.WebUI.Services.Interfaces
         Task<HttpResponseMessage> CheckIfRequestExistsAsync(string postId, string userId);
         Task<HttpResponseMessage> Decline(string userId, string postId);
         Task<HttpResponseMessage> Confirm(string userId, string postId);
+        Task<HttpResponseMessage> Delete(string participantId);
     }
 }
