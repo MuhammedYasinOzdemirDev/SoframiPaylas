@@ -3,6 +3,7 @@ using System.Globalization;
 using AutoMapper;
 using Google.Cloud.Firestore;
 using SoframiPaylas.Application.DTOs;
+using SoframiPaylas.Application.DTOs.Comment;
 using SoframiPaylas.Application.DTOs.Food;
 using SoframiPaylas.Application.DTOs.Post;
 using SoframiPaylas.Domain.Entities;
@@ -55,6 +56,13 @@ namespace SoframiPaylas.Application.Mappings
 
             // Food -> UpdateFoodDto
             CreateMap<Food, UpdateFoodDto>().ReverseMap();
+            // Comment <-> CommentDto
+            CreateMap<Comment, CommentDto>()
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt.ToDateTime()));
+
+            // Comment -> CreateCommentDto
+            CreateMap<CreateCommentDto, Comment>()
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => Timestamp.FromDateTime(DateTime.UtcNow)));
         }
     }
 }
