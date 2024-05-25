@@ -62,9 +62,9 @@ namespace SoframiPaylas.Application.Services
             }
             return foods.Select(e =>
             {
-                var postDto = _mapper.Map<FoodDto>(e.food);
-                postDto.FoodId = e.id;
-                return postDto;
+                var foodDto = _mapper.Map<FoodDto>(e.food);
+                foodDto.FoodId = e.id;
+                return foodDto;
             });
         }
 

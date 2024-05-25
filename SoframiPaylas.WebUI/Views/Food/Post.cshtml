@@ -25,7 +25,7 @@
                     </div>
                     <div>
                         <button class="btn btn-update btn-sm"
-                            onclick="updateMeal('@food.FoodId', 'mealName', 'mealDescription')">Güncelle</button>
+                            onclick="updateMeal('@food.FoodId', '@food.Title', '@food.Description')">Güncelle</button>
                         <button class="btn btn-remove btn-sm" onclick="removeMeal('@food.FoodId')">Sil</button>
                     </div>
                 </li>}
@@ -240,7 +240,7 @@
         var newFoodName = prompt("Yeni Yemek Adı:", foodName);
         var newFoodDescription = prompt("Yeni Yemek Açıklaması:", foodDescription);
 
-        if (newFoodName !== null) {
+        if (newFoodName !== null || newFoodDescription !== null) {
             // API çağrısı yaparak yemeği güncelle
             fetch('@Url.Action("UpdateFood","Food")?foodId=' + foodId, {
                 method: 'PUT',
