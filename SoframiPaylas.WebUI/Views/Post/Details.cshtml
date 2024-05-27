@@ -1,0 +1,424 @@
+@model PostViewModel
+@using System.Globalization
+<div class="container2">
+    <div class="left-panel">
+        <h1 id="post-title">@Model.Title</h1>
+        <p id="post-description"><strong>Açıklama:</strong>@Model.Description</p>
+        <div id="map" style="height: 300px;" class="mb-3 mt-3"></div>
+        @{
+        DateTime date;
+        string formattedDate = string.Empty;
+        if (DateTime.TryParse(Model.FormattedDate, out date))
+        {
+        formattedDate = date.ToString("dd MMMM yyyy", new CultureInfo("tr-TR"));
+        }
+        }
+        <p id="post-date"><strong>Tarih</strong> @formattedDate</p>
+        <p id="post-time"><strong>Saat:</strong> @Model.Time</p>
+        <p id="max-participants"><strong>Katılımcılar:</strong> @Model.Participants.Count /
+            @Model.MaxParticipants</p>
+        <button id="complete-post-btn" class="btn btn-primary">Paylaşımı Sonlandır</button>
+    </div>
+
+    <div class="right-panel">
+        <div class="participants-section">
+            <h2>Katılımcılar</h2>
+            <ul id="participants-list">
+
+
+                <li class="participant-item">
+                    <a href="Url.Action(" UserDetails", "User" , new { id=participant.Id })"
+                        class="participant-name">Muhammed Yasin</a>
+                    <div class="participant-actions">
+                        <button class="btn btn-danger btn-sm remove-participant-btn"
+                            data-participant-id="participant.Id">Çıkar</button>
+                        <button class="btn btn-secondary btn-sm message-participant-btn"
+                            data-participant-id="participant.Id">Mesaj Gönder</button>
+                    </div>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="bottom-panel">
+    <div class="announcement-section">
+        <h2>Duyuru Yap</h2>
+        <textarea id="announcement-text" placeholder="Duyurunuzu yazın..."></textarea>
+        <button id="make-announcement-btn" class="btn btn-secondary">Gönder</button>
+    </div>
+    <div class="comments-section">
+        <h2>Yorumlar</h2>
+        <ul id="comments-list"></ul>
+    </div>
+
+</div>
+
+@section Scripts{
+<script>
+    // scripts.js
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const postId = '@Model.PostId'; // Replace with the actual post ID
+
+
+        // Yorumları yükle
+        function loadComments() {
+
+            fetch(`@Url.Action("GetCommentsByPostId","Comment")?postId=${postId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const commentsList = document.getElementById('comments-list');
+                        commentsList.innerHTML = '';
+                        data.comments.forEach(comment => {
+                            const listItem = document.createElement('li');
+                            listItem.className = 'list-group-item';
+                            const formattedDate = new Date(comment.createdAt).toLocaleString('tr-TR', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                second: '2-digit'
+                            });
+                            listItem.innerHTML = `
+                                <div>
+                                    <strong>${comment.userName}:</strong> ${comment.content}
+                                    <br>
+                                    <small>${formattedDate}</small>
+                                </div>
+                                <button class="delete-button" data-comment-id="${comment.id}">Sil</button>
+                            `;
+                            commentsList.appendChild(listItem);
+                        });
+
+                        // Silme butonlarına olay dinleyicisi ekle
+                        document.querySelectorAll('.delete-button').forEach(button => {
+                            button.addEventListener('click', function () {
+                                const commentId = this.dataset.commentId;
+                                deleteComment(commentId);
+                            });
+                        });
+                    } else {
+                        alert('Yorumlar yüklenirken bir hata meydana geldi: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    alert('Yorumlar yüklenirken bir hata meydana geldi: ' + error.message);
+                });
+        }
+
+        // Yorum silme
+        function deleteComment(commentId) {
+            fetch(`@Url.Action("DeleteComment","Comment")?commentId=${commentId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        loadComments();
+                    } else {
+                        alert('Yorum silinirken bir hata meydana geldi: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    alert('Yorum silinirken bir hata meydana geldi: ' + error.message);
+                });
+        }
+
+        loadComments();
+        function initMap() {
+            // Razor ile elde edilen Latitude ve Longitude değerlerini JavaScript değişkenlerine atayın
+            var latitude = parseFloat('@Model.Latitude');
+            var longitude = parseFloat('@Model.Longitude');
+
+            var map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: latitude, lng: longitude },
+                zoom: 12
+            });
+
+            var marker = new google.maps.Marker({
+                position: { lat: latitude, lng: longitude },
+                map: map
+            });
+        }
+
+
+        initMap();
+
+
+        completePostBtn.addEventListener('click', async () => {
+            try {
+                await axios.post(`/api/posts/${postId}/complete`);
+                alert('Paylaşım başarıyla sonlandırıldı.');
+            } catch (error) {
+                alert('Paylaşımı sonlandırırken bir hata oluştu.');
+            }
+        });
+        const completePostBtn = document.getElementById('complete-post-btn');
+        const makeAnnouncementBtn = document.getElementById('make-announcement-btn');
+        const announcementText = document.getElementById('announcement-text');
+
+        completePostBtn.addEventListener('click', async () => {
+            try {
+                await axios.post(`/api/posts/${postId}/complete`);
+                alert('Paylaşım başarıyla sonlandırıldı.');
+            } catch (error) {
+                alert('Paylaşımı sonlandırırken bir hata oluştu.');
+            }
+        });
+
+        makeAnnouncementBtn.addEventListener('click', async () => {
+            const announcement = announcementText.value;
+            if (announcement) {
+                try {
+                    await axios.post(`/api/posts/${postId}/announce`, { announcement });
+                    alert('Duyuru başarıyla yapıldı.');
+                    announcementText.value = '';
+                } catch (error) {
+                    alert('Duyuru yapılırken bir hata oluştu.');
+                }
+            }
+        });
+
+        document.querySelectorAll('.remove-participant-btn').forEach(button => {
+            button.addEventListener('click', async () => {
+                const participantId = button.dataset.participantId;
+                try {
+                    await axios.post(`/api/posts/${postId}/removeParticipant`, { participantId });
+                    alert('Katılımcı başarıyla çıkarıldı.');
+                    // Katılımcı listesini yeniden yükleyin veya güncelleyin
+                } catch (error) {
+                    alert('Katılımcı çıkarılırken bir hata oluştu.');
+                }
+            });
+        });
+
+        document.querySelectorAll('.message-participant-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const participantId = button.dataset.participantId;
+                Swal.fire({
+                    title: 'Mesaj Gönder',
+                    input: 'textarea',
+                    inputPlaceholder: 'Mesajınızı yazın...',
+                    showCancelButton: true,
+                    confirmButtonText: 'Gönder',
+                    cancelButtonText: 'İptal',
+                    preConfirm: async (message) => {
+                        if (!message) {
+                            Swal.showValidationMessage('Mesaj boş olamaz');
+                            return;
+                        }
+                        try {
+                            await axios.post(`/api/posts/${postId}/sendMessage`, { participantId, message });
+                            Swal.fire('Başarılı', 'Mesaj gönderildi', 'success');
+                        } catch (error) {
+                            Swal.fire('Hata', 'Mesaj gönderilirken bir hata oluştu', 'error');
+                        }
+                    }
+                });
+            });
+        });
+
+
+    });
+
+</script>}
+<style>
+    .container2 {
+        display: flex;
+        flex-direction: row;
+        width: 90%;
+        margin: 20px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .left-panel,
+    .right-panel {
+        flex: 1;
+        margin: 10px;
+    }
+
+    .left-panel {
+        border-right: 1px solid #ddd;
+        padding-right: 20px;
+    }
+
+    .right-panel {
+        padding-left: 20px;
+    }
+
+    h1,
+    h2 {
+        color: #333;
+    }
+
+    p {
+        color: #666;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: background-color 0.3s;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background-color: #565e64;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background-color: #c82333;
+    }
+
+    .participants-section,
+    .comments-section,
+    .announcement-section {
+        margin-top: 20px;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    li.participant-item {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .participant-name {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    .participant-name:hover {
+        text-decoration: underline;
+    }
+
+    .participant-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    textarea {
+        width: 100%;
+        height: 100px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin-top: 10px;
+        resize: none;
+    }
+
+    .bottom-panel {
+        width: 90%;
+        margin: 20px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .announcement-section,
+    .comments-section {
+        margin-bottom: 20px;
+    }
+
+    .comments-section {
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-top: 30px;
+    }
+
+    .comments-section h2 {
+        font-size: 1.8em;
+        margin-bottom: 20px;
+        color: #343a40;
+        text-align: left;
+    }
+
+    #comments-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    #comments-list .list-group-item {
+        background: #f1f1f1;
+        border: none;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: background 0.3s ease-in-out;
+    }
+
+    #comments-list .list-group-item:hover {
+        background: #e0e0e0;
+    }
+
+    #comments-list .list-group-item strong {
+        font-size: 1.1em;
+        color: #007bff;
+        margin-bottom: 5px;
+        align-self: flex-start;
+    }
+
+    #comments-list .list-group-item small {
+        color: #6c757d;
+        text-align: right;
+        align-self: flex-end;
+    }
+
+    #comments-list .delete-button {
+        padding: 5px 10px;
+        border: none;
+        border-radius: 4px;
+        background-color: #dc3545;
+        color: white;
+        cursor: pointer;
+        transition: background 0.3s ease-in-out;
+    }
+
+    #comments-list .delete-button:hover {
+        background-color: #c82333;
+    }
+</style>

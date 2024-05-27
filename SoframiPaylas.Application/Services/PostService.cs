@@ -81,6 +81,17 @@ namespace SoframiPaylas.Application.Services
                 return postDto;
             });
         }
+
+        public async Task<IEnumerable<PostDto>> GetPostsByIdsAsync(List<string> postIds)
+        {
+            var posts = await _postRepository.GetPostsByIdsAsync(postIds);
+            return posts.Select(p =>
+            {
+                var postDto = _mapper.Map<PostDto>(p.post);
+                postDto.PostId = p.postId;
+                return postDto;
+            });
+        }
     }
 }
 

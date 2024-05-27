@@ -142,5 +142,21 @@ namespace SoframiPaylas.WebUI.Services
             HttpResponseMessage response = await _httpClient.DeleteAsync(url.Uri);
             return response;
         }
+        public async Task<HttpResponseMessage> GetPostsByUserIdAsync(string userId)
+        {
+            var url = new UriBuilder(_httpClient.BaseAddress + "Post/get-user-id-posts")
+            {
+                Query = $"userId={userId}"
+            };
+            HttpResponseMessage response = await _httpClient.GetAsync(url.Uri);
+            return response;
+        }
+        public async Task<HttpResponseMessage> GetPostsByIdsAsync(List<string> postIds)
+        {
+            var url = new Uri(_httpClient.BaseAddress + "Post/get-user-posts");
+
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync(url, postIds);
+            return response;
+        }
     }
 }

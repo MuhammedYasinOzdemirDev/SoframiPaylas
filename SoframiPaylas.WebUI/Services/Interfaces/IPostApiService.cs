@@ -18,5 +18,7 @@ namespace SoframiPaylas.WebUI.Services.Interfaces
         Task<HttpResponseMessage> UpdateFood(string foodId, string title, string description);
         Task<HttpResponseMessage> GetByUserIdPostAllAsync(string userId);
         Task<HttpResponseMessage> DeletePost(string postId);
+        Task<HttpResponseMessage> GetPostsByUserIdAsync(string userId);
+        Task<HttpResponseMessage> GetPostsByIdsAsync(List<string> postIds);
     }
 }
