@@ -25,6 +25,7 @@ builder.Services.AddScoped<IPostApiService, PostApiService>();
 builder.Services.AddScoped<IAuthService, AuthApiService>();
 builder.Services.AddScoped<IUserApiService, UserApiService>();
 builder.Services.AddScoped<IParticipantApiService, ParticipantApiService>();
+builder.Services.AddScoped<ICommentApiService, CommentApiService>();
 //Mapping
 builder.Services.AddAutoMapper(typeof(ViewModelToDtoProfile));
 

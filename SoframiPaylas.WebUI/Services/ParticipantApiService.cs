@@ -18,14 +18,14 @@ public class ParticipantApiService : IParticipantApiService
             UserID = userId,
             PostID = postId
         };
-        var url = new Uri(_httpClient.BaseAddress + "Post/join");
+        var url = new Uri(_httpClient.BaseAddress + "Participant/join");
 
         HttpResponseMessage response = await _httpClient.PostAsJsonAsync(url, joinDto);
         return response;
     }
     public async Task<HttpResponseMessage> PendingParticipants(string postId)
     {
-        var url = new UriBuilder(_httpClient.BaseAddress + "Post/pending-participants")
+        var url = new UriBuilder(_httpClient.BaseAddress + "Participant/pending-participants")
         {
             Query = $"postId={postId}"
         };
@@ -34,7 +34,7 @@ public class ParticipantApiService : IParticipantApiService
     }
     public async Task<HttpResponseMessage> ConfirmParticipants(string postId)
     {
-        var url = new UriBuilder(_httpClient.BaseAddress + "Post/confirm-participants")
+        var url = new UriBuilder(_httpClient.BaseAddress + "Participant/confirm-participants")
         {
             Query = $"postId={postId}"
         };
@@ -44,7 +44,7 @@ public class ParticipantApiService : IParticipantApiService
     public async Task<HttpResponseMessage> CheckIfRequestExistsAsync(string postId, string userId)
     {
 
-        var url = new UriBuilder(_httpClient.BaseAddress + "Post/check-status")
+        var url = new UriBuilder(_httpClient.BaseAddress + "Participant/check-status")
         {
             Query = $"postId={postId}&userId={userId}"
         };
@@ -58,7 +58,7 @@ public class ParticipantApiService : IParticipantApiService
             UserID = userId,
             PostID = postId
         };
-        var url = new Uri(_httpClient.BaseAddress + "Post/confirm");
+        var url = new Uri(_httpClient.BaseAddress + "Participant/confirm");
 
         HttpResponseMessage response = await _httpClient.PutAsJsonAsync(url, confirmDto);
         return response;
@@ -71,18 +71,27 @@ public class ParticipantApiService : IParticipantApiService
             UserID = userId,
             PostID = postId
         };
-        var url = new Uri(_httpClient.BaseAddress + "Post/decline");
+        var url = new Uri(_httpClient.BaseAddress + "Participant/decline");
 
         HttpResponseMessage response = await _httpClient.PutAsJsonAsync(url, declineDto);
         return response;
     }
     public async Task<HttpResponseMessage> Delete(string participantId)
     {
-        var url = new UriBuilder(_httpClient.BaseAddress + "Post/remove-participant")
+        var url = new UriBuilder(_httpClient.BaseAddress + "Participant/remove-participant")
         {
             Query = $"participantId={participantId}"
         };
         HttpResponseMessage response = await _httpClient.DeleteAsync(url.Uri);
+        return response;
+    }
+    public async Task<HttpResponseMessage> GetUserIdPost(string userId)
+    {
+        var url = new UriBuilder(_httpClient.BaseAddress + "Post/get-user-posts")
+        {
+            Query = $"userId={userId}"
+        };
+        HttpResponseMessage response = await _httpClient.GetAsync(url.Uri);
         return response;
     }
 

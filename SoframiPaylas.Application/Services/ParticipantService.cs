@@ -13,10 +13,12 @@ namespace SoframiPaylas.Application.Services
     public class ParticipantService : IParticipantService
     {
         private IParticipantRepository _repository;
+        private readonly IPostRepository _postRepository;
 
-        public ParticipantService(IParticipantRepository repository)
+        public ParticipantService(IParticipantRepository repository, IPostRepository postRepository)
         {
             _repository = repository;
+            _postRepository = postRepository;
 
         }
 
@@ -32,11 +34,18 @@ namespace SoframiPaylas.Application.Services
 
         public async Task<bool> ConfirmedParticipantStatus(ParticipantDto participantDto)
         {
-            return await _repository.UpdateParticipantStatus(participantDto.PostID, participantDto.UserID, (int)ParticipationStatus.Confirmed);
+            var result = await _repository.UpdateParticipantStatus(participantDto.PostID, participantDto.UserID, (int)ParticipationStatus.Confirmed);
+            if (result != null)
+            {
+                var result2 = await _postRepository.UpdateParticipantStatus(participantDto.PostID, result);
+                return result2;
+            }
+            return false;
         }
         public async Task<bool> DeclinedParticipantStatus(ParticipantDto participantDto)
         {
-            return await _repository.UpdateParticipantStatus(participantDto.PostID, participantDto.UserID, (int)ParticipationStatus.Declined);
+            var result = await _repository.UpdateParticipantStatus(participantDto.PostID, participantDto.UserID, (int)ParticipationStatus.Declined);
+            return result != null;
         }
         public async Task<IEnumerable<ParticipantViewDto>> GetPendingPostIdByAsync(string postId)
         {
@@ -80,6 +89,10 @@ namespace SoframiPaylas.Application.Services
         public async Task<bool> DeleteParticipantAsync(string id)
         {
             return await _repository.DeleteParticipantAsync(id);
+        }
+        public async Task<List<string>> GetUserIdPost(string userId)
+        {
+            return await _repository.GetUserIdPost(userId);
         }
         public enum ParticipationStatus
         {

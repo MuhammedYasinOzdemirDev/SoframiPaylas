@@ -27,7 +27,7 @@ namespace SoframiPaylas.Infrastructure.Repositories
             }, TimeSpan.FromSeconds(20));
         }
 
-        public async Task<bool> UpdateParticipantStatus(string postId, string userId, int status)
+        public async Task<string> UpdateParticipantStatus(string postId, string userId, int status)
         {
             return await firebaseService.ExecuteFirestoreOperationAsync(async () =>
             {
@@ -36,13 +36,14 @@ namespace SoframiPaylas.Infrastructure.Repositories
                 WhereEqualTo("userID", userId);
                 QuerySnapshot snapshot = await query.GetSnapshotAsync();
                 if (snapshot.Count == 0)
-                    return false;
+                    return null;
 
                 DocumentSnapshot documentSnapshot = snapshot.Documents[0];
                 Dictionary<string, object> updates = new Dictionary<string, object>{
             {"status",status},};
                 await documentSnapshot.Reference.UpdateAsync(updates);
-                return true;
+                var id = documentSnapshot.Id;
+                return id;
             }, TimeSpan.FromSeconds(20));
         }
         public async Task<List<(Participant participant, string id, string userName)>> GetParticipantPostIdAsync(string postId)
@@ -121,6 +122,23 @@ namespace SoframiPaylas.Infrastructure.Repositories
                                return false;  // Silme işlemi başarısız
                            }
                        }, TimeSpan.FromSeconds(20));
+        }
+        public async Task<List<string>> GetUserIdPost(string userId)
+        {
+            return await firebaseService.ExecuteFirestoreOperationAsync(async () =>
+            {
+                Query query = db.Collection("Participants").WhereEqualTo("userID", userId);
+                QuerySnapshot snapshot = await query.GetSnapshotAsync();
+                List<string> postIds = new List<string>();
+
+                foreach (DocumentSnapshot documentSnapshot in snapshot.Documents)
+                {
+                    postIds.Add(documentSnapshot.GetValue<string>("postID"));
+                }
+
+                return postIds;
+            }, TimeSpan.FromSeconds(20));
+
         }
 
     }

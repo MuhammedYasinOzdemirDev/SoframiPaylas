@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -20,11 +21,13 @@ namespace SoframiPaylas.WebUI.Controllers
     {
         private readonly IUserService _userService;
         private readonly IUserApiService _userApiService;
+        private readonly IPostApiService _postApiService;
 
-        public UserController(IUserService userService, IUserApiService userApiService)
+        public UserController(IUserService userService, IUserApiService userApiService, IPostApiService postApiService)
         {
             _userService = userService;
             _userApiService = userApiService;
+            _postApiService = postApiService;
         }
         public IActionResult Profile()
         {
@@ -128,8 +131,44 @@ namespace SoframiPaylas.WebUI.Controllers
             };
             return View(securitViewModel);
         }
+        public async Task<IActionResult> Details()
+        {
 
+            return View();
+        }
+        public async Task<IActionResult> Manage()
+        {
+            try
+            {
+                var userId = _userService.GetUserId();
 
+                var response = await _postApiService.GetPostsByUserIdAsync(userId);
+                if (response.IsSuccessStatusCode)
+                {
 
+                    List<string> postIds = await response.Content.ReadFromJsonAsync<List<string>>();
+                    var response2 = await _postApiService.GetPostsByIdsAsync(postIds);
+                    List<PostViewModel> posts;
+                    if (response2.IsSuccessStatusCode)
+                    {
+                        posts = await response2.Content.ReadFromJsonAsync<List<PostViewModel>>();
+                        if (posts.Count == 0)
+                        {
+                            posts = new List<PostViewModel>();
+                        }
+                        return View(posts);
+                    }
+                }
+                else if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return View(new List<PostViewModel>());
+                }
+                return View("Error");
+            }
+            catch (Exception ex)
+            {
+                return View("Error");
+            }
+        }
     }
 }

@@ -6,7 +6,7 @@ namespace SoframiPaylas.WebAPI
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class FoodController : Controller
+    public class FoodController : ControllerBase
     {
 
         private readonly IFoodService _service;
