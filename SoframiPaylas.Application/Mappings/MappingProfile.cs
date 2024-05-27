@@ -6,6 +6,7 @@ using SoframiPaylas.Application.DTOs;
 using SoframiPaylas.Application.DTOs.Announcement;
 using SoframiPaylas.Application.DTOs.Comment;
 using SoframiPaylas.Application.DTOs.Food;
+using SoframiPaylas.Application.DTOs.Message;
 using SoframiPaylas.Application.DTOs.Post;
 using SoframiPaylas.Domain.Entities;
 
@@ -67,6 +68,9 @@ namespace SoframiPaylas.Application.Mappings
             CreateMap<Announcement, AnnouncementDto>()
         .ForMember(dest => dest.Timestamp, opt => opt.MapFrom(src => src.Timestamp.ToDateTime()));
             CreateMap<CreateAnnouncementDto, Announcement>();
+            CreateMap<MessageStore, MessageDto>()
+        .ForMember(dest => dest.Timestamp, opt => opt.MapFrom(src => src.Timestamp.ToDateTime()));
+            CreateMap<CreateMessageDto, MessageStore>();
         }
     }
 }

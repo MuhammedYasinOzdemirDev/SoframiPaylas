@@ -99,6 +99,7 @@ builder.Services.AddScoped<IParticipantRepository, ParticipantRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 //Service
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IFoodService, FoodService>();
@@ -107,6 +108,7 @@ builder.Services.AddScoped<IParticipantService, ParticipantService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IAnnouncementService, AnnouncementService>();
+builder.Services.AddScoped<IMessageService, MessageService>();
 //Mapping
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
