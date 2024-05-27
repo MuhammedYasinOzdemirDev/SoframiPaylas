@@ -3,6 +3,7 @@ using System.Globalization;
 using AutoMapper;
 using Google.Cloud.Firestore;
 using SoframiPaylas.Application.DTOs;
+using SoframiPaylas.Application.DTOs.Announcement;
 using SoframiPaylas.Application.DTOs.Comment;
 using SoframiPaylas.Application.DTOs.Food;
 using SoframiPaylas.Application.DTOs.Post;
@@ -63,6 +64,9 @@ namespace SoframiPaylas.Application.Mappings
             // Comment -> CreateCommentDto
             CreateMap<CreateCommentDto, Comment>()
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => Timestamp.FromDateTime(DateTime.UtcNow)));
+            CreateMap<Announcement, AnnouncementDto>()
+        .ForMember(dest => dest.Timestamp, opt => opt.MapFrom(src => src.Timestamp.ToDateTime()));
+            CreateMap<CreateAnnouncementDto, Announcement>();
         }
     }
 }
