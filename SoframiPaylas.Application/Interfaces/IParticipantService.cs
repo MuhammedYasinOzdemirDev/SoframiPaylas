@@ -12,5 +12,6 @@ namespace SoframiPaylas.Application.Interfaces
         Task<int> CheckIfRequestExistsAsync(string postId, string userId);
         Task<IEnumerable<ParticipantViewDto>> GetConfirmedPostIdByAsync(string postId);
         Task<bool> DeleteParticipantAsync(string id);
+        Task<List<string>> GetUserIdPost(string userId);
     }
 }

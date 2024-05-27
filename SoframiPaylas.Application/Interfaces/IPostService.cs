@@ -15,5 +15,7 @@ namespace SoframiPaylas.Application.Interfaces
         Task<bool> UpdatePostAsync(string id, UpdatePostDto postDto);
         Task<bool> DeletePostAsync(string id);
         Task<IEnumerable<PostDto>> GetByUserIdPostAllAsync(string userId);
+        Task<IEnumerable<PostDto>> GetPostsByIdsAsync(List<string> postIds);
+
     }
 }
