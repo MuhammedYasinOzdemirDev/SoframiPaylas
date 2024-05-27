@@ -54,7 +54,7 @@ builder.Services.AddSingleton<FirebaseService>(serviceProvider =>
 
     return new FirebaseService(firebaseConfig);
 });
-builder.Services.AddSingleton<FirebaseAuthService>(serviceProvider =>
+builder.Services.AddSingleton<FirebaseAppProvider>(serviceProvider =>
 {
     // Yapılandırma nesnesini veya başka bağımlılıkları çözümle
     // Örneğin, eğer FirebaseConfig yerine IConfiguration gerekiyorsa:
@@ -85,10 +85,11 @@ builder.Services.AddSingleton<FirebaseAuthService>(serviceProvider =>
     if (firebaseConfig == null)
         throw new InvalidOperationException("Firebase configuration must be provided.");
 
-    return new FirebaseAuthService(firebaseConfig);
+    return new FirebaseAppProvider(firebaseConfig);
 });
+builder.Services.AddSingleton<FirebaseAuthService>();
 
-
+builder.Services.AddSingleton<FirebaseMessagingService>();
 
 
 //Repository
