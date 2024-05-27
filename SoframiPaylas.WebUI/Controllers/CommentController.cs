@@ -7,31 +7,37 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SoframiPaylas.Application.DTOs.Comment;
+using SoframiPaylas.WebUI.ExternalService.StorageService;
 using SoframiPaylas.WebUI.Models;
 using SoframiPaylas.WebUI.Services.Interfaces;
 
 namespace SoframiPaylas.WebUI.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
+
     public class CommentController : Controller
     {
         private readonly ICommentApiService _commentApiService;
-        private readonly IMapper _mapper;
 
-        public CommentController(ICommentApiService commentApiService, IMapper mapper)
+        private readonly IUserService _userService;
+
+        public CommentController(ICommentApiService commentApiService, IUserService userService)
         {
             _commentApiService = commentApiService;
-            _mapper = mapper;
+
+            _userService = userService;
         }
 
-        [HttpGet("{postId}")]
-        public async Task<IActionResult> GetCommentsByPostId(string postId)
+        [HttpGet]
+        public async Task<IActionResult> GetCommentsByPostId([FromQuery] string postId)
         {
             try
             {
-                var commentDtos = await _commentApiService.GetCommentsByPostIdAsync(postId);
-                var comments = _mapper.Map<List<CommentViewModel>>(commentDtos);
+                var response = await _commentApiService.GetCommentsByPostIdAsync(postId);
+                if (!response.IsSuccessStatusCode)
+                {
+                    return Json(new { success = false, message = "Couldn't get comments" });
+                }
+                var comments = await response.Content.ReadFromJsonAsync<List<CommentViewModel>>();
                 return Json(new { success = true, comments });
             }
             catch (HttpRequestException ex)
@@ -52,15 +58,21 @@ namespace SoframiPaylas.WebUI.Controllers
                 return Json(new { success = false, message = "Model cannot be null." });
             }
 
-            if (!ModelState.IsValid)
+
+            model.UserName = _userService.GetUser().UserName;
+            model.UserId = _userService.GetUserId();
+            Console.WriteLine(model.UserName);
+            Console.WriteLine(model.Content);
+            Console.WriteLine(model.PostId);
+            Console.WriteLine(model.UserId);
+            if (string.IsNullOrEmpty(model.Content) || string.IsNullOrEmpty(model.PostId))
             {
                 return Json(new { success = false, message = "Geçersiz form verisi" });
             }
 
             try
             {
-                var createCommentDto = _mapper.Map<CreateCommentDto>(model);
-                var response = await _commentApiService.AddCommentAsync(createCommentDto);
+                var response = await _commentApiService.AddCommentAsync(model);
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -79,9 +91,8 @@ namespace SoframiPaylas.WebUI.Controllers
                     }
                 }
 
-                var addedComment = await response.Content.ReadFromJsonAsync<CommentDto>();
-                var commentViewModel = _mapper.Map<CommentViewModel>(addedComment);
-                return Json(new { success = true, comment = commentViewModel });
+                var addedComment = await response.Content.ReadFromJsonAsync<CommentViewModel>();
+                return Json(new { success = true, comment = addedComment });
             }
             catch (HttpRequestException ex)
             {
@@ -93,8 +104,8 @@ namespace SoframiPaylas.WebUI.Controllers
             }
         }
 
-        [HttpDelete("{commentId}")]
-        public async Task<IActionResult> DeleteComment(string commentId)
+        [HttpDelete]
+        public async Task<IActionResult> DeleteComment([FromQuery] string commentId)
         {
             try
             {

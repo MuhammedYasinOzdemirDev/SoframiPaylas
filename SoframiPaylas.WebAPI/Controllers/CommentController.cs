@@ -10,7 +10,7 @@ namespace SoframiPaylas.WebAPI
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class CommentController : Controller
+    public class CommentController : ControllerBase
     {
         private readonly ICommentService _service;
 
@@ -31,8 +31,8 @@ namespace SoframiPaylas.WebAPI
         /// <response code="200">Yorumlar başarıyla bulundu ve döndürüldü.</response>
         /// <response code="404">Hiç yorum bulunamadı.</response>
         /// <response code="500">Yorumları getirirken bir hata meydana geldi.</response>
-        [HttpGet("{postId}")]
-        public async Task<IActionResult> GetCommentsByPostId(string postId)
+        [HttpGet]
+        public async Task<IActionResult> GetCommentsByPostId([FromQuery] string postId)
         {
             try
             {
@@ -92,8 +92,8 @@ namespace SoframiPaylas.WebAPI
         /// <response code="204">Yorum başarıyla silindi. İçerik dönmez.</response>
         /// <response code="404">Belirtilen ID'ye sahip yorum bulunamadı.</response>
         /// <response code="500">Silme işlemi sırasında beklenmedik bir hata oluştuğunda bu hata döner.</response>
-        [HttpDelete("{commentId}")]
-        public async Task<IActionResult> DeleteComment(string commentId)
+        [HttpDelete]
+        public async Task<IActionResult> DeleteComment([FromQuery] string commentId)
         {
             try
             {

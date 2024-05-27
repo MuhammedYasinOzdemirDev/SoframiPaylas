@@ -4,8 +4,6 @@ namespace SoframiPaylas.Domain.Entities;
 [FirestoreData]
 public class Comment
 {
-
-
     [FirestoreProperty]
     public string PostId { get; set; }
 

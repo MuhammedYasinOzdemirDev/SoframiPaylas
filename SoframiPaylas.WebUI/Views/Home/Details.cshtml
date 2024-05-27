@@ -91,7 +91,28 @@ var isAuthenticated = HttpContextAccessor.HttpContext.User.Identity.IsAuthentica
             </div>
         </div>
     </div>
+    <!-- Comments Section -->
+    <div class="comments-section mt-5">
+        <h3>Yorumlar</h3>
+        <ul id="comments-list" class="list-group mb-3">
+            <!-- Yorumlar burada gösterilecek -->
+        </ul>
+
+        @if (isAuthenticated)
+        {
+        <div class="comment-input mb-3">
+            <input type="text" id="comment-content" class="form-control" placeholder="Yorumunuzu yazın...">
+            <button id="add-comment-btn" class="btn btn-primary mt-2">Yorum Ekle</button>
+        </div>
+        }
+        else
+        {
+        <p>Lütfen yorum yapmak için <a href="@Url.Action(" Login", "Auth" )">giriş yapın</a>.</p>
+        }
+    </div>
+
 </div>
+
 
 <style>
     #loginPrompt {
@@ -227,6 +248,83 @@ var isAuthenticated = HttpContextAccessor.HttpContext.User.Identity.IsAuthentica
         background-color: grey;
         cursor: not-allowed;
     }
+
+    .comments-section {
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-top: 30px;
+    }
+
+    .comments-section h3 {
+        font-size: 1.8em;
+        margin-bottom: 20px;
+        color: #343a40;
+        text-align: center;
+    }
+
+    #comments-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    #comments-list .list-group-item {
+        background: #f1f1f1;
+        border: none;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        transition: background 0.3s ease-in-out;
+    }
+
+    #comments-list .list-group-item:hover {
+        background: #e0e0e0;
+    }
+
+    #comments-list .list-group-item strong {
+        font-size: 1.1em;
+        color: #007bff;
+        margin-bottom: 5px;
+        align-self: flex-start;
+    }
+
+    #comments-list .list-group-item small {
+        color: #6c757d;
+        text-align: right;
+        align-self: flex-end;
+    }
+
+    .comment-input {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .comment-input input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .comment-input button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+        transition: background 0.3s ease-in-out;
+    }
+
+    .comment-input button:hover {
+        background-color: #0056b3;
+    }
 </style>
 @section Scripts {
 <script>
@@ -235,7 +333,37 @@ var isAuthenticated = HttpContextAccessor.HttpContext.User.Identity.IsAuthentica
         const participateButton = document.getElementById('participateButton');
         const loginPrompt = document.getElementById('loginPrompt');
         const loginButton = document.getElementById('loginButton');
+        // Yorumları yükle
+        function loadComments() {
+            fetch(`@Url.Action("GetCommentsByPostId","Comment")?postId=@Model.PostId`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const commentsList = document.getElementById('comments-list');
+                        commentsList.innerHTML = '';
+                        data.comments.forEach(comment => {
+                            const listItem = document.createElement('li');
+                            listItem.className = 'list-group-item';
+                            const formattedDate = new Date(comment.createdAt).toLocaleString('tr-TR', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                second: '2-digit'
+                            });
+                            listItem.innerHTML = `<div><strong>${comment.userName}:</strong> ${comment.content}</div> <small>${formattedDate}</small>`;
+                            commentsList.appendChild(listItem);
 
+                        });
+                    } else {
+                        alert('Yorumlar yüklenirken bir hata meydana geldi: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    alert('Yorumlar yüklenirken bir hata meydana geldi: ' + error.message);
+                });
+        }
         if (isAuthenticated) {
             var postId = '@Model.PostId';
 
@@ -275,6 +403,48 @@ var isAuthenticated = HttpContextAccessor.HttpContext.User.Identity.IsAuthentica
             participateButton.style.display = 'inline-block';
             loginPrompt.style.display = 'none';
             loginButton.style.display = 'none';
+            document.getElementById('add-comment-btn').addEventListener('click', function () {
+                const commentContent = document.getElementById('comment-content').value;
+                const newComment = {
+                    postId: '@Model.PostId',
+
+                    content: commentContent
+                };
+
+                fetch('@Url.Action("AddComment","Comment")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(newComment)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            const commentsList = document.getElementById('comments-list');
+                            const listItem = document.createElement('li');
+                            listItem.className = 'list-group-item';
+                            const formattedDate = new Date(data.comment.createdAt).toLocaleString('tr-TR', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                second: '2-digit'
+                            });
+                            listItem.innerHTML = `<div><strong>${data.comment.userName}:</strong> ${data.comment.content}</div> <small>${formattedDate}</small>`;
+                            commentsList.appendChild(listItem);
+                            document.getElementById('comment-content').value = '';
+                        } else {
+                            alert('Yorum eklenirken bir hata meydana geldi: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        alert('Yorum eklenirken bir hata meydana geldi: ' + error.message);
+                    });
+            });
+
+            loadComments();
         } else {
             loginPrompt.style.display = 'block';
             loginButton.style.display = 'inline-block';
