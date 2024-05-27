@@ -5,6 +5,7 @@ using Google.Cloud.Firestore;
 using SoframiPaylas.Application.DTOs.Message;
 using SoframiPaylas.Application.Interfaces;
 using SoframiPaylas.Domain.Entities;
+using SoframiPaylas.Infrastructure.Data.Service;
 using SoframiPaylas.Infrastructure.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,11 +15,13 @@ public class MessageService : IMessageService
 {
     private readonly IMessageRepository _messageRepository;
     private readonly IMapper _mapper;
+    private readonly FirebaseMessagingService _firebaseMessagingService;
 
-    public MessageService(IMessageRepository messageRepository, IMapper mapper)
+    public MessageService(IMessageRepository messageRepository, IMapper mapper, FirebaseMessagingService firebaseMessagingService)
     {
         _messageRepository = messageRepository;
         _mapper = mapper;
+        _firebaseMessagingService = firebaseMessagingService;
     }
 
     public async Task<MessageDto> AddMessageAsync(CreateMessageDto messageDto)
@@ -29,6 +32,7 @@ public class MessageService : IMessageService
         var result = await _messageRepository.AddMessageAsync(message);
         var dto = _mapper.Map<MessageDto>(result.message);
         dto.Id = result.messageId;
+        await _firebaseMessagingService.SendNotificationAsync(messageDto.Token, "Yeni Mesaj", message.Content);
         return dto;
     }
 

@@ -31,6 +31,7 @@ public class MessageController : ControllerBase
         }
         catch (Exception ex)
         {
+            Console.WriteLine(ex.Message);
             return StatusCode(500, "Mesaj oluşturulurken bir hata meydana geldi.");
         }
     }
@@ -49,6 +50,7 @@ public class MessageController : ControllerBase
         }
         catch (Exception ex)
         {
+
             return StatusCode(500, "Mesajlar getirilirken bir hata meydana geldi.");
         }
     }
