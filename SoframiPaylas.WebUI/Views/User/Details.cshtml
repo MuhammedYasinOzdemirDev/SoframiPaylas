@@ -1,102 +1,84 @@
 @model PostViewModel
+@using System.Globalization
 <div class="container2">
     <div class="left-panel">
         <h1 id="post-title">@Model.Title</h1>
-        <p id="post-description">@Model.Description</p>
-
-        <p id="post-date">Date: @Model.FormattedDate</p>
-        <p id="post-time">Time: @Model.Time</p>
-        <p id="max-participants">Max Participants: @Model.MaxParticipants</p>
-        <button id="complete-post-btn" class="btn btn-primary">Paylaşımı Sonlandır</button>
+        <p id="post-description"><strong>Açıklama:</strong>@Model.Description</p>
+        <div id="map" style="height: 300px;" class="mb-3 mt-3"></div>
+        @{
+        DateTime date;
+        string formattedDate = string.Empty;
+        if (DateTime.TryParse(Model.FormattedDate, out date))
+        {
+        formattedDate = date.ToString("dd MMMM yyyy", new CultureInfo("tr-TR"));
+        }
+        }
+        <p id="post-date"><strong>Tarih</strong> @formattedDate</p>
+        <p id="post-time"><strong>Saat:</strong> @Model.Time</p>
+        <p id="max-participants"><strong>Katılımcılar:</strong> @Model.Participants.Count /
+            @Model.MaxParticipants</p>
+        <button id="complete-post-btn" class="btn btn-primary" onclick="leave('@Model.PostId')">Ayrıl</button>
     </div>
 
     <div class="right-panel">
         <div class="message-section">
-            <h2>Mesajlaşma</h2>
+            <h2>Paylaşım Sahibine Mesaj Yaz</h2>
             <ul id="group-message-list"></ul>
             <div class="message-input">
                 <input type="text" id="group-message-input" placeholder="Mesajınızı yazın...">
-                <button id="send-group-message-btn" class="btn btn-secondary">Gönder</button>
+                <button id="send-group-message-btn" class="btn btn-secondary"
+                    onclick="sendMessage('@Model.HostID', '@ViewBag.UserId')">Gönder</button>
             </div>
+        </div>
+        <div class="menu mt-3">
+            <h2>Menü</h2>
+            <ul class="list-group">
+                @foreach (var food in ViewBag.RelatedFoods)
+                {
+                <li class="list-group-item d-flex justify-content-between">
+                    <div>
+                        <strong>@food.Title</strong>
+                        <p>@food.Description</p>
+                    </div>
+
+                </li>
+                }
+            </ul>
         </div>
     </div>
 </div>
 
-<div class="bottom-panel">
-    <div class="announcement-section">
+<div class="bottom-panel container2">
+    <div class="announcement-section left-panel">
         <h2>Duyurular</h2>
         <ul id="announcement-list"></ul>
     </div>
 
-    <div class="comments-section">
+    <div class="comments-section right-panel">
         <h2>Yorumlar</h2>
-        <ul id="comments-list"></ul>
-        <div class="comment-input">
+
+        <div class="comment-input mb-3">
             <input type="text" id="comment-input" placeholder="Yorumunuzu yazın...">
-            <button id="send-comment-btn" class="btn btn-secondary">Gönder</button>
+            <button id="send-comment-btn" class="btn btn-secondary" onclick="CreateComments()">Gönder</button>
         </div>
+        <ul id="comments-list"></ul>
     </div>
 </div>
 
 @section Scripts{
 <script>
-    // scripts.js
-
     document.addEventListener('DOMContentLoaded', () => {
         const postId = '@Model.PostId'; // Replace with the actual post ID
 
-        const sendGroupMessageBtn = document.getElementById('send-group-message-btn');
-        const sendCommentBtn = document.getElementById('send-comment-btn');
-        const groupMessageInput = document.getElementById('group-message-input');
-        const commentInput = document.getElementById('comment-input');
-        const groupMessageList = document.getElementById('group-message-list');
-        const commentsList = document.getElementById('comments-list');
-        const announcementList = document.getElementById('announcement-list');
 
-        // Group message sending
-        sendGroupMessageBtn.addEventListener('click', async () => {
-            const message = groupMessageInput.value;
-            if (message) {
-                try {
-                    await connection.send('SendMessageToGroup', postId, message);
-                    groupMessageInput.value = '';
-                } catch (error) {
-                    alert('Mesaj gönderilirken bir hata oluştu.');
-                }
-            }
-        });
-
-        // Comment sending
-        sendCommentBtn.addEventListener('click', async () => {
-            const comment = commentInput.value;
-            if (comment) {
-                try {
-                    const response = await fetch(`/api/comments/${postId}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ content: comment })
-                    });
-                    const data = await response.json();
-                    if (data.success) {
-                        loadComments();
-                        commentInput.value = '';
-                    } else {
-                        alert('Yorum gönderilirken bir hata oluştu: ' + data.message);
-                    }
-                } catch (error) {
-                    alert('Yorum gönderilirken bir hata oluştu.');
-                }
-            }
-        });
-
-        // Loading comments
+        // Yorumları yükle
         function loadComments() {
-            fetch(`/api/comments/${postId}`)
+
+            fetch(`@Url.Action("GetCommentsByPostId","Comment")?postId=${postId}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
+                        const commentsList = document.getElementById('comments-list');
                         commentsList.innerHTML = '';
                         data.comments.forEach(comment => {
                             const listItem = document.createElement('li');
@@ -115,12 +97,12 @@
                                     <br>
                                     <small>${formattedDate}</small>
                                 </div>
-                                <button class="delete-button" data-comment-id="${comment.id}">Sil</button>
+                    
                             `;
                             commentsList.appendChild(listItem);
                         });
 
-                        // Attach delete button event listeners
+                        // Silme butonlarına olay dinleyicisi ekle
                         document.querySelectorAll('.delete-button').forEach(button => {
                             button.addEventListener('click', function () {
                                 const commentId = this.dataset.commentId;
@@ -136,56 +118,171 @@
                 });
         }
 
-        // Deleting comments
-        function deleteComment(commentId) {
-            fetch(`/api/comments/${commentId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        loadComments();
-                    } else {
-                        alert('Yorum silinirken bir hata meydana geldi: ' + data.message);
-                    }
-                })
-                .catch(error => {
-                    alert('Yorum silinirken bir hata meydana geldi: ' + error.message);
-                });
-        }
 
         loadComments();
+        function initMap() {
+            // Razor ile elde edilen Latitude ve Longitude değerlerini JavaScript değişkenlerine atayın
+            var latitude = parseFloat('@Model.Latitude');
+            var longitude = parseFloat('@Model.Longitude');
 
-        // Sample code to simulate receiving messages and announcements via SignalR
-        // Replace this with actual SignalR connection handling code
-        const connection = new signalR.HubConnectionBuilder().withUrl('/chathub').build();
-        connection.on('ReceiveGroupMessage', (user, message) => {
-            const li = document.createElement('li');
-            li.textContent = `${user}: ${message}`;
-            groupMessageList.appendChild(li);
-        });
-        connection.on('ReceiveAnnouncement', (announcement) => {
-            const li = document.createElement('li');
-            li.textContent = announcement;
-            announcementList.appendChild(li);
-        });
-        connection.start().catch(err => console.error(err.toString()));
+            var map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: latitude, lng: longitude },
+                zoom: 12
+            });
+
+            var marker = new google.maps.Marker({
+                position: { lat: latitude, lng: longitude },
+                map: map
+            });
+        }
+
+
+        initMap();
+        async function loadAnnouncements() {
+            try {
+                const response = await fetch(`@Url.Action("DuyurulariGetir","Post")?postId=@Model.PostId`);
+                const data = await response.json();
+                const announcementList = document.getElementById('announcement-list');
+                announcementList.innerHTML = '';
+
+                if (response.ok && data.success) {
+                    data.announcements.forEach(announcement => {
+                        const listItem = document.createElement('li');
+                        listItem.className = 'announcement-item';
+                        const formattedDate = new Date(announcement.timestamp).toLocaleString('tr-TR', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit'
+                        });
+                        listItem.innerHTML = `
+                        <div class="announcement-content">${announcement.content}</div>
+                        <div class="announcement-timestamp">${formattedDate}</div>
+                        `;
+                        announcementList.appendChild(listItem);
+                    });
+                } else {
+                    announcementList.innerHTML = '<li class="announcement-item">Duyuru bulunamadı.</li>';
+                }
+            } catch (error) {
+                console.error('Error loading announcements:', error);
+                const announcementList = document.getElementById('announcement-list');
+                announcementList.innerHTML = '<li class="announcement-item">Duyurular yüklenirken bir hata oluştu.</li>';
+            }
+        }
+
+        loadAnnouncements();
+
+
+
     });
+    function CreateComments() {
+        alert("d");
+        const commentContent = document.getElementById('comment-input').value;
+        const newComment = {
+            postId: '@Model.PostId',
 
+            content: commentContent
+        };
+
+        fetch('@Url.Action("AddComment","Comment")', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newComment)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+
+                } else {
+                    alert('Yorumlar yüklenirken bir hata meydana geldi: ' + data.message);
+                }
+            })
+            .catch(error => {
+                alert('Yorumlar yüklenirken bir hata meydana geldi: ' + error.message);
+            });
+    }
+    async function sendMessage(hostId, userId) {
+
+        const message = document.getElementById('group-message-input').value;
+        try {
+            const response = await fetch(`@Url.Action("Message","Post")`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    senderId: hostId,
+                    receiverId: userId,
+                    content: message
+                })
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                Swal.fire('Başarılı', 'Mesaj gönderildi', 'success');
+            } else {
+                Swal.fire('Hata', `Mesaj gönderilirken bir hata meydana geldi: ${data.message}`, 'error');
+            }
+        } catch (error) {
+            Swal.fire('Hata', `Mesaj gönderilirken bir hata meydana geldi: ${error.message}`, 'error');
+        }
+    }
+    async function leave(postId) {
+        const result = await Swal.fire({
+            title: 'Emin misiniz?',
+            text: "Bu paylaşımdan ayrılmak istediğinizden emin misiniz?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Evet, ayrıl!',
+            cancelButtonText: 'Hayır, iptal et',
+            reverseButtons: true
+        });
+
+        if (result.isConfirmed) {
+            try {
+                const response = await fetch(`@Url.Action("Leave","Participant")?postId=${postId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                if (response.ok && data.success) {
+                    await Swal.fire(
+                        'Ayrıldınız!',
+                        'Paylaşımdan başarıyla ayrıldınız.',
+                        'success'
+                    );
+
+                    window.location.href = '@Url.Action("Index","Home")';
+                } else {
+                    Swal.fire(
+                        'Hata!',
+                        `Ayrılırken bir hata oluştu: ${data.message}`,
+                        'error'
+                    );
+                }
+            } catch (error) {
+                Swal.fire(
+                    'Hata!',
+                    `Ayrılırken bir hata oluştu: ${error.message}`,
+                    'error'
+                );
+            }
+        }
+    }
 </script>
 }
 <style>
     /* styles.css */
 
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
-        margin: 0;
-        padding: 0;
-    }
 
     .container2 {
         display: flex;
@@ -267,12 +364,16 @@
         flex: 1;
         padding: 10px;
         border: 1px solid #ddd;
-        border-radius: 4px;
+        border-radius: 4px 0 0 4px;
     }
 
     .message-input button,
     .comment-input button {
         padding: 10px 20px;
+        border-radius: 0 4px 4px 0;
+        border: 1px solid #ddd;
+        background-color: #6c757d;
+        color: white;
     }
 
     ul {
@@ -282,7 +383,7 @@
 
     li {
         padding: 10px;
-        border-bottom: 1px solid #ddd;
+
     }
 
     .bottom-panel {
@@ -329,9 +430,8 @@
         padding: 15px;
         display: flex;
         justify-content: space-between;
-        align-items: center;
-        /* Silme butonunu hizalamak için */
-        transition: background 0.3s ease-in-out;
+
+
     }
 
     #comments-list .list-group-item:hover {
@@ -363,5 +463,150 @@
 
     #comments-list .delete-button:hover {
         background-color: #c82333;
+    }
+
+    .announcement-section {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+    }
+
+    .announcement-section h2 {
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    #announcement-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .announcement-item {
+        background-color: #fff;
+        padding: 15px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .announcement-item:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .announcement-content {
+        color: #555;
+        font-size: 1.1em;
+        margin-bottom: 10px;
+    }
+
+    .announcement-timestamp {
+        font-size: 0.9em;
+        color: #999;
+        text-align: right;
+    }
+
+    .input-group {
+        display: flex;
+        width: 100%;
+    }
+
+    .input-group input[type="text"] {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-right: none;
+        border-radius: 4px 0 0 4px;
+        outline: none;
+    }
+
+    .input-group button {
+        padding: 10px 20px;
+        border: 1px solid #ddd;
+        border-left: none;
+        border-radius: 0 4px 4px 0;
+        background-color: #6c757d;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .input-group button:hover {
+        background-color: #565e64;
+    }
+
+    .message-section {
+        margin-top: 20px;
+    }
+
+    .message-input {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .message-input input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px 0 0 4px;
+        outline: none;
+    }
+
+    .message-input button {
+        padding: 10px 20px;
+        border-radius: 0 4px 4px 0;
+        border: 1px solid #ddd;
+        background-color: #6c757d;
+        color: white;
+    }
+
+    /* Menü bölümü */
+    .menu {
+        margin-top: 20px;
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .menu h2 {
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .list-group {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .list-group-item {
+        background-color: #fff;
+        padding: 15px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .list-group-item:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .list-group-item strong {
+        font-size: 1.1em;
+        color: #007bff;
+    }
+
+    .list-group-item p {
+        margin: 5px 0 0;
+        color: #666;
     }
 </style>

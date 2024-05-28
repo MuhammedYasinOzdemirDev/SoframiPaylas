@@ -70,29 +70,26 @@ var isAuthenticated = HttpContextAccessor.HttpContext.User.Identity.IsAuthentica
             <div class="participants">
                 <h4>Katılımcılar</h4>
                 <ul class="list-group">
-                    <!--foreach (var participant in ViewBag.Participants)
+                    @if(ViewBag.Participants.Count == 0){
+                    <div class="alert alert-warning">Katılımcı Yok.</div>
+                    }
+                    @foreach (var participant in ViewBag.Participants)
                     {
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <div>
-                            <strong>participant.Name</strong>
-                            <p>articipant.Email</p>
-                        </div>
-                        
-                    </li>
-                    }-->
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <strong>Yasin</strong>
+                            <strong>@participant.UserName</strong>
 
                         </div>
 
                     </li>
+                    }
+
                 </ul>
             </div>
         </div>
     </div>
     <!-- Comments Section -->
-    <div class="comments-section mt-5">
+    <div class="comments-section mt-3">
         <h3>Yorumlar</h3>
         <ul id="comments-list" class="list-group mb-3">
             <!-- Yorumlar burada gösterilecek -->

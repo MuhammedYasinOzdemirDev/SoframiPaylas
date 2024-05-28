@@ -80,7 +80,20 @@ namespace SoframiPaylas.WebUI.Controllers
                     ViewBag.RelatedFoods = new List<FoodViewModel>();
 
                 }
-                ViewBag.Participants = new List<string>();
+                var response3 = await _participantApiService.ConfirmParticipants(postId);
+                Console.WriteLine(postId);
+                if (response3.IsSuccessStatusCode)
+                {
+                    var participants = await response3.Content.ReadFromJsonAsync<List<ParticipantViewModel>>();
+                    if (participants.Count == 0)
+                        participants = new List<ParticipantViewModel>();
+                    ViewBag.Participants = participants;
+                }
+                else
+                {
+                    var participants = new List<ParticipantViewModel>();
+                    ViewBag.Participants = participants;
+                }
                 return View(post);
             }
             catch (HttpRequestException ex)
