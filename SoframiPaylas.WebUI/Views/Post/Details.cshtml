@@ -24,18 +24,23 @@
         <div class="participants-section">
             <h2>Katılımcılar</h2>
             <ul id="participants-list">
-
+                @if(ViewBag.Participants.Count==0){
+                <div class="alert alert-warning">Katılımcı Yok.</div>
+                }
+                @foreach (var participant in ViewBag.Participants)
+                {
 
                 <li class="participant-item">
-                    <a href="Url.Action(" UserDetails", "User" , new { id=participant.Id })"
-                        class="participant-name">Muhammed Yasin</a>
+                    <a href="" class="participant-name">@participant.UserName</a>
                     <div class="participant-actions">
                         <button class="btn btn-danger btn-sm remove-participant-btn"
-                            data-participant-id="participant.Id">Çıkar</button>
+                            onclick="removeParticipant('@participant.ParticipantId')">Çıkar</button>
                         <button class="btn btn-secondary btn-sm message-participant-btn"
-                            data-participant-id="participant.Id">Mesaj Gönder</button>
+                            data-participant-id="@participant.ParticipantId"
+                            onclick="sendMessage('@Model.HostID','@participant.UserID')">Mesaj Gönder</button>
                     </div>
                 </li>
+                }
 
             </ul>
         </div>
@@ -46,7 +51,8 @@
     <div class="announcement-section">
         <h2>Duyuru Yap</h2>
         <textarea id="announcement-text" placeholder="Duyurunuzu yazın..."></textarea>
-        <button id="make-announcement-btn" class="btn btn-secondary">Gönder</button>
+        <button id="make-announcement-btn" onclick="DuyuruYap('@Model.PostId')"
+            class="btn btn-secondary">Gönder</button>
     </div>
     <div class="comments-section">
         <h2>Yorumlar</h2>
@@ -152,81 +158,102 @@
         initMap();
 
 
-        completePostBtn.addEventListener('click', async () => {
-            try {
-                await axios.post(`/api/posts/${postId}/complete`);
-                alert('Paylaşım başarıyla sonlandırıldı.');
-            } catch (error) {
-                alert('Paylaşımı sonlandırırken bir hata oluştu.');
-            }
-        });
-        const completePostBtn = document.getElementById('complete-post-btn');
-        const makeAnnouncementBtn = document.getElementById('make-announcement-btn');
-        const announcementText = document.getElementById('announcement-text');
-
-        completePostBtn.addEventListener('click', async () => {
-            try {
-                await axios.post(`/api/posts/${postId}/complete`);
-                alert('Paylaşım başarıyla sonlandırıldı.');
-            } catch (error) {
-                alert('Paylaşımı sonlandırırken bir hata oluştu.');
-            }
-        });
-
-        makeAnnouncementBtn.addEventListener('click', async () => {
-            const announcement = announcementText.value;
-            if (announcement) {
-                try {
-                    await axios.post(`/api/posts/${postId}/announce`, { announcement });
-                    alert('Duyuru başarıyla yapıldı.');
-                    announcementText.value = '';
-                } catch (error) {
-                    alert('Duyuru yapılırken bir hata oluştu.');
-                }
-            }
-        });
-
-        document.querySelectorAll('.remove-participant-btn').forEach(button => {
-            button.addEventListener('click', async () => {
-                const participantId = button.dataset.participantId;
-                try {
-                    await axios.post(`/api/posts/${postId}/removeParticipant`, { participantId });
-                    alert('Katılımcı başarıyla çıkarıldı.');
-                    // Katılımcı listesini yeniden yükleyin veya güncelleyin
-                } catch (error) {
-                    alert('Katılımcı çıkarılırken bir hata oluştu.');
-                }
-            });
-        });
-
-        document.querySelectorAll('.message-participant-btn').forEach(button => {
-            button.addEventListener('click', () => {
-                const participantId = button.dataset.participantId;
-                Swal.fire({
-                    title: 'Mesaj Gönder',
-                    input: 'textarea',
-                    inputPlaceholder: 'Mesajınızı yazın...',
-                    showCancelButton: true,
-                    confirmButtonText: 'Gönder',
-                    cancelButtonText: 'İptal',
-                    preConfirm: async (message) => {
-                        if (!message) {
-                            Swal.showValidationMessage('Mesaj boş olamaz');
-                            return;
-                        }
-                        try {
-                            await axios.post(`/api/posts/${postId}/sendMessage`, { participantId, message });
-                            Swal.fire('Başarılı', 'Mesaj gönderildi', 'success');
-                        } catch (error) {
-                            Swal.fire('Hata', 'Mesaj gönderilirken bir hata oluştu', 'error');
-                        }
-                    }
-                });
-            });
-        });
-
-
     });
+    function removeParticipant(participantId) {
+
+        fetch('@Url.Action("Remove","Participant")?participantId=' + participantId, {
+            method: 'DELETE',
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Katılımcı başarıyla çıkarıldı.');
+                    location.reload(); // Sayfayı yenileyin
+                } else {
+                    alert('Katılımcı çıkarılamadı.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+    function DuyuruYap(postId) {
+        const announcementText = document.getElementById('announcement-text');
+        const announcement = announcementText.value;
+
+        if (announcement) {
+            Swal.fire({
+                title: 'Duyuru Yap',
+                text: 'Duyurunuzu göndermek istediğinizden emin misiniz?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Evet, gönder',
+                cancelButtonText: 'Hayır, iptal',
+                preConfirm: async () => {
+                    try {
+                        const response = await fetch(`@Url.Action("Duyuru","Post")`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ postId, announcement })
+                        });
+
+                        const data = await response.json();
+                        if (response.ok) {
+                            Swal.fire('Başarılı', 'Duyuru başarıyla yapıldı.', 'success');
+                            announcementText.value = '';
+                        } else {
+                            Swal.fire('Hata', `Duyuru yapılırken bir hata meydana geldi: ${data.message}`, 'error');
+                        }
+                    } catch (error) {
+                        Swal.fire('Hata', `Duyuru yapılırken bir hata meydana geldi: ${error.message}`, 'error');
+                    }
+                }
+            });
+        } else {
+            Swal.fire('Uyarı', 'Duyuru metni boş olamaz', 'warning');
+        }
+    }
+    function sendMessage(hostId, userId) {
+        alert(hostId);
+        alert(userId);
+        Swal.fire({
+            title: 'Mesaj Gönder',
+            input: 'textarea',
+            inputPlaceholder: 'Mesajınızı yazın...',
+            showCancelButton: true,
+            confirmButtonText: 'Gönder',
+            cancelButtonText: 'İptal',
+            preConfirm: async (message) => {
+                if (!message) {
+                    Swal.showValidationMessage('Mesaj boş olamaz');
+                    return;
+                }
+                try {
+                    const response = await fetch(`@Url.Action("Message","Post")`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            senderId: hostId,
+                            receiverId: userId,
+                            content: message
+                        })
+                    });
+
+                    const data = await response.json();
+                    if (response.ok) {
+                        Swal.fire('Başarılı', 'Mesaj gönderildi', 'success');
+                    } else {
+                        Swal.fire('Hata', `Mesaj gönderilirken bir hata meydana geldi: ${data.message}`, 'error');
+                    }
+                } catch (error) {
+                    Swal.fire('Hata', `Mesaj gönderilirken bir hata meydana geldi: ${error.message}`, 'error');
+                }
+            }
+        });
+    }
+
 
 </script>}
 <style>

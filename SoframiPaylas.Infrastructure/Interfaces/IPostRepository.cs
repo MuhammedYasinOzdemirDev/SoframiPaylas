@@ -14,6 +14,7 @@ namespace SoframiPaylas.Infrastructure.Interfaces
 
         Task<List<(Post post, string postId)>> GetPostsByIdsAsync(List<string> postIds);
         Task<bool> UpdateParticipantStatus(string postId, string participantId);
+        Task<bool> RemoveParticipant(string participantId);
     }
 
 }

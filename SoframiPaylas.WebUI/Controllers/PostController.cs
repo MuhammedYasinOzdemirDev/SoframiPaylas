@@ -1,4 +1,5 @@
 
+using System.Net;
 using System.Globalization;
 using Microsoft.AspNetCore.Mvc;
 using SoframiPaylas.WebUI.ExternalService.Extensions;
@@ -15,13 +16,14 @@ namespace SoframiPaylas.WebUI.Controllers
     {
         private readonly IPostApiService _apiService;
         private readonly IUserService _userService;
-
+        private readonly IParticipantApiService _participantApiService;
 
         private static List<string> foodIdList = new List<string>();
-        public PostController(IPostApiService apiService, IUserService userService)
+        public PostController(IPostApiService apiService, IUserService userService, IParticipantApiService participantApiService)
         {
             _apiService = apiService;
             _userService = userService;
+            _participantApiService = participantApiService;
         }
 
 
@@ -284,11 +286,55 @@ namespace SoframiPaylas.WebUI.Controllers
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadFromJsonAsync<PostViewModel>();
+                var response2 = await _participantApiService.ConfirmParticipants(postId);
+                if (response2.IsSuccessStatusCode)
+                {
+                    var participants = await response2.Content.ReadFromJsonAsync<List<ParticipantViewModel>>();
+                    if (participants.Count == 0)
+                        participants = new List<ParticipantViewModel>();
+                    ViewBag.Participants = participants;
+                }
+                else
+                {
+                    var participants = new List<ParticipantViewModel>();
+                    ViewBag.Participants = participants;
+                }
                 return View(content);
             }
             return View("Error");
         }
+        [HttpPost]
+        public async Task<IActionResult> Duyuru([FromBody] CreateAnnouncementView announcementView)
+        {
 
+            var response = await _apiService.Duyuru(announcementView.PostId, announcementView.Announcement);
+            if (response.IsSuccessStatusCode)
+            {
+                return Json(new { success = true });
+            }
+            return Json(new { success = false });
+        }
+        [HttpPost]
+        public async Task<IActionResult> Message([FromBody] MessageViewModel messageViewModel)
+        {
 
+            var response = await _apiService.Message(messageViewModel);
+            if (response.IsSuccessStatusCode)
+            {
+                return Json(new { success = true });
+            }
+            return Json(new { success = false });
+        }
+        [HttpGet]
+        public async Task<IActionResult> DuyurulariGetir([FromQuery] string postId)
+        {
+            var response = await _apiService.DuyurulariGetir(postId);
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadFromJsonAsync<List<AnnouncementView>>();
+                return Json(new { success = true, announcements = content });
+            }
+            return Json(new { success = false });
+        }
     }
 }

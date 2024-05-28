@@ -1,3 +1,4 @@
+using System.Net;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -9,6 +10,7 @@ using SoframiPaylas.Application.DTOs.Food;
 using SoframiPaylas.Application.DTOs.Post;
 using SoframiPaylas.WebUI.Models;
 using SoframiPaylas.WebUI.Services.Interfaces;
+using SoframiPaylas.Application.DTOs.Message;
 
 namespace SoframiPaylas.WebUI.Services
 {
@@ -156,6 +158,37 @@ namespace SoframiPaylas.WebUI.Services
             var url = new Uri(_httpClient.BaseAddress + "Post/get-user-posts");
 
             HttpResponseMessage response = await _httpClient.PostAsJsonAsync(url, postIds);
+            return response;
+        }
+        public async Task<HttpResponseMessage> Duyuru(string postId, string content)
+        {
+            var url = new UriBuilder(_httpClient.BaseAddress + "Announcement/announce")
+            {
+                Query = $"postId={postId}"
+            };
+            var data = new { content = content };
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync(url.Uri, data);
+            return response;
+        }
+        public async Task<HttpResponseMessage> Message(MessageViewModel messageViewModel)
+        {
+            var dto = new CreateMessageDto
+            {
+                SenderId = messageViewModel.SenderId,
+                ReceiverId = messageViewModel.ReceiverId,
+                Content = messageViewModel.Content
+            };
+            var url = new Uri(_httpClient.BaseAddress + "Message/sendMessage");
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync(url, dto);
+            return response;
+        }
+        public async Task<HttpResponseMessage> DuyurulariGetir(string postId)
+        {
+            var url = new UriBuilder(_httpClient.BaseAddress + "Announcement/post-id")
+            {
+                Query = $"postId={postId}"
+            };
+            HttpResponseMessage response = await _httpClient.GetAsync(url.Uri);
             return response;
         }
     }

@@ -274,7 +274,31 @@ namespace SoframiPaylas.Infrastructure.Repositories
                 await postRef.UpdateAsync(updates);
                 return true;
             }, TimeSpan.FromSeconds(20));
-        }
 
+        }
+        public async Task<bool> RemoveParticipant(string participantId)
+        {
+            return await firebaseService.ExecuteFirestoreOperationAsync(async () =>
+            {
+                DocumentReference participantRef = db.Collection("Participants").Document(participantId);
+                DocumentSnapshot snapshot = await participantRef.GetSnapshotAsync();
+
+                if (!snapshot.Exists)
+                {
+                    return false;
+                }
+                var participant = snapshot.ConvertTo<Participant>();
+                DocumentReference postRef = db.Collection("Posts").Document(participant.PostId);
+                DocumentSnapshot snapshot2 = await postRef.GetSnapshotAsync();
+                // participants listesinden participantId'yi çıkar
+                Dictionary<string, object> updates = new Dictionary<string, object>
+                {
+            { "participants", FieldValue.ArrayRemove(participantId) }
+                };
+
+                await postRef.UpdateAsync(updates);
+                return true;
+            }, TimeSpan.FromSeconds(20));
+        }
     }
 }

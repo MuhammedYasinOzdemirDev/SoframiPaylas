@@ -5,6 +5,7 @@ namespace SoframiPaylas.Infrastructure.Interfaces
     {
         Task<(Announcement announcement, string announcementId)> AddAnnouncementAsync(Announcement announcement);
         Task<List<(Announcement announcement, string announcementId)>> GetAnnouncementsAsync();
+        Task<List<(Announcement announcement, string announcementId)>> GetPostIdAnnouncementsAsync(string postId);
     }
 
 }

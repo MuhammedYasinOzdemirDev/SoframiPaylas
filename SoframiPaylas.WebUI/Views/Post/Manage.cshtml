@@ -10,10 +10,8 @@
                 <h3>Toplam Katılımcılar</h3>
                 <p>@ViewBag.TotalParticipation</p>
             </div>
-            <div class="card">
-                <h3>Toplam Yorumlar</h3>
-                <p></p>
-            </div>
+
+
             <div class="card">
                 <h3>Toplam Yemek</h3>
                 <p>@ViewBag.TotalFood</p>
@@ -29,7 +27,7 @@
             <div class="post-card">
                 <div class="post-header">
                     <div>
-                        <a href="/post/details/1"><strong>@post.Title</strong></a>
+                        <a asp-action="Details" asp-route-postId="@post.PostId"><strong>@post.Title</strong></a>
                         <p>@post.Description</p>
                     </div>
                 </div>

@@ -50,4 +50,23 @@ public class AnnouncementRepository : IAnnouncementRepository
             return announcements;
         }, TimeSpan.FromSeconds(20));
     }
+    public async Task<List<(Announcement announcement, string announcementId)>> GetPostIdAnnouncementsAsync(string postId)
+    {
+        return await _firebaseService.ExecuteFirestoreOperationAsync(async () =>
+        {
+            QuerySnapshot snapshot = await _db.Collection("Announcements").WhereEqualTo("PostId", postId).GetSnapshotAsync();
+            List<(Announcement announcement, string announcementId)> announcements = new List<(Announcement announcement, string announcementId)>();
+
+            foreach (DocumentSnapshot documentSnapshot in snapshot.Documents)
+            {
+                if (documentSnapshot.Exists)
+                {
+                    Announcement announcement = documentSnapshot.ConvertTo<Announcement>();
+                    var id = documentSnapshot.Id;
+                    announcements.Add((announcement, id));
+                }
+            }
+            return announcements;
+        }, TimeSpan.FromSeconds(20));
+    }
 }

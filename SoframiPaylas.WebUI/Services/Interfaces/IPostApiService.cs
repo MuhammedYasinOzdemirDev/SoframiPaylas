@@ -20,5 +20,8 @@ namespace SoframiPaylas.WebUI.Services.Interfaces
         Task<HttpResponseMessage> DeletePost(string postId);
         Task<HttpResponseMessage> GetPostsByUserIdAsync(string userId);
         Task<HttpResponseMessage> GetPostsByIdsAsync(List<string> postIds);
+        Task<HttpResponseMessage> Duyuru(string postId, string content);
+        Task<HttpResponseMessage> Message(MessageViewModel messageViewModel);
+        Task<HttpResponseMessage> DuyurulariGetir(string postId);
     }
 }
