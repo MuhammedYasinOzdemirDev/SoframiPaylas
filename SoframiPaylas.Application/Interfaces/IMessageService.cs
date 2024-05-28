@@ -5,4 +5,5 @@ public interface IMessageService
 {
     Task<MessageDto> AddMessageAsync(CreateMessageDto messageDto);
     Task<IEnumerable<MessageDto>> GetMessagesByReceiverIdAsync(string receiverId);
+    Task<int> MessageCount(string userId);
 }

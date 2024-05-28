@@ -70,4 +70,13 @@ public class CommentRepository : ICommentRepository
             }
         }, TimeSpan.FromSeconds(20));
     }
+    public async Task<int> CommentCount(string userId)
+    {
+        return await firebaseService.ExecuteFirestoreOperationAsync(async () =>
+        {
+            Query commentQuery = db.Collection("Comments").WhereEqualTo("UserId", userId);
+            QuerySnapshot commentQuerySnapshot = await commentQuery.GetSnapshotAsync();
+            return commentQuerySnapshot.Count;
+        }, TimeSpan.FromSeconds(20));
+    }
 }

@@ -4,6 +4,7 @@ namespace SoframiPaylas.Application.DTOs
 {
     public class UserDto
     {
+        public string UserID { get; set; }
         /// <summary>
         /// Kullanıcının e-posta adresi.
         /// </summary>

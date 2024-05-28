@@ -47,4 +47,9 @@ public class CommentService : ICommentService
         }
         return await _commentRepository.DeleteCommentAsync(commentId);
     }
+
+    public async Task<int> CommentCount(string userId)
+    {
+        return await _commentRepository.CommentCount(userId);
+    }
 }

@@ -40,7 +40,24 @@ public class UserApiService : IUserApiService
         HttpResponseMessage response = await _httpClient.PutAsync(url.Uri, content);
         return response;
     }
-
+    public async Task<HttpResponseMessage> MessageCount(string userId)
+    {
+        var url = new UriBuilder(_httpClient.BaseAddress + "Message/count")
+        {
+            Query = $"userId={userId}"
+        };
+        HttpResponseMessage response = await _httpClient.GetAsync(url.Uri);
+        return response;
+    }
+    public async Task<HttpResponseMessage> CommentCount(string userId)
+    {
+        var url = new UriBuilder(_httpClient.BaseAddress + "Comment/count")
+        {
+            Query = $"userId={userId}"
+        };
+        HttpResponseMessage response = await _httpClient.GetAsync(url.Uri);
+        return response;
+    }
 
 
 }

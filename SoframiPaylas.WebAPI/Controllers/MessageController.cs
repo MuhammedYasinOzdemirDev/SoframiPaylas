@@ -54,4 +54,17 @@ public class MessageController : ControllerBase
             return StatusCode(500, "Mesajlar getirilirken bir hata meydana geldi.");
         }
     }
+    [HttpGet("count")]
+    public async Task<IActionResult> GetCountAsync([FromQuery] string userId)
+    {
+        try
+        {
+            var count = await _messageService.MessageCount(userId);
+            return Ok(count);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "Mesaj sayısı getirilirken bir hata meydana geldi.");
+        }
+    }
 }

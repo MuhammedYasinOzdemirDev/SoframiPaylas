@@ -109,5 +109,18 @@ namespace SoframiPaylas.WebAPI
                 return StatusCode(500, "Yorum silinirken bir hata meydana geldi.");
             }
         }
+        [HttpGet("count")]
+        public async Task<IActionResult> CommentCount([FromQuery] string userId)
+        {
+            try
+            {
+                var count = await _service.CommentCount(userId);
+                return Ok(count);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Yorum sayısı getirilirken bir hata meydana geldi.");
+            }
+        }
     }
 }

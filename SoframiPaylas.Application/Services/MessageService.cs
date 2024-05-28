@@ -32,7 +32,7 @@ public class MessageService : IMessageService
         var result = await _messageRepository.AddMessageAsync(message);
         var dto = _mapper.Map<MessageDto>(result.message);
         dto.Id = result.messageId;
-        await _firebaseMessagingService.SendNotificationAsync(messageDto.Token, "Yeni Mesaj", message.Content);
+
         return dto;
     }
 
@@ -45,5 +45,10 @@ public class MessageService : IMessageService
             dto.Id = m.messageId;
             return dto;
         });
+    }
+
+    public async Task<int> MessageCount(string userId)
+    {
+        return await _messageRepository.MessageCount(userId);
     }
 }

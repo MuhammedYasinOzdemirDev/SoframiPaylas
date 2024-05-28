@@ -54,6 +54,37 @@ namespace SoframiPaylas.Application.ExternalServices
                 }
             }
         }
+        public async Task SendEmailsAsync(IEnumerable<string> toList, string subject, string htmlContent)
+        {
+            using (var client = new SmtpClient(_smtpHost, _smtpPort))
+            {
+                client.EnableSsl = true;
+                client.UseDefaultCredentials = false;
+                client.Credentials = new NetworkCredential(_fromAddress, _passaword);
+
+                var mailMessage = new MailMessage
+                {
+                    From = new MailAddress(_fromAddress),
+                    Subject = subject,
+                    Body = htmlContent,
+                    IsBodyHtml = true,
+                };
+
+                foreach (var to in toList)
+                {
+                    mailMessage.Bcc.Add(to); // Bcc kullanarak gizli gönderim yapıyoruz
+                }
+
+                try
+                {
+                    await client.SendMailAsync(mailMessage);
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException($"Mail gönderme işlemi sırasında bir hata oluştu: {ex.Message}", ex);
+                }
+            }
+        }
 
     }
 

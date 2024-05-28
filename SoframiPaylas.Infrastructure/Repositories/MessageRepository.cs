@@ -56,4 +56,13 @@ public class MessageRepository : IMessageRepository
             return messages;
         }, TimeSpan.FromSeconds(20));
     }
+    public async Task<int> MessageCount(string userId)
+    {
+        return await _firebaseService.ExecuteFirestoreOperationAsync(async () =>
+        {
+            QuerySnapshot snapshot = await _db.Collection("Messages").WhereEqualTo("ReceiverId", userId).GetSnapshotAsync();
+            return snapshot.Count;
+        }, TimeSpan.FromSeconds(20));
+
+    }
 }

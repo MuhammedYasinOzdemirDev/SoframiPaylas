@@ -11,5 +11,6 @@ namespace SoframiPaylas.Infrastructure.Interfaces
         Task<List<(Comment comment, string commentId)>> GetCommentsByPostIdAsync(string postId);
         Task<(Comment comment, string commentId)> AddCommentAsync(Comment comment);
         Task<bool> DeleteCommentAsync(string commentId);
+        Task<int> CommentCount(string userId);
     }
 }
