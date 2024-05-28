@@ -4,16 +4,17 @@
         <div class="dashboard">
             <div class="card">
                 <h3>Toplam Katıldığım Paylaşım</h3>
-                <p>ViewBag.TotalParticipations</p>
+                <p>@Model.Count()</p>
             </div>
             <div class="card">
                 <h3>Toplam Mesajlar</h3>
-                <p>ViewBag.TotalMessages</p>
+                <p>@ViewBag.MessageCount</p>
             </div>
             <div class="card">
                 <h3>Toplam Yorumlar</h3>
-                <p>ViewBag.TotalComments</p>
+                <p>@ViewBag.CommentCount</p>
             </div>
+
         </div>
 
         <!-- Participation List Section -->
@@ -25,12 +26,12 @@
             <div class="post-card">
                 <div class="post-header">
                     <div>
-                        <a href="/post/details/participation.PostId"><strong>@post.Title</strong></a>
+                        <a asp-action="Details" asp-route-postId="@post.PostId"><strong>@post.Title</strong></a>
                         <p>@post.Description</p>
                     </div>
                 </div>
                 <div class="btn-container">
-                    <a class="btn btn-leave" onclick="leavePost('participation.PostId')">Ayrıl</a>
+                    <a class="btn btn-leave" onclick="leave('@post.PostId')">Ayrıl</a>
                 </div>
             </div>}
 
@@ -39,12 +40,7 @@
     <style>
         /* styles.css */
 
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
+
 
         .container2 {
             max-width: 1250px;
@@ -70,12 +66,25 @@
             background-color: #007bff;
             text-align: center;
             color: #ffffff;
-            transition: background 0.3s ease-in-out;
+            transition: background 0.3s ease-in-out, transform 0.3s ease-in-out;
         }
 
         .dashboard .card:hover {
             background-color: #0056b3;
+            transform: translateY(-5px);
         }
+
+        .dashboard .card h3 {
+            font-size: 1.4em;
+            margin-bottom: 10px;
+        }
+
+        .dashboard .card p {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin: 0;
+        }
+
 
         .dashboard .card h3 {
             font-size: 1.5em;
@@ -165,20 +174,52 @@
     </style>
     @section Scripts {
     <script>
-        function leavePost(postId) {
-            if (confirm('Bu paylaşımda katılımınızı iptal etmek istediğinizden emin misiniz?')) {
-                const response = fetch(`/post/leave?postId=${postId}`, {
-                    method: 'POST',
-                }).then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Paylaşımdan başarıyla ayrıldınız.');
-                            location.reload(); // Sayfayı yenileyin
-                        } else {
-                            alert('Paylaşımdan ayrılamadınız.');
+
+        async function leave(postId) {
+            const result = await Swal.fire({
+                title: 'Emin misiniz?',
+                text: "Bu paylaşımdan ayrılmak istediğinizden emin misiniz?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Evet, ayrıl!',
+                cancelButtonText: 'Hayır, iptal et',
+                reverseButtons: true
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    const response = await fetch(`@Url.Action("Leave","Participant")?postId=${postId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
                         }
-                    })
+                    });
+
+                    const data = await response.json();
+                    if (response.ok && data.success) {
+                        await Swal.fire(
+                            'Ayrıldınız!',
+                            'Paylaşımdan başarıyla ayrıldınız.',
+                            'success'
+                        );
+
+                        location.reload();
+                    } else {
+                        Swal.fire(
+                            'Hata!',
+                            `Ayrılırken bir hata oluştu: ${data.message}`,
+                            'error'
+                        );
+                    }
+                } catch (error) {
+                    Swal.fire(
+                        'Hata!',
+                        `Ayrılırken bir hata oluştu: ${error.message}`,
+                        'error'
+                    );
+                }
             }
         }
+
     </script>
     }

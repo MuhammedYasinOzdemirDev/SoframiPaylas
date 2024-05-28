@@ -16,7 +16,7 @@ namespace SoframiPaylas.Infrastructure.Repositories
             firebaseService = service;
         }
 
-        public async Task<IEnumerable<User>> GetAllUserAsync()
+        public async Task<IEnumerable<(User user, string id)>> GetAllUserAsync()
         {
             return await firebaseService.ExecuteFirestoreOperationAsync(async () =>
                 {
@@ -29,7 +29,7 @@ namespace SoframiPaylas.Infrastructure.Repositories
                     QuerySnapshot snapshot = await usersRef.GetSnapshotAsync();
 
 
-                    List<User> users = new List<User>();
+                    List<(User user, string id)> users = new List<(User user, string id)>();
                     foreach (DocumentSnapshot document in snapshot.Documents)
                     {
                         if (document.Exists)
@@ -47,7 +47,7 @@ namespace SoframiPaylas.Infrastructure.Repositories
                                 Surname = userDict.ContainsKey("surname") ? userDict["surname"].ToString() : null,
                                 Phone = userDict.ContainsKey("phone") ? userDict["phone"].ToString() : null
                             };
-                            users.Add(user);
+                            users.Add((user, document.Id));
                         }
                     }
                     return users;

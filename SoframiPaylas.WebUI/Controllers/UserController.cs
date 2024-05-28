@@ -131,15 +131,37 @@ namespace SoframiPaylas.WebUI.Controllers
             };
             return View(securitViewModel);
         }
-        public async Task<IActionResult> Details()
+        public async Task<IActionResult> Details([FromQuery] string postId)
         {
+            ViewBag.UserId = _userService.GetUserId();
 
-            return View();
+            var response = await _postApiService.GetPostByIdAsync(postId);
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadFromJsonAsync<PostViewModel>();
+                var response2 = await _postApiService.GetFoodByIdAsync(content.RelatedFoods);
+
+                IEnumerable<FoodViewModel> foodlist = await response2.Content.ReadFromJsonAsync<IEnumerable<FoodViewModel>>();
+
+                if (foodlist != null)
+                {
+                    ViewBag.RelatedFoods = foodlist;
+                }
+                else
+                {
+                    ViewBag.RelatedFoods = new List<FoodViewModel>();
+
+                }
+                return View(content);
+            }
+            return View("Error");
         }
         public async Task<IActionResult> Manage()
         {
+
             try
             {
+                List<PostViewModel> posts = new List<PostViewModel>();
                 var userId = _userService.GetUserId();
 
                 var response = await _postApiService.GetPostsByUserIdAsync(userId);
@@ -148,7 +170,7 @@ namespace SoframiPaylas.WebUI.Controllers
 
                     List<string> postIds = await response.Content.ReadFromJsonAsync<List<string>>();
                     var response2 = await _postApiService.GetPostsByIdsAsync(postIds);
-                    List<PostViewModel> posts;
+
                     if (response2.IsSuccessStatusCode)
                     {
                         posts = await response2.Content.ReadFromJsonAsync<List<PostViewModel>>();
@@ -156,19 +178,41 @@ namespace SoframiPaylas.WebUI.Controllers
                         {
                             posts = new List<PostViewModel>();
                         }
-                        return View(posts);
+
                     }
                 }
                 else if (response.StatusCode == HttpStatusCode.NotFound)
                 {
-                    return View(new List<PostViewModel>());
+                    posts = new List<PostViewModel>();
                 }
-                return View("Error");
+                var response3 = await _userApiService.MessageCount(userId);
+                if (response3.IsSuccessStatusCode)
+                {
+                    var content = await response3.Content.ReadAsStringAsync();
+                    ViewBag.MessageCount = content;
+                }
+                else
+                {
+                    ViewBag.MessageCount = "0";
+                }
+                var response4 = await _userApiService.CommentCount(userId);
+                if (response4.IsSuccessStatusCode)
+                {
+                    var content = await response4.Content.ReadAsStringAsync();
+                    ViewBag.CommentCount = content;
+                }
+                else
+                {
+                    ViewBag.CommentCount = "0";
+                }
+
+                return View(posts);
             }
             catch (Exception ex)
             {
                 return View("Error");
             }
         }
+
     }
 }
