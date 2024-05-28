@@ -184,5 +184,36 @@ namespace SoframiPaylas.WebAPI.Controllers
                 return StatusCode(500, "Katılımcı silme işlemi sırasında beklenmedik bir hata oluştuğunda bu hata dönülür.");
             }
         }
+        [HttpGet("get-user-posts")]
+        public async Task<IActionResult> GetPostIdAsync([FromQuery] string postId)
+        {
+            try
+            {
+                var users = await _participantService.GetPostIdAsync(postId);
+                if (users == null || !users.Any())
+                    return NotFound("Belirtilen ID'ye sahip gönderi bulunamadı.");
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Katılımcı getirme işlemi sırasında beklenmedik bir hata oluştuğunda bu hata dönülür.");
+            }
+
+        }
+        [HttpDelete("leave-participant")]
+        public async Task<IActionResult> Leave([FromQuery] string postId, [FromQuery] string userId)
+        {
+            try
+            {
+                var leaveResult = await _participantService.LeaveParticipantAsync(postId, userId);
+                if (!leaveResult)
+                    return NotFound("Belirtilen ID'ye sahip katılımcı bulunamadı.");
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Katılımcı silme işlemi sırasında beklenmedik bir hata oluştuğunda bu hata dönülür.");
+            }
+        }
     }
 }

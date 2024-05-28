@@ -10,4 +10,6 @@ public class Announcement
 
     [FirestoreProperty]
     public Timestamp Timestamp { get; set; }
+    [FirestoreProperty]
+    public string PostId { get; set; }
 }

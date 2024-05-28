@@ -15,5 +15,7 @@ namespace SoframiPaylas.WebUI.Services.Interfaces
         Task<HttpResponseMessage> Confirm(string userId, string postId);
         Task<HttpResponseMessage> Delete(string participantId);
         Task<HttpResponseMessage> GetUserIdPost(string userId);
+        Task<HttpResponseMessage> GetUsersByPostId(string postId);
+        Task<HttpResponseMessage> Leave(string postId, string userId);
     }
 }

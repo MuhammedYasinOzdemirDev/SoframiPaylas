@@ -189,8 +189,25 @@ namespace SoframiPaylas.WebUI.Controllers
                 return Json(new { success = false, message = $"Beklenmedik bir hata oluştu: {ex.Message}" });
             }
         }
+        public async Task<IActionResult> Leave([FromQuery] string postId)
+        {
+            try
+            {
+                var userId = _userService.GetUserId();
+                var response = await _apiservice.Leave(postId, userId);
+                if (!response.IsSuccessStatusCode)
+                {
+                    return Json(new { success = false });
+                }
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Beklenmedik bir hata oluştu: {ex.Message}" });
+            }
 
 
 
+        }
     }
 }

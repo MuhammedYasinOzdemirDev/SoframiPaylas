@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using SoframiPaylas.Application.DTOs;
 using SoframiPaylas.Application.DTOs.Participant;
 using SoframiPaylas.Application.Interfaces;
 using SoframiPaylas.Domain.Entities;
@@ -14,12 +15,13 @@ namespace SoframiPaylas.Application.Services
     {
         private IParticipantRepository _repository;
         private readonly IPostRepository _postRepository;
+        private readonly IMapper _mapper;
 
-        public ParticipantService(IParticipantRepository repository, IPostRepository postRepository)
+        public ParticipantService(IParticipantRepository repository, IPostRepository postRepository, IMapper mapper)
         {
             _repository = repository;
             _postRepository = postRepository;
-
+            _mapper = mapper;
         }
 
         public async Task<bool> AddParticipantAsync(ParticipantDto participantDto)
@@ -88,12 +90,40 @@ namespace SoframiPaylas.Application.Services
         }
         public async Task<bool> DeleteParticipantAsync(string id)
         {
-            return await _repository.DeleteParticipantAsync(id);
+            var result = await _postRepository.RemoveParticipant(id);
+            if (result != null)
+            {
+                var result2 = await _repository.DeleteParticipantAsync(id);
+                return result2;
+            }
+            return false;
         }
         public async Task<List<string>> GetUserIdPost(string userId)
         {
             return await _repository.GetUserIdPost(userId);
         }
+
+        public async Task<IEnumerable<UserDto>> GetPostIdAsync(string postId)
+        {
+            var users = await _repository.GetPostIdAsync(postId);
+
+            return users.Select(u =>
+            {
+                var userDto = _mapper.Map<UserDto>(u.user);
+                userDto.UserID = u.id;
+                return userDto;
+            });
+        }
+
+        public async Task<bool> LeaveParticipantAsync(string postId, string userId)
+        {
+            if (postId == null || userId == null)
+            {
+                return false;
+            }
+            return await _repository.LeaveParticipantAsync(postId, userId);
+        }
+
         public enum ParticipationStatus
         {
             Pending, // Beklemede

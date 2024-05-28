@@ -94,5 +94,23 @@ public class ParticipantApiService : IParticipantApiService
         HttpResponseMessage response = await _httpClient.GetAsync(url.Uri);
         return response;
     }
+    public async Task<HttpResponseMessage> GetUsersByPostId(string postId)
+    {
+        var url = new UriBuilder(_httpClient.BaseAddress + "Participant/get-post-users")
+        {
+            Query = $"postId={postId}"
+        };
+        HttpResponseMessage response = await _httpClient.GetAsync(url.Uri);
+        return response;
+    }
+    public async Task<HttpResponseMessage> Leave(string postId, string userId)
+    {
+        var url = new UriBuilder(_httpClient.BaseAddress + "Participant/leave-participant")
+        {
+            Query = $"postId={postId}&userId={userId}"
+        };
+        HttpResponseMessage response = await _httpClient.DeleteAsync(url.Uri);
+        return response;
+    }
 
 }

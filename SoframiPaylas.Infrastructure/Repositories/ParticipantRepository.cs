@@ -140,6 +140,111 @@ namespace SoframiPaylas.Infrastructure.Repositories
             }, TimeSpan.FromSeconds(20));
 
         }
+        public async Task<List<string>> GetParticipantEmailsByPostIdAsync(string postId)
+        {
+            var participants = new List<string>();
+
+            // Firestore veritabanı bağlantısını alın (db tanımlı olmalı)
+            Query query = db.Collection("Participants").WhereEqualTo("postID", postId);
+            QuerySnapshot snapshot = await query.GetSnapshotAsync();
+
+            var userIds = new List<string>();
+
+            foreach (DocumentSnapshot document in snapshot.Documents)
+            {
+                if (document.Exists)
+                {
+
+                    Participant participant = document.ConvertTo<Participant>();
+                    userIds.Add(participant.UserID);
+                }
+            }
+
+            if (userIds.Any())
+            {
+                var userDocs = db.Collection("Users").WhereIn(FieldPath.DocumentId, userIds);
+                QuerySnapshot userSnapshots = await userDocs.GetSnapshotAsync();
+
+                foreach (DocumentSnapshot userSnapshot in userSnapshots.Documents)
+                {
+                    if (userSnapshot.Exists)
+                    {
+                        string email = userSnapshot.GetValue<string>("email");
+                        if (!string.IsNullOrEmpty(email))
+                        {
+                            participants.Add(email);
+                        }
+                    }
+                }
+            }
+
+            return participants;
+        }
+        public async Task<List<(User user, string id)>> GetPostIdAsync(string postId)
+        {
+            var users = new List<(User user, string id)>();
+
+            // Firestore veritabanı bağlantısını alın (db tanımlı olmalı)
+            Query query = db.Collection("Participants").WhereEqualTo("postID", postId);
+            QuerySnapshot snapshot = await query.GetSnapshotAsync();
+
+            var userIds = new List<string>();
+
+            foreach (DocumentSnapshot document in snapshot.Documents)
+            {
+                if (document.Exists)
+                {
+
+                    Participant participant = document.ConvertTo<Participant>();
+                    userIds.Add(participant.UserID);
+                }
+            }
+
+            if (userIds.Any())
+            {
+                var userDocs = db.Collection("Users").WhereIn(FieldPath.DocumentId, userIds);
+                QuerySnapshot userSnapshots = await userDocs.GetSnapshotAsync();
+
+                foreach (DocumentSnapshot userSnapshot in userSnapshots.Documents)
+                {
+                    if (userSnapshot.Exists)
+                    {
+                        User user = userSnapshot.ConvertTo<User>();
+                        users.Add((user, userSnapshot.Id));
+                    }
+                }
+            }
+
+            return users;
+        }
+        public async Task<bool> LeaveParticipantAsync(string postId, string userId)
+        {
+            return await firebaseService.ExecuteFirestoreOperationAsync(async () =>
+            {
+
+
+                Query query = db.Collection("Participants")
+                                .WhereEqualTo("postID", postId)
+                                .WhereEqualTo("userID", userId);
+
+                QuerySnapshot snapshot = await query.GetSnapshotAsync();
+
+                if (snapshot.Count == 0)
+                {
+                    // Belirtilen kriterlere uygun katılımcı bulunamadı
+                    return false;
+                }
+
+                // Belge referansını al ve sil
+                foreach (DocumentSnapshot documentSnapshot in snapshot.Documents)
+                {
+                    DocumentReference docRef = documentSnapshot.Reference;
+                    await docRef.DeleteAsync();
+                }
+
+                return true;  // Silme işlemi başarılı
+            }, TimeSpan.FromSeconds(20));
+        }
 
     }
 }

@@ -34,7 +34,12 @@ namespace SoframiPaylas.Application.Services
         public async Task<IEnumerable<UserDto>> GetAllUserAsync()
         {
             var users = await _userRepository.GetAllUserAsync();
-            return users.Select(u => _mapper.Map<UserDto>(u));
+            return users.Select(u =>
+            {
+                var dto = _mapper.Map<UserDto>(u.user);
+                dto.UserID = u.id;
+                return dto;
+            });
         }
         public async Task<UserDto> GetUserByIdAsync(string userId)
         {

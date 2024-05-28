@@ -71,6 +71,8 @@ namespace SoframiPaylas.Application.Mappings
             CreateMap<MessageStore, MessageDto>()
         .ForMember(dest => dest.Timestamp, opt => opt.MapFrom(src => src.Timestamp.ToDateTime()));
             CreateMap<CreateMessageDto, MessageStore>();
+
+
         }
     }
 }

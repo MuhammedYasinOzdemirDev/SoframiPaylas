@@ -13,5 +13,8 @@ namespace SoframiPaylas.Infrastructure.Interfaces
         Task<int> CheckRequestStatusAsync(string postId, string userId);
         Task<bool> DeleteParticipantAsync(string id);
         Task<List<string>> GetUserIdPost(string userId);
+        Task<List<string>> GetParticipantEmailsByPostIdAsync(string postId);
+        Task<List<(User user, string id)>> GetPostIdAsync(string postId);
+        Task<bool> LeaveParticipantAsync(string postId, string userId);
     }
 }
