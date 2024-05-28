@@ -40,6 +40,7 @@ var isAuthenticated = HttpContextAccessor.HttpContext.User.Identity.IsAuthentica
                     <p><strong>Maksimum Katılımcı Sayısı:</strong> @Model.MaxParticipants</p>
                     <p><strong>Katılımcılar:</strong> @Model.Participants.Count / @Model.MaxParticipants</p>
                 </div>
+                @if(Model.PostStatus){
                 <div class="text-center mt-4" id="content">
 
                     <button id="participateButton" class="btn-join">Katıl</button>
@@ -48,7 +49,7 @@ var isAuthenticated = HttpContextAccessor.HttpContext.User.Identity.IsAuthentica
                         <button id="loginButton" class="btn-join">Giriş Yap</button>
                     </div>
 
-                </div>
+                </div>}
             </div>
         </div>
         <div class="col-md-4">
@@ -94,7 +95,7 @@ var isAuthenticated = HttpContextAccessor.HttpContext.User.Identity.IsAuthentica
         <ul id="comments-list" class="list-group mb-3">
             <!-- Yorumlar burada gösterilecek -->
         </ul>
-
+        @if(Model.PostStatus){
         @if (isAuthenticated)
         {
         <div class="comment-input mb-3">
@@ -105,7 +106,7 @@ var isAuthenticated = HttpContextAccessor.HttpContext.User.Identity.IsAuthentica
         else
         {
         <p>Lütfen yorum yapmak için <a href="@Url.Action(" Login", "Auth" )">giriş yapın</a>.</p>
-        }
+        }}
     </div>
 
 </div>

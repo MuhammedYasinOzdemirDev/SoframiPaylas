@@ -17,19 +17,22 @@
         <p id="post-time"><strong>Saat:</strong> @Model.Time</p>
         <p id="max-participants"><strong>Katılımcılar:</strong> @Model.Participants.Count /
             @Model.MaxParticipants</p>
-        <button id="complete-post-btn" class="btn btn-primary" onclick="leave('@Model.PostId')">Ayrıl</button>
+        @if(Model.PostStatus){
+        <button id="complete-post-btn" class="btn btn-primary" onclick="leave('@Model.PostId')">Ayrıl</button>}
     </div>
 
     <div class="right-panel">
+        @if(Model.PostStatus){
         <div class="message-section">
             <h2>Paylaşım Sahibine Mesaj Yaz</h2>
             <ul id="group-message-list"></ul>
+
             <div class="message-input">
                 <input type="text" id="group-message-input" placeholder="Mesajınızı yazın...">
                 <button id="send-group-message-btn" class="btn btn-secondary"
                     onclick="sendMessage('@Model.HostID', '@ViewBag.UserId')">Gönder</button>
             </div>
-        </div>
+        </div>}
         <div class="menu mt-3">
             <h2>Menü</h2>
             <ul class="list-group">
@@ -56,11 +59,11 @@
 
     <div class="comments-section right-panel">
         <h2>Yorumlar</h2>
-
+        @if(Model.PostStatus){
         <div class="comment-input mb-3">
             <input type="text" id="comment-input" placeholder="Yorumunuzu yazın...">
             <button id="send-comment-btn" class="btn btn-secondary" onclick="CreateComments()">Gönder</button>
-        </div>
+        </div>}
         <ul id="comments-list"></ul>
     </div>
 </div>

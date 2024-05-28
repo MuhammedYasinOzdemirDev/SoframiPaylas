@@ -300,5 +300,26 @@ namespace SoframiPaylas.Infrastructure.Repositories
                 return true;
             }, TimeSpan.FromSeconds(20));
         }
+        public async Task<bool> EndPost(string postId)
+        {
+            return await firebaseService.ExecuteFirestoreOperationAsync(async () =>
+            {
+                DocumentReference postRef = db.Collection("Posts").Document(postId);
+                DocumentSnapshot snapshot = await postRef.GetSnapshotAsync();
+
+                if (!snapshot.Exists)
+                {
+                    return false;
+                }
+
+                Dictionary<string, object> updates = new Dictionary<string, object>
+            {
+            { "eventStatus", false }
+            };
+
+                await postRef.UpdateAsync(updates);
+                return true;
+            }, TimeSpan.FromSeconds(20));
+        }
     }
 }

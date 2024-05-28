@@ -336,5 +336,16 @@ namespace SoframiPaylas.WebUI.Controllers
             }
             return Json(new { success = false });
         }
+        [HttpPut]
+        public async Task<IActionResult> EndPost([FromQuery] string postId)
+        {
+            var response = await _apiService.EndPost(postId);
+            if (response.IsSuccessStatusCode)
+            {
+                return Json(new { success = true });
+            }
+            return Json(new { success = false });
+        }
     }
+
 }

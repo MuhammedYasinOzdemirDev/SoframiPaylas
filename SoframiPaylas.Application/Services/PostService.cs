@@ -92,6 +92,13 @@ namespace SoframiPaylas.Application.Services
                 return postDto;
             });
         }
+
+        public async Task<bool> EndPost(string postId)
+        {
+            if (postId == null)
+                return false;
+            return await _postRepository.EndPost(postId);
+        }
     }
 }
 

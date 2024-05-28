@@ -39,7 +39,21 @@
                         <h5 class="card-title mb-0">Son Eklenen Postlar</h5>
                     </div>
                     <div class="card-body">
-                        @foreach (var post in Model){
+                        @foreach (var post in Model.Where(p => p.PostStatus).Take(5)){
+                        <div class="mb-3">
+                            <h6 class="mb-0">
+                                <a href="">@post.Title</a>
+                            </h6>
+                        </div>
+                        }
+                    </div>
+                </div>
+                <div class="card mb-3 card-recent-posts">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Geçmiş Postlar</h5>
+                    </div>
+                    <div class="card-body">
+                        @foreach (var post in Model.Where(p => !p.PostStatus).Take(5)){
                         <div class="mb-3">
                             <h6 class="mb-0">
                                 <a href="">@post.Title</a>
@@ -152,7 +166,7 @@
     </div>
     <style>
         .container {
-            max-width: 1200px;
+            max-width: 1250px;
         }
 
         .custom-jumbotron {

@@ -191,5 +191,14 @@ namespace SoframiPaylas.WebUI.Services
             HttpResponseMessage response = await _httpClient.GetAsync(url.Uri);
             return response;
         }
+        public async Task<HttpResponseMessage> EndPost(string postId)
+        {
+            var url = new UriBuilder(_httpClient.BaseAddress + "Post/end-post")
+            {
+                Query = $"postId={postId}"
+            };
+            HttpResponseMessage response = await _httpClient.PutAsync(url.Uri, null);
+            return response;
+        }
     }
 }

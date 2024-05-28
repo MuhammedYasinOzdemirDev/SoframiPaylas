@@ -23,5 +23,6 @@ namespace SoframiPaylas.WebUI.Services.Interfaces
         Task<HttpResponseMessage> Duyuru(string postId, string content);
         Task<HttpResponseMessage> Message(MessageViewModel messageViewModel);
         Task<HttpResponseMessage> DuyurulariGetir(string postId);
+        Task<HttpResponseMessage> EndPost(string postId);
     }
 }

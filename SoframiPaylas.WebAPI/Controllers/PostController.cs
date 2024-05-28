@@ -318,6 +318,21 @@ namespace SoframiPaylas.WebAPI.Controllers
                 return StatusCode(500, "Gönderi bilgisi getirilirken bir hata meydana geldi.");
             }
         }
+        [HttpPut("end-post")]
+        public async Task<IActionResult> EndPost(string postId)
+        {
+            try
+            {
+                var endResult = await _postservice.EndPost(postId);
+                if (!endResult)
+                    return NotFound("Belirtilen ID'ye sahip gönderi bulunamadı.");
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Gönderi güncelleme işlemi sırasında beklenmedik bir hata oluştuğunda bu hata dönülür.");
+            }
+        }
 
 
     }
