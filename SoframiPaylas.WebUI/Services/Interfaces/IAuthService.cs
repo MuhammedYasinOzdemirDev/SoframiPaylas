@@ -13,5 +13,6 @@ namespace SoframiPaylas.WebUI.Services.Interfaces
         Task<HttpResponseMessage> LoginAsync(LoginViewModel model);
         Task<FirebaseUser> VerifyUser(string IdToken);
         Task<HttpResponseMessage> ChangePasswordAsync(ChangePasswordRequest model);
+        Task<HttpResponseMessage> CloseAccount(string userId);
     }
 }

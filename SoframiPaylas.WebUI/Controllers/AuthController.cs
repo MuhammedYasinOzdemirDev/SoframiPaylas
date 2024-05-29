@@ -243,5 +243,22 @@ namespace SoframiPaylas.WebUI.Controllers
             }
             return Json(new { message = "Please enter your current password and new password", success = false });
         }
+        [HttpPost]
+        public async Task<IActionResult> CloseAccount()
+        {
+            var userId = _userService.GetUserId();
+            var response = await _authService.CloseAccount(userId);
+            if (response.IsSuccessStatusCode)
+            {
+                HttpContext.Response.Cookies.Delete("AuthToken");
+                return Json(new { success = true, message = "Hesabınız başarıyla kapatıldı." });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Hesabınız kapatılırken bir hata oluştu." });
+            }
+            ;
+
+        }
     }
 }

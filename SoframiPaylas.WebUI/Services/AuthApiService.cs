@@ -62,5 +62,14 @@ namespace SoframiPaylas.WebUI.Services
             HttpResponseMessage response = await _httpClient.PostAsJsonAsync(url, passwordDto);
             return response;
         }
+        public async Task<HttpResponseMessage> CloseAccount(string userId)
+        {
+            var url = new UriBuilder(_httpClient.BaseAddress + "User/user")
+            {
+                Query = $"userId={userId}"
+            };
+            var response = await _httpClient.DeleteAsync(url.Uri);
+            return response;
+        }
     }
 }

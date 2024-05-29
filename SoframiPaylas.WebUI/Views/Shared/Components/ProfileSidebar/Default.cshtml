@@ -9,17 +9,16 @@
         </div>
         <ul class="profile-menu">
 
-                <li class="profile-menu-item @(Model.ActivePage == " Profile" ? "active" : "" )"><a
-                                href="/user/edit-profile/">Profil</a></li>
-                <li class="profile-menu-item @(Model.ActivePage == " EditPhoto" ? "active" : "" )"><a
-                                href="/user/edit-photo/">Fotoğraf</a></li>
-                <li class="profile-menu-item @(Model.ActivePage == " EditAccount" ? "active" : "" )"><a
-                                href="/user/edit-account/">Hesap Güvenliği</a></li>
-                <li class="profile-menu-item @(Model.ActivePage == " PaymentMethods" ? "active" : "" )"><a
-                                href="/user/edit-payment-methods/">Ödeme yöntemleri</a></li>
-                <li class="profile-menu-item @(Model.ActivePage == " Notifications" ? "active" : "" )"><a
-                                href="/user/edit-notifications/">Bildirimler</a></li>
-                <li class="profile-menu-item @(Model.ActivePage == " CloseAccount" ? "active" : "" )"><a
-                                href="/user/close-account/">Hesabı kapat</a></li>
+                <li class="profile-menu-item  @(Model.ActivePage==" Profile".Trim() ? " active" : "" )"><a
+                                asp-action="Profile">Profil</a></li>
+                <li class="profile-menu-item @(Model.ActivePage == " Security".Trim() ? "active" : "" )"><a
+                                asp-action="Security">Hesap Güvenliği</a></li>
+                <li class="profile-menu-item @(Model.ActivePage == " Message".Trim() ? "active" : "" )"><a
+                                asp-action="Message">Mesajlar</a></li>
+                <li class="profile-menu-item @(Model.ActivePage == " Announcement".Trim() ? "active" : "" )"><a
+                                asp-action="Announcement">Duyurular</a></li>
+                <li class="profile-menu-item @(Model.ActivePage == " CloseAccount".Trim() ? "active" : "" )"><a
+                                href="javascript:void(0);" id="closeAccountLink">Hesabı kapat</a></li>
+
         </ul>
 </div>

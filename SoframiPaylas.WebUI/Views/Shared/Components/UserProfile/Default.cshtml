@@ -5,13 +5,13 @@ var userName = HttpContextAccessor.HttpContext.User.Identity.Name;
 var userProfileImageUrl = Model;
 }
 <li class="nav-item d-flex align-items-center ">
-    <a class="nav-link " href="/Profile">
+    <a class="nav-link " href="/User/Profile">
         <img src="@userProfileImageUrl" class="navbar-profile-image" alt="Profile Image">
         <span class="ml-2">@userName</span>
     </a>
 </li>
 <li class="nav-item d-flex align-items-center">
     <form asp-action="Logout" asp-controller="Auth" method="post">
-        <button type="submit" class="nav-link btn btn-link">Logout</button>
+        <button type="submit" class="nav-link btn btn-link">Çıkış Yap</button>
     </form>
 </li>
