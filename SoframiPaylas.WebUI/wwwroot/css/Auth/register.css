@@ -1,0 +1,98 @@
+body {
+	font-family: "Helvetica Neue", Arial, sans-serif;
+	/* Modern bir yazı tipi */
+	background-color: #f9f9f9;
+	/* Daha açık bir arka plan */
+	color: #333;
+	/* Metin rengi */
+	line-height: 1.6;
+	/* Satır yüksekliği */
+}
+
+.text-danger {
+	color: #e74c3c;
+	/* Daha canlı bir kırmızı renk */
+}
+
+input.is-invalid,
+input.is-valid {
+	border-width: 2px;
+	/* Kalınlaştırılmış sınır */
+	transition: border 0.3s;
+	/* Yumuşak geçiş efekti */
+}
+
+input.is-invalid {
+	border-color: #e74c3c;
+	/* Hata durumunda sınır rengi */
+}
+
+input.is-valid {
+	border-color: #2ecc71;
+	/* Doğrulama geçtiğinde sınır rengi */
+}
+
+.register-container {
+	max-width: 800px;
+
+	/* Maksimum genişlik */
+	margin: 40px auto;
+	/* Otomatik merkezleme */
+	padding: 20px;
+	background-color: #ffffff;
+	/* Beyaz arka plan */
+	border-radius: 8px;
+	/* Köşeleri yuvarlat */
+	box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+	/* Daha belirgin bir gölge */
+}
+
+.register-title {
+	margin-bottom: 20px;
+	/* Başlık altı boşluk */
+	text-align: center;
+	color: #333;
+	/* Metin rengi */
+}
+
+.form-group {
+	margin-bottom: 15px;
+	/* Form grupları arası boşluk */
+}
+
+.form-control {
+	display: block;
+	width: 100%;
+	padding: 10px;
+	font-size: 16px;
+	border: 1px solid #ccc;
+	/* Sınır kalınlığı ve rengi */
+	border-radius: 4px;
+	/* Köşeleri yuvarlat */
+	transition: all 0.3s;
+	/* Tüm geçişler için animasyon */
+}
+
+.form-control:focus {
+	border-color: #3498db;
+	/* Fokus durumunda sınır rengi */
+	box-shadow: 0 0 8px rgba(52, 152, 219, 0.5);
+	/* Fokus durumunda gölge efekti */
+}
+
+.btn-primary {
+	padding: 10px 20px;
+	background-color: #3498db;
+	/* Buton rengi */
+	color: white;
+	border-radius: 5px;
+	/* Köşeleri yuvarlat */
+	border: none;
+	cursor: pointer;
+	transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+	background-color: #2980b9;
+	/* Buton hover durumunda rengi */
+}

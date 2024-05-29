@@ -1,0 +1,50 @@
+/* İlerleme çubuğunun ana renk ve genişlik ayarları */
+#nprogress .bar {
+	background: #29d;
+	/* Mavi yerine farklı bir renk belirleyin */
+	height: 4px;
+	/* Çubuğun kalınlığını değiştirin */
+}
+
+/* Dönen çarkın (spinner) rengini değiştir */
+#nprogress .spinner-icon {
+	border-top-color: #29d;
+	/* Üst rengini değiştir */
+	border-left-color: #29d;
+	/* Sol rengini değiştir */
+}
+
+/* İlerleme çubuğunu sayfanın altına yerleştir */
+#nprogress .bar {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+}
+
+/* Spinner'ı sağ alt köşeye taşı */
+#nprogress .spinner {
+	top: auto;
+	bottom: 10px;
+	right: 10px;
+}
+
+/* Daha yumuşak geçişler için animasyon hızını ayarlayın */
+#nprogress .bar {
+	transition: all 0.4s ease;
+}
+
+/* Spinner için dönme animasyonunu özelleştir */
+#nprogress .spinner-icon {
+	animation: spinner 400ms linear infinite;
+}
+
+/* Çubuk için gölge veya parlaklık efekti ekleme */
+#nprogress .bar {
+	box-shadow: 0 0 10px #29d, 0 0 5px #29d;
+	/* Parlaklık efekti */
+}
+
+/* İlerleme çubuğu için gradient renk kullanımı */
+#nprogress .bar {
+	background: linear-gradient(to right, #ff6a00, #ee0979);
+}

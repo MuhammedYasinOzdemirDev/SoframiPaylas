@@ -1,14 +1,77 @@
 /* site.css */
 
 body {
-	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-	margin: 0;
 	padding-top: 12px; /* Navbar'ın altında yeterli boşluk sağlar */
 	padding-bottom: 72px;
-	background: #f4f7f6; /* Genel arkaplan rengi */
-	color: #5a5a5a; /* Genel yazı rengi */
+
+	background-color: #f8f9fa !important;
+	color: #343a40;
+	font-family: "Arial", sans-serif;
 }
 
+.navbar {
+	background-color: #ffffff !important;
+}
+
+.navbar-brand,
+.navbar-nav .nav-link {
+	color: #343a40 !important;
+}
+
+.navbar-nav .nav-link:hover {
+	color: #007bff !important;
+}
+
+.navbar-toggler {
+	border-color: #007bff;
+}
+
+.navbar-toggler-icon {
+	background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(0, 123, 255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+.nav-link.btn {
+	text-decoration: none !important;
+	padding: 5px 15px;
+	border-radius: 25px;
+	transition: background-color 0.3s, color 0.3s;
+}
+
+.nav-link.btn-outline-primary {
+	border-color: #007bff;
+	color: #007bff !important;
+}
+
+.nav-link.btn-outline-primary:hover {
+	background-color: #007bff;
+	color: #fff !important;
+}
+
+.nav-link.btn-outline-success {
+	border-color: #28a745;
+	color: #28a745 !important;
+}
+
+.nav-link.btn-outline-success:hover {
+	background-color: #28a745;
+	color: #fff !important;
+}
+
+.navbar-profile-image {
+	width: 35px;
+	height: 35px;
+	border-radius: 50%;
+	object-fit: cover;
+	margin-right: 8px;
+	border: 2px solid #fff;
+}
+
+footer {
+	background-color: #343a40;
+	color: #ffffff;
+	padding: 20px;
+	text-align: center;
+}
 /* İçerik kartları */
 .card {
 	margin-bottom: 1.5rem; /* Kartlar arası boşluk */
@@ -35,7 +98,6 @@ body {
 
 /* Footer özelleştirmeleri */
 .footer {
-	background-color: #e9ecef;
 	padding: 1rem 0;
 	font-size: 0.9rem;
 	text-align: center;
@@ -43,8 +105,29 @@ body {
 	bottom: 0;
 	left: 0;
 	width: 100%;
+	background-color: #343a40 !important;
 }
 
 .footer span.text-muted {
-	color: #6c757d;
+	color: #ffffff !important;
+}
+
+/* Genel stil tanımları */
+p {
+	font-family: "Arial", sans-serif;
+	/* Yazı tipi */
+	line-height: 1.6;
+	/* Satır yüksekliği */
+	margin-bottom: 10px;
+	/* Alt boşluk */
+	color: #333;
+	/* Yazı rengi */
+}
+
+/* Başlık ve vurgulu metin stilini tanımlayın */
+p strong {
+	color: #000;
+	/* Kalın metin rengi */
+	font-weight: bold;
+	/* Kalın yazı tipi */
 }

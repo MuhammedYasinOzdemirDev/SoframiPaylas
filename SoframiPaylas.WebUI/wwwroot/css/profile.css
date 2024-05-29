@@ -1,0 +1,266 @@
+.profile-container {
+	display: flex;
+	margin: 20px auto;
+	max-width: 1200px;
+	width: 100%;
+	background-color: #fff;
+	border-radius: 8px;
+	box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+	overflow: hidden;
+}
+
+/* Kenar Çubuğu */
+.profile-sidebar {
+	width: 300px;
+	background-color: #0056b3;
+	color: #fff;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 20px;
+}
+
+/* İçerik Alanı */
+.profile-content {
+	flex-grow: 1;
+	padding: 30px;
+	/* Increased padding for better spacing */
+}
+
+.profile-card {
+	background: #fff;
+	border-radius: 8px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	margin-bottom: 20px;
+}
+
+.profile-card-header {
+	background-color: #0056b3;
+	color: #fff;
+	padding: 20px;
+	/* Increased padding for better spacing */
+	font-size: 20px;
+	/* Font size adjusted for better readability */
+	font-weight: bold;
+	text-align: center;
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
+}
+
+.profile-card-body {
+	padding: 20px;
+}
+/* Ekstil ve Geçişler */
+.profile-card:hover {
+	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.profile-card-header:hover {
+	background-color: #00408a;
+}
+
+.form-control:hover {
+	border-color: #00408a;
+}
+
+/* Butonlar */
+.btn-primary:active {
+	background-color: #003d82;
+	box-shadow: 0 2px 4px rgba(0, 64, 138, 0.2);
+}
+
+/* Hover ve Focus Durumları */
+.profile-card:hover .profile-card-header {
+	background-color: #00408a;
+}
+.profile-avatar-container {
+	text-align: center;
+	position: relative;
+}
+
+.profile-avatar {
+	width: 100px;
+	height: 100px;
+	border-radius: 50%;
+	border: 3px solid #fff;
+	margin-bottom: 10px;
+	transition: transform 0.3s;
+}
+
+.profile-avatar:hover {
+	transform: scale(1.1);
+}
+
+.profile-avatar-link {
+	display: inline-block;
+	text-decoration: none;
+	color: inherit;
+}
+
+.upload-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.current-avatar-container {
+	text-align: center;
+	margin-top: 10px;
+}
+
+.current-avatar {
+	width: 100px;
+	height: 100px;
+	border-radius: 50%;
+	border: 3px solid #fff;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.dropzone {
+	border: 2px dashed #007bff;
+	border-radius: 10px;
+	background: #f8f9fa;
+	padding: 20px;
+	width: 100%;
+}
+
+.dropzone .dz-message {
+	font-size: 18px;
+	font-weight: bold;
+	color: #007bff;
+}
+
+.swal2-popup .swal2-title {
+	font-size: 24px;
+}
+
+.swal2-popup .swal2-actions button {
+	font-size: 16px;
+	padding: 10px 20px;
+}
+
+.profile-avatar-container {
+	text-align: center;
+	position: relative;
+}
+
+.profile-avatar {
+	width: 100px;
+	height: 100px;
+	border-radius: 50%;
+	border: 3px solid #fff;
+	margin-bottom: 10px;
+	transition: transform 0.3s;
+}
+
+.profile-avatar:hover {
+	transform: scale(1.1);
+}
+
+.profile-avatar-link {
+	display: inline-block;
+	text-decoration: none;
+	color: inherit;
+}
+
+.profile-name {
+	font-size: 20px;
+	/* Font size adjusted for better readability */
+	font-weight: bold;
+	margin: 10px 0;
+}
+
+.profile-menu {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	width: 100%;
+}
+
+.profile-menu-item {
+	width: 100%;
+	text-align: center;
+	padding: 8px 0;
+	/* Increased padding for better spacing */
+	transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.profile-menu-item a {
+	color: #fff;
+	text-decoration: none;
+	display: block;
+	width: 100%;
+	padding: 12px 0;
+	/* Increased padding for better spacing */
+}
+
+.profile-menu-item a:hover {
+	background-color: #00408a;
+}
+
+.profile-menu-item.active a {
+	background-color: #003d82;
+}
+
+.profile-card-header2 {
+	background-color: #0056b3;
+	color: #fff;
+	padding: 12px;
+	/* Increased padding for better spacing */
+	font-size: 20px;
+	/* Font size adjusted for better readability */
+	font-weight: bold;
+	text-align: center;
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
+}
+
+.form-group {
+	margin-bottom: 20px;
+	/* Increased margin for better spacing */
+}
+
+.form-control {
+	width: 100%;
+	padding: 15px;
+	/* Increased padding for better usability */
+	font-size: 16px;
+	/* Font size adjusted for better readability */
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-control:focus {
+	border-color: #0056b3;
+	box-shadow: 0 0 5px rgba(0, 86, 179, 0.2);
+}
+
+.btn-primary {
+	background-color: #0056b3;
+	color: #fff;
+	border: none;
+	padding: 12px 25px;
+	/* Increased padding for better usability */
+	font-size: 16px;
+	/* Font size adjusted for better readability */
+	border-radius: 4px;
+	cursor: pointer;
+	transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-primary:hover {
+	background-color: #00408a;
+	box-shadow: 0 4px 8px rgba(0, 64, 138, 0.2);
+}
+
+.form-row {
+	display: flex;
+	flex-wrap: wrap;
+	margin: -10px;
+}
+
+.form-row .form-group {
+	flex: 1;
+	padding: 0 10px;
+}
