@@ -1,0 +1,114 @@
+@model IEnumerable<AnnouncementView>
+    @{
+    ViewBag.Title = "Duyurular";
+    ViewBag.ActivePage = "Announcement";
+    }
+    <link rel="stylesheet" href="~/css/profile.css">
+    <div class="container mt-3">
+        <div id="alertDiv" class="alert alert-danger" style="display: none;"></div>
+    </div>
+    <div class="profile-container">
+
+        @await Component.InvokeAsync("ProfileSidebar", new { profilePicture = ViewBag.ImageUrl, userName =
+        ViewBag.UserName,
+        activePage = ViewBag.ActivePage })
+        <div class="profile-content">
+
+            <div class="profile-card">
+                <div class="profile-card-header">Duyurular</div>
+                <div class="profile-card-body">
+
+                    <div class="announcement-list">
+                        @foreach (var announcement in Model){
+                        <div class="announcement-card">
+                            <div class="announcement-header">
+
+                                <span class="announcement-date">@announcement.Timestamp.ToString("dd MMM yyyy")</span>
+                            </div>
+                            <div class="announcement-body">
+                                <p>@announcement.Content</p>
+                            </div>
+                        </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    @section Scripts {
+    <script>
+        // Eğer gerekli ise JavaScript kodları burada yer alabilir
+    </script>
+    }
+    <style>
+        .profile-container {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .profile-content {
+            flex: 1;
+            margin-left: 20px;
+        }
+
+        .profile-card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .profile-card-header {
+
+            border-bottom: 1px solid #ddd;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .profile-card-body {
+            padding: 15px;
+        }
+
+        .announcement-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .announcement-card {
+            background-color: #fafafa;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            padding: 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        .announcement-card:hover {
+            background-color: #f0f0f0;
+        }
+
+        .announcement-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .announcement-header h5 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .announcement-date {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .announcement-body p {
+            margin: 10px 0 0;
+            font-size: 14px;
+        }
+    </style>

@@ -5,14 +5,14 @@
     <div id="alertDiv" class="alert alert-danger" style="display: none;"></div>
 </div>
 @{
-ViewBag.Title = "Profil";
+ViewBag.Title = "Profile";
 
 ViewBag.ActivePage = "Profile";
 }
 <div class="profile-container">
 
     @await Component.InvokeAsync("ProfileSidebar", new { profilePicture = Model.ProfilePicture, userName =
-    Model.UserName, activePage = ViewBag.ActivePage })
+    Model.UserName, ActivePage = ViewBag.ActivePage })
     <div class="profile-content">
         <div class="profile-card">
             <div class="profile-card-header">Account Details</div>

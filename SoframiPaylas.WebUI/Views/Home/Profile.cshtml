@@ -1,0 +1,207 @@
+@model ProfileViewModel
+@using System.Globalization
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <img src="@Model.ProfilePicture" class="card-img-top" alt="Profile Picture">
+                <div class="card-body">
+                    <h4 class="card-title">@Model.Name @Model.Surname</h4>
+                    <h5 class="card-subtitle text-muted"></h5>
+                    <p class="card-text">@Model.About</p>
+                    <p class="card-text"><strong>Email:</strong> @Model.Email</p>
+                    <p class="card-text"><strong>Telefon:</strong> @Model.Phone</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="btn-group mb-3" role="group" aria-label="Event Tabs">
+                <button type="button" class="btn btn-primary active" onclick="showTab('current')">Katıldığı
+                    Etkinlikler</button>
+                <button type="button" class="btn btn-secondary" onclick="showTab('past')">Geçmiş Etkinlikler</button>
+            </div>
+            <div id="current" class="tab-content active">
+                <h2>Katıldığı Etkinlikler</h2>
+                <div class="list-group mb-4">
+                    @foreach (var post in ViewBag.CurrentPosts)
+                    {
+                    <a asp-action="Details" asp-controller="Home" asp-route-postId="@post.PostId"
+                        class="list-group-item list-group-item-action">
+                        <h5 class="mb-1">@post.Title</h5>
+                        <p class="card-text"><small class="text-muted"><strong>Tarih:</strong>
+                                @{
+                                DateTime date;
+                                string formattedDate = string.Empty;
+                                if (DateTime.TryParse(post.FormattedDate, out date))
+                                {
+                                formattedDate = date.ToString("dd MMMM yyyy", new CultureInfo("tr-TR"));
+                                }
+                                }
+                                @formattedDate</small></p>
+
+                        <p class="card-text">
+                            <small class="text-muted"><strong>Saat:</strong>
+                                @{
+                                TimeSpan time;
+                                string formattedTime = string.Empty;
+                                if (TimeSpan.TryParse(post.Time, out time))
+                                {
+                                formattedTime = time.ToString(@"hh\:mm");
+                                }
+                                }
+                                @formattedTime</small>
+                        </p>
+
+                        <p class="card-text">
+                            <small class="text-muted"><strong>Katılımcılar:</strong> @post.Participants.Count /
+                                @post.MaxParticipants</small>
+                        </p>
+                    </a>
+                    }
+                </div>
+            </div>
+            <div id="past" class="tab-content">
+                <h2>Geçmiş Etkinlikler</h2>
+                <div class="list-group">
+                    @foreach (var post in ViewBag.PastPosts)
+                    {
+                    <a asp-action="Details" asp-controller="Home" asp-route-postId="@post.PostId"
+                        class="list-group-item list-group-item-action">
+                        <h5 class="mb-3">@post.Title</h5>
+                        <p class="card-text"><small class="text-muted"><strong>Tarih:</strong>
+                                @{
+                                DateTime date;
+                                string formattedDate = string.Empty;
+                                if (DateTime.TryParse(post.FormattedDate, out date))
+                                {
+                                formattedDate = date.ToString("dd MMMM yyyy", new CultureInfo("tr-TR"));
+                                }
+                                }
+                                @formattedDate</small></p>
+
+                        <p class="card-text">
+                            <small class="text-muted"><strong>Saat:</strong>
+                                @{
+                                TimeSpan time;
+                                string formattedTime = string.Empty;
+                                if (TimeSpan.TryParse(post.Time, out time))
+                                {
+                                formattedTime = time.ToString(@"hh\:mm");
+                                }
+                                }
+                                @formattedTime</small>
+                        </p>
+
+                        <p class="card-text">
+                            <small class="text-muted"><strong>Katılımcılar:</strong> @post.Participants.Count /
+                                @post.MaxParticipants</small>
+                        </p>
+                    </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    function showTab(tabId) {
+        var tabs = document.getElementsByClassName('tab-content');
+        for (var i = 0; i < tabs.length; i++) {
+            tabs[i].style.display = 'none';
+        }
+        document.getElementById(tabId).style.display = 'block';
+
+        var buttons = document.querySelectorAll('.btn-group .btn');
+        buttons.forEach(function (btn) {
+            btn.classList.remove('active');
+        });
+        document.querySelector('.btn-group .btn[data-tab="' + tabId + '"]').classList.add('active');
+    }
+
+    // Show the default tab
+    document.addEventListener("DOMContentLoaded", function () {
+        showTab('current');
+    });
+</script>
+}
+
+<style>
+    .container {
+        max-width: 1200px;
+    }
+
+    .card {
+        margin-bottom: 20px;
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-img-top {
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
+    .card-body {
+        text-align: center;
+    }
+
+    .card-title {
+        margin-bottom: 0.5rem;
+        font-size: 1.5rem;
+    }
+
+    .card-subtitle {
+        margin-bottom: 1rem;
+    }
+
+    .card-text {
+        font-size: 1rem;
+        color: #555;
+    }
+
+    .btn-group .btn {
+        border-radius: 0;
+    }
+
+    .btn-group .btn:first-child {
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+    }
+
+    .btn-group .btn:last-child {
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+
+    .list-group-item {
+        margin-bottom: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+
+    .list-group-item:hover {
+        background-color: #f7f7f7;
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    .btn-group .btn.active {
+        background-color: #007bff;
+        color: white;
+    }
+
+    h2 {
+        margin-bottom: 20px;
+        font-size: 1.75rem;
+    }
+</style>

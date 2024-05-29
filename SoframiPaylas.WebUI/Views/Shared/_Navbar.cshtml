@@ -4,34 +4,38 @@ var isAuthenticated = HttpContextAccessor.HttpContext.User.Identity.IsAuthentica
 }
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-    <a class="navbar-brand" href="#"><i class="bi bi-bing"></i> Sofranı Paylaş</a>
+    <a class="navbar-brand" href="/"><i class="bi bi-bing"></i> Sofranı Paylaş</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
         <ul class="navbar-nav mx-auto">
-            <li class="nav-item active d-flex align-items-center">
-                <a class="nav-link" href="/">Home</a>
+            <li class="nav-item d-flex align-items-center">
+                <a class="nav-link" href="/">Anasayfa</a>
+            </li>
+            @if(isAuthenticated){
+            <li class="nav-item d-flex align-items-center">
+                <a class="nav-link" asp-controller="User" asp-action="Manage">Katıldığım Etkinlikler</a>
             </li>
             <li class="nav-item d-flex align-items-center">
-                <a class="nav-link" href="/Post/List">Posts</a>
+                <a class="nav-link" asp-controller="Post" asp-action="Manage">Paylaşımlarım</a>
+            </li>}
+            <li class="nav-item d-flex align-items-center">
+                <a class="nav-link" href="/Home/About">Hakkımızda</a>
             </li>
             <li class="nav-item d-flex align-items-center">
-                <a class="nav-link" href="#">About</a>
-            </li>
-            <li class="nav-item d-flex align-items-center">
-                <a class="nav-link" href="#">Contact</a>
+                <a class="nav-link" href="/Home/Contact">İletişim</a>
             </li>
         </ul>
         <ul class="navbar-nav">
             @if (!isAuthenticated)
             {
             <li class="nav-item d-flex align-items-center">
-                <a class="nav-link btn btn-outline-primary" asp-controller="Auth" asp-action="Register">Register</a>
+                <a class="nav-link btn btn-outline-primary" asp-controller="Auth" asp-action="Register">Kayıt Ol</a>
             </li>
             <li class="nav-item d-flex align-items-center">
-                <a class="nav-link btn btn-outline-success ml-2" asp-controller="Auth" asp-action="Login">Login</a>
+                <a class="nav-link btn btn-outline-success ml-2" asp-controller="Auth" asp-action="Login">Giriş Yap</a>
             </li>
             }
             else
@@ -76,6 +80,8 @@ var isAuthenticated = HttpContextAccessor.HttpContext.User.Identity.IsAuthentica
     .navbar-nav .nav-link {
         color: #333 !important;
         margin-right: 15px;
+        font-size: 1.4em;
+        font-weight: bold;
         transition: color 0.3s, background-color 0.3s;
     }
 

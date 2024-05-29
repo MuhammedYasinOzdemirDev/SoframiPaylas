@@ -63,6 +63,47 @@
 
     <script src="~/lib/dropzone/dropzone.min.js"></script>
     @RenderSection("Module",required:false);
+    <script>
+        document.getElementById('closeAccountLink').addEventListener('click', function () {
+
+            Swal.fire({
+                title: 'Hesabınızı kapatmak istediğinizden emin misiniz?',
+                text: "Bu işlem geri alınamaz!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Evet, kapat!',
+                cancelButtonText: 'Hayır, vazgeç'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Hesap kapatma işlemi için AJAX çağrısı
+                    $.ajax({
+                        url: '@Url.Action("CloseAccount", "Auth")', // Hesap kapatma aksiyonu
+                        method: 'POST',
+                        contentType: 'application/json',
+
+                        success: function (response) {
+                            Swal.fire(
+                                'Kapatıldı!',
+                                'Hesabınız başarıyla kapatıldı.',
+                                'success'
+                            ).then(() => {
+                                window.location.href = '/';
+                            });
+                        },
+                        error: function () {
+                            Swal.fire(
+                                'Hata!',
+                                'Hesabınız kapatılırken bir hata oluştu.',
+                                'error'
+                            );
+                        }
+                    });
+                }
+            });
+        });
+    </script>
     @RenderSection("Scripts",required:false)
 
 </body>

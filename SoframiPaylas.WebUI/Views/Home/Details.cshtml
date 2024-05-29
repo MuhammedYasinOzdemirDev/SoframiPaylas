@@ -15,7 +15,10 @@ var isAuthenticated = HttpContextAccessor.HttpContext.User.Identity.IsAuthentica
                     <img src="@Model.Image" alt="@Model.Title" class="img-fluid">
                 </div>
                 <div class="post-info mt-3">
-                    <p><strong>Davet Adı:</strong> @Model.Title</p>
+
+                    <p><strong>Yayınlayan:</strong><a class="profile-link" asp-action="Profile"
+                            asp-route-userId="@ViewBag.Host.UserID">
+                            @ViewBag.Host.UserName</a></p>
                     <p><strong>Açıklama:</strong> @Model.Description</p>
 
                     <div id="map" style="height: 400px; margin-bottom: 20px;"></div>
@@ -322,6 +325,50 @@ var isAuthenticated = HttpContextAccessor.HttpContext.User.Identity.IsAuthentica
 
     .comment-input button:hover {
         background-color: #0056b3;
+    }
+
+    /* Bağlantı stilini tanımlayın */
+    a.profile-link {
+        color: #007bff;
+        /* Bağlantı rengi */
+        text-decoration: none;
+        /* Alt çizgi yok */
+        font-weight: bold;
+        /* Kalın yazı tipi */
+        padding: 5px 10px;
+        /* İç boşluklar */
+        border-radius: 5px;
+        /* Köşe yuvarlama */
+        transition: background-color 0.3s ease;
+        /* Geçiş efekti */
+    }
+
+    /* Bağlantı üzerine gelindiğinde */
+    a.profile-link:hover {
+        background-color: #e9ecef;
+        /* Arka plan rengi */
+        text-decoration: underline;
+        /* Alt çizgi */
+    }
+
+    /* Genel stil tanımları */
+    p {
+        font-family: 'Arial', sans-serif;
+        /* Yazı tipi */
+        line-height: 1.6;
+        /* Satır yüksekliği */
+        margin-bottom: 10px;
+        /* Alt boşluk */
+        color: #333;
+        /* Yazı rengi */
+    }
+
+    /* Başlık ve vurgulu metin stilini tanımlayın */
+    p strong {
+        color: #000;
+        /* Kalın metin rengi */
+        font-weight: bold;
+        /* Kalın yazı tipi */
     }
 </style>
 @section Scripts {

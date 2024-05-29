@@ -11,11 +11,13 @@
                 <h1 class="display-4">Hoş Geldiniz, @User.Identity.Name!</h1>
                 <p class="lead">Sofranı Paylaş ile toplulukla yemek paylaşmanın tadını çıkarın.</p>
                 <hr class="my-4">
-                <p>Sofranı Paylaş, kullanıcıların yemeklerini paylaşmalarını ve toplulukla bağ kurmalarını sağlar. Yemek
+                <p style="font-size: 1.1em;">Sofranı Paylaş, kullanıcıların yemeklerini paylaşmalarını ve toplulukla bağ
+                    kurmalarını sağlar. Yemek
                     ilanları ve etkinlikler ile kullanıcılar, lezzetli yemeklerin tadını çıkarabilir ve yeni
                     arkadaşlıklar
                     kurabilirler.</p>
-                <a class="btn btn-primary btn-lg" href="#" role="button">Paylaşım Yap</a>
+                <a class="btn btn-primary btn-lg" asp-action="Share" asp-controller="Post" role="button">Paylaşım
+                    Yap</a>
                 }
                 else
                 {
@@ -26,8 +28,9 @@
                     ilanları ve etkinlikler ile kullanıcılar, lezzetli yemeklerin tadını çıkarabilir ve yeni
                     arkadaşlıklar
                     kurabilirler.</p>
-                <a class="btn btn-primary btn-lg" href="/Account/Login" role="button">Giriş Yap</a>
-                <a class="btn btn-secondary btn-lg" href="/Account/Register" role="button">Kayıt Ol</a>
+                <a class="btn btn-primary btn-lg" asp-controller="Auth" asp-action="Login" role="button">Giriş Yap</a>
+                <a class="btn btn-secondary btn-lg" asp-controller="Auth" asp-action="Register" role="button">Kayıt
+                    Ol</a>
                 }
             </div>
         </div>
@@ -36,7 +39,7 @@
             <div class="col-md-3">
                 <div class="card mb-3 card-recent-posts">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Son Eklenen Postlar</h5>
+                        <h5 class="card-title mb-0" style="font-size: 1.4em !important;">Son Eklenen Postlar</h5>
                     </div>
                     <div class="card-body">
                         @foreach (var post in Model.Where(p => p.PostStatus).Take(5)){
@@ -50,7 +53,7 @@
                 </div>
                 <div class="card mb-3 card-recent-posts">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Geçmiş Postlar</h5>
+                        <h5 class="card-title mb-0" style="font-size: 1.4em !important;">Geçmiş Postlar</h5>
                     </div>
                     <div class="card-body">
                         @foreach (var post in Model.Where(p => !p.PostStatus).Take(5)){
@@ -62,33 +65,7 @@
                         }
                     </div>
                 </div>
-                <div class="filter-section mb-3 card">
-                    <h2>Arama Yap</h2>
-                    <input type="text" class="form-control" placeholder="Etkinlik veya yemek arayın">
-                    <button class="btn btn-primary mt-2 form-control">Ara</button>
-                </div>
 
-
-                <div class="filter-section mb-3 card">
-                    <h2>Filtrele</h2>
-                    <form>
-
-                        <div class="form-group">
-                            <label for="location">Konum</label>
-                            <input type="text" class="form-control" id="location" placeholder="Konum girin">
-                        </div>
-                        <div class="form-group">
-                            <label for="date">Tarih</label>
-                            <input type="date" class="form-control" id="date">
-                        </div>
-                        <div class="form-group">
-                            <label for="participants">Katılımcı Sayısı</label>
-                            <input type="number" class="form-control" id="participants"
-                                placeholder="Minimum katılımcı sayısı">
-                        </div>
-                        <button type="submit" class="btn btn-primary form-control">Filtrele</button>
-                    </form>
-                </div>
 
 
             </div>
@@ -107,7 +84,7 @@
                     <div class="card bg-transparent border-0 mb-3">
                         <div class="card-header bg-white border-bottom-0">
                             <h5 class="card-title">@post.Title</h5>
-                            <p class="card-subtitle text-muted"><a href="">Muhammed Yasin</a> </p>
+
                         </div>
                         <img src="@post.Image" class="card-img-top" alt="@post.Title">
                         <div class="card-body">
@@ -209,9 +186,9 @@
         }
 
         .custom-jumbotron hr {
-            border-top: 1px solid #e0e0e0;
+            border-top: 3px solid #e0e0e0;
             width: 50%;
-            margin: 2rem auto;
+            margin: 1.4rem auto;
         }
 
         h2 {
@@ -249,7 +226,8 @@
         }
 
         .card-title {
-            font-size: 1.5em;
+            font-size: 1.6em;
+            font-weight: 600;
             margin-bottom: 0.5em;
             color: #333;
             transition: color 0.2s;
@@ -286,6 +264,8 @@
         .card-text {
             margin-bottom: 10px;
             color: #6c757d;
+            font-size: 1.2em;
+            ;
         }
 
         .card-text a {

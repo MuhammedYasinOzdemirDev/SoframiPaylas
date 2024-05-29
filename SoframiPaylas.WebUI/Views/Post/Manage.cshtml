@@ -17,6 +17,9 @@
                 <p>@ViewBag.TotalFood</p>
             </div>
         </div>
+        <div class="share-button-container">
+            <a class="btn btn-share" asp-controller="Post" asp-action="Share">Yeni Paylaşım</a>
+        </div>
         <div class="tabs">
             <button class="tab-button active" onclick="openTab('active')">Aktif Paylaşımlar</button>
             <button class="tab-button" onclick="openTab('past')">Geçmiş Paylaşımlar</button>
@@ -277,5 +280,28 @@
 
         .tab-content.active {
             display: block;
+        }
+
+        .share-button-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .btn-share {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.3s ease-in-out;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-share:hover {
+            background-color: #218838;
         }
     </style>
