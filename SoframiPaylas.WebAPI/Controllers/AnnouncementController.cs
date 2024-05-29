@@ -70,4 +70,21 @@ public class AnnouncementController : ControllerBase
             return StatusCode(500, "Duyurular getirilirken bir hata meydana geldi.");
         }
     }
+    [HttpPost("post-ids")]
+    public async Task<IActionResult> GetPostIdsAnnouncements([FromBody] List<string> postIds)
+    {
+        try
+        {
+            var announcements = await _announcementService.GetPostIds(postIds);
+            if (announcements == null || !announcements.Any())
+            {
+                return NotFound("Hiç duyuru bulunamadı.");
+            }
+            return Ok(announcements);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "Duyurular getirilirken bir hata meydana geldi.");
+        }
+    }
 }

@@ -321,5 +321,40 @@ namespace SoframiPaylas.Infrastructure.Repositories
                 return true;
             }, TimeSpan.FromSeconds(20));
         }
+        public async Task<List<(Announcement announcement, string id)>> GetPostIds(List<string> postIds)
+        {
+            return await firebaseService.ExecuteFirestoreOperationAsync(async () =>
+            {
+                if (db == null)
+                    throw new InvalidOperationException("Database service is not initialized properly.");
+
+                var announcements = new List<(Announcement announcement, string id)>();
+
+                foreach (var postId in postIds)
+                {
+                    Query docRef = db.Collection("Announcements").WhereEqualTo("PostId", postId);
+                    QuerySnapshot snapshot = await docRef.GetSnapshotAsync();
+
+                    if (snapshot.Count > 0)
+                    {
+                        foreach (var doc in snapshot.Documents)
+                        {
+                            Dictionary<string, object> postDict = doc.ToDictionary();
+                            var id = doc.Id;
+                            var announcementItem = new Announcement
+                            {
+                                Content = postDict.ContainsKey("Content") ? postDict["Content"].ToString() : null,
+                                Timestamp = postDict.ContainsKey("Timestamp") ? (Timestamp)postDict["Timestamp"] : new Timestamp(),
+                                PostId = postDict.ContainsKey("PostId") ? postDict["PostId"].ToString() : null
+                            };
+
+                            announcements.Add((announcementItem, id));
+                        }
+                    }
+                }
+
+                return announcements;
+            }, TimeSpan.FromSeconds(20));
+        }
     }
 }

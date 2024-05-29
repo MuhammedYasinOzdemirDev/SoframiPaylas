@@ -24,7 +24,7 @@ namespace SoframiPaylas.Application.Services
         public async Task DeleteUserAsync(string userId)
         {
             var user = await _userRepository.GetUserByIdAsync(userId);
-            if (user == null)
+            if (user.user == null)
             {
                 throw new Exception("User not found.");
             }
@@ -44,25 +44,27 @@ namespace SoframiPaylas.Application.Services
         public async Task<UserDto> GetUserByIdAsync(string userId)
         {
             var user = await _userRepository.GetUserByIdAsync(userId);
-            if (user == null)
+            if (user.user == null)
             {
                 throw new Exception("User not found.");
             }
 
-            return _mapper.Map<UserDto>(user);
+            var dto = _mapper.Map<UserDto>(user.user);
+            dto.UserID = user.id;
+            return dto;
         }
 
         public async Task UpdateUserAsync(UpdateUserDto userDto, string userId)
         {
 
             var user = await _userRepository.GetUserByIdAsync(userId);
-            if (user == null)
+            if (user.user == null)
             {
                 throw new Exception("User not found.");
             }
             // Bu, mevcut kullanıcı nesnesini kullanarak, sadece gerekli alanları günceller.
-            _mapper.Map(userDto, user);
-            await _userRepository.UpdateUserAsync(user, userId);
+            _mapper.Map(userDto, user.user);
+            await _userRepository.UpdateUserAsync(user.user, userId);
         }
     }
 }

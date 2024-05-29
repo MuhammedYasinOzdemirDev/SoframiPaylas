@@ -213,6 +213,43 @@ namespace SoframiPaylas.WebUI.Controllers
                 return View("Error");
             }
         }
+        public async Task<IActionResult> Announcement()
+        {
+            var user = _userService.GetUser();
+            ViewBag.ImageUrl = user.ProfilePicture;
+            ViewBag.UserName = user.UserName;
+            var response = await _postApiService.GetPostsByUserIdAsync(_userService.GetUserId());
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadFromJsonAsync<List<string>>();
+                var response2 = await _userApiService.GetAnnouncementPostIds(content);
+                IEnumerable<AnnouncementView> announcements = new List<AnnouncementView>();
+                if (response.IsSuccessStatusCode)
+                {
+                    announcements = await response2.Content.ReadFromJsonAsync<IEnumerable<AnnouncementView>>();
 
+                }
+                return View(announcements);
+            }
+            return View("Error");
+        }
+        public async Task<IActionResult> Message()
+        {
+            var user = _userService.GetUser();
+            ViewBag.ImageUrl = user.ProfilePicture;
+            ViewBag.UserName = user.UserName;
+            var response = await _userApiService.GetMessageUserId(_userService.GetUserId());
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadFromJsonAsync<List<MessageViewModel>>();
+
+                return View(content);
+            }
+            else if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return View(new List<MessageViewModel>());
+            }
+            return View("Error");
+        }
     }
 }

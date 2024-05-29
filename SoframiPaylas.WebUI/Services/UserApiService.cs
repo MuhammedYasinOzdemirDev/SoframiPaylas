@@ -59,5 +59,28 @@ public class UserApiService : IUserApiService
         return response;
     }
 
-
+    public async Task<HttpResponseMessage> GetUser(string userId)
+    {
+        var url = new UriBuilder(_httpClient.BaseAddress + "User/user")
+        {
+            Query = $"userId={userId}"
+        };
+        HttpResponseMessage response = await _httpClient.GetAsync(url.Uri);
+        return response;
+    }
+    public async Task<HttpResponseMessage> GetAnnouncementPostIds(List<string> postIds)
+    {
+        var url = new Uri(_httpClient.BaseAddress + "Announcement/post-ids");
+        var response = await _httpClient.PostAsJsonAsync(url, postIds);
+        return response;
+    }
+    public async Task<HttpResponseMessage> GetMessageUserId(string userId)
+    {
+        var url = new UriBuilder(_httpClient.BaseAddress + "Message")
+        {
+            Query = $"receiverId={userId}"
+        };
+        var response = await _httpClient.GetAsync(url.Uri);
+        return response;
+    }
 }

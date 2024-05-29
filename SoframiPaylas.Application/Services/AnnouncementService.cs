@@ -64,4 +64,15 @@ public class AnnouncementService : IAnnouncementService
             return dto;
         });
     }
+
+    public async Task<IEnumerable<AnnouncementDto>> GetPostIds(List<string> postIds)
+    {
+        var announcements = await _announcementRepository.GetPostIds(postIds);
+        return announcements.Select(a =>
+        {
+            var dto = _mapper.Map<AnnouncementDto>(a.announcement);
+            dto.Id = a.id;
+            return dto;
+        });
+    }
 }

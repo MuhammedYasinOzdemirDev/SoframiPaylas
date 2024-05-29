@@ -256,8 +256,8 @@ namespace SoframiPaylas.WebAPI.Controllers
         /// <returns>HTTP yanıtı olarak, başarılı ise içerik dönmeyen yanıt, başarısız ise hata mesajı içerir.</returns>
         /// <response code="204">Kullanıcı başarıyla silindi. İçerik dönmez.</response>
         /// <response code="500">Kullanıcı silinirken beklenmedik bir hata oluştuğunda bu hata dönülür.</response>
-        [HttpDelete("user/{userId}")]
-        public async Task<IActionResult> DeleteUser(string userId)
+        [HttpDelete("user")]
+        public async Task<IActionResult> DeleteUser([FromQuery] string userId)
         {
             try
             {

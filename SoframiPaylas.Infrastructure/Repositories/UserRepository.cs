@@ -53,7 +53,7 @@ namespace SoframiPaylas.Infrastructure.Repositories
                     return users;
                 }, TimeSpan.FromSeconds(20));
         }
-        public async Task<User> GetUserByIdAsync(string userId)
+        public async Task<(User user, string id)> GetUserByIdAsync(string userId)
         {
             return await firebaseService.ExecuteFirestoreOperationAsync(async () =>
             {
@@ -67,11 +67,11 @@ namespace SoframiPaylas.Infrastructure.Repositories
 
                 if (!snapshot.Exists)
                 {
-                    return null;  // Eğer belge yoksa null döner
+                    return (null, null);  // Eğer belge yoksa null döner
                 }
 
                 Dictionary<string, object> userDict = snapshot.ToDictionary();
-                return new User
+                return (new User
                 {
                     Email = userDict.ContainsKey("email") ? userDict["email"].ToString() : null,
                     UserName = userDict.ContainsKey("userName") ? userDict["userName"].ToString() : null,
@@ -83,7 +83,7 @@ namespace SoframiPaylas.Infrastructure.Repositories
                     Name = userDict.ContainsKey("name") ? userDict["name"].ToString() : null,
                     Surname = userDict.ContainsKey("surname") ? userDict["surname"].ToString() : null,
                     Phone = userDict.ContainsKey("phone") ? userDict["phone"].ToString() : null
-                };
+                }, snapshot.Id);
 
             }, TimeSpan.FromSeconds(20));
         }
