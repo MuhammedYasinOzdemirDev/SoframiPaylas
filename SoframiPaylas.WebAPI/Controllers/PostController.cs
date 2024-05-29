@@ -271,7 +271,18 @@ namespace SoframiPaylas.WebAPI.Controllers
                 return StatusCode(500, "Gönderi silme işlemi sırasında beklenmedik bir hata oluştuğunda bu hata dönülür.");
             }
         }
-
+        /// <summary>
+        /// Belirtilen kullanıcı ID'sine ait tüm gönderilerin listesini döner.
+        /// </summary>
+        /// <remarks>
+        /// Bu işlem, belirtilen kullanıcı ID'sine ait tüm gönderileri getirir.
+        /// Eğer kayıtlı hiç gönderi yoksa, kullanıcıya 404 hatası ile bilgi verilir.
+        /// </remarks>
+        /// <param name="userId">Gönderileri getirilecek kullanıcının benzersiz tanımlayıcısı (ID).</param>
+        /// <returns>Bir HTTP yanıtı döner ki bu, başarılı olursa gönderi listesini, başarısız olursa hata mesajını içerir.</returns>
+        /// <response code="200">Gönderiler başarıyla bulundu ve döndürüldü.</response>
+        /// <response code="404">Belirtilen ID'ye sahip gönderi bulunamadı.</response>
+        /// <response code="500">Gönderi bilgisi getirilirken bir hata meydana geldi.</response>
 
         [HttpGet("get-user")]
         public async Task<IActionResult> GetByUserIdAsync([FromQuery] string userId)
@@ -288,6 +299,18 @@ namespace SoframiPaylas.WebAPI.Controllers
                 return StatusCode(500, "Gönderi bilgisi getirilirken bir hata meydana geldi.");
             }
         }
+        /// <summary>
+        /// Belirtilen kullanıcı ID'sine ait tüm gönderileri döner.
+        /// </summary>
+        /// <remarks>
+        /// Bu işlem, belirtilen kullanıcı ID'sine ait tüm gönderileri getirir.
+        /// Eğer kayıtlı hiç gönderi yoksa, kullanıcıya 404 hatası ile bilgi verilir.
+        /// </remarks>
+        /// <param name="userId">Gönderileri getirilecek kullanıcının benzersiz tanımlayıcısı (ID).</param>
+        /// <returns>Bir HTTP yanıtı döner ki bu, başarılı olursa gönderi listesini, başarısız olursa hata mesajını içerir.</returns>
+        /// <response code="200">Gönderiler başarıyla bulundu ve döndürüldü.</response>
+        /// <response code="404">Belirtilen ID'ye sahip gönderi bulunamadı.</response>
+        /// <response code="500">Gönderi bilgisi getirilirken bir hata meydana geldi.</response>
         [HttpGet("get-user-id-posts")]
         public async Task<IActionResult> GetUserIdPost([FromQuery] string userId)
         {
@@ -303,6 +326,18 @@ namespace SoframiPaylas.WebAPI.Controllers
                 return StatusCode(500, "Gönderi bilgisi getirilirken bir hata meydana geldi.");
             }
         }
+        /// <summary>
+        /// Belirtilen gönderi ID'lerine sahip gönderilerin listesini döner.
+        /// </summary>
+        /// <remarks>
+        /// Bu işlem, belirtilen gönderi ID'lerine sahip gönderileri getirir.
+        /// Eğer kayıtlı hiç gönderi yoksa, kullanıcıya 404 hatası ile bilgi verilir.
+        /// </remarks>
+        /// <param name="postIds">Gönderileri getirilecek gönderi ID'lerinin listesi.</param>
+        /// <returns>Bir HTTP yanıtı döner ki bu, başarılı olursa gönderi listesini, başarısız olursa hata mesajını içerir.</returns>
+        /// <response code="200">Gönderiler başarıyla bulundu ve döndürüldü.</response>
+        /// <response code="404">Belirtilen ID'ye sahip gönderi bulunamadı.</response>
+        /// <response code="500">Gönderi bilgisi getirilirken bir hata meydana geldi.</response>
         [HttpPost("get-user-posts")]
         public async Task<IActionResult> GetPostsByIdsAsync([FromBody] List<string> postIds)
         {
@@ -318,6 +353,17 @@ namespace SoframiPaylas.WebAPI.Controllers
                 return StatusCode(500, "Gönderi bilgisi getirilirken bir hata meydana geldi.");
             }
         }
+        /// <summary>
+        /// Belirtilen gönderiyi sonlandırır.
+        /// </summary>
+        /// <remarks>
+        /// Bu işlem, belirtilen gönderiyi sonlandırır.
+        /// </remarks>
+        /// <param name="postId">Sonlandırılacak gönderinin benzersiz tanımlayıcısı (ID).</param>
+        /// <returns>Bir HTTP yanıtı döner ki bu, başarılı olursa 200 OK, başarısız olursa hata mesajını içerir.</returns>
+        /// <response code="200">Gönderi başarıyla sonlandırıldı.</response>
+        /// <response code="404">Belirtilen ID'ye sahip gönderi bulunamadı.</response>
+        /// <response code="500">Gönderi güncelleme işlemi sırasında beklenmedik bir hata oluştuğunda bu hata dönülür.</response>
         [HttpPut("end-post")]
         public async Task<IActionResult> EndPost(string postId)
         {
