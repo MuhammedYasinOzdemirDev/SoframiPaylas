@@ -2,7 +2,7 @@
 @using System.Globalization
 @{
 var isAuthenticated = HttpContextAccessor.HttpContext.User.Identity.IsAuthenticated;
-
+ViewBag.Title = Model.Title;
 }
 <link rel="stylesheet" href="~/css/Home/details.css">
 <div class="container">
