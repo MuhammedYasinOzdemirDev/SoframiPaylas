@@ -1,0 +1,59 @@
+.jumbotron {
+	background-color: #f8f9fa;
+	padding: 2rem 1rem;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.jumbotron h1,
+.jumbotron h2 {
+	color: #343a40;
+}
+
+.jumbotron p,
+.jumbotron ul,
+.jumbotron li {
+	color: #6c757d;
+}
+
+.jumbotron .lead {
+	font-size: 1.25rem;
+	font-weight: 300;
+}
+
+.team-card {
+	margin-top: 1rem;
+	border-radius: 10px;
+	overflow: hidden;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.team-card img {
+	border-bottom: 1px solid #dee2e6;
+}
+
+.team-card .card-body {
+	text-align: center;
+}
+
+.team-card .card-title {
+	font-weight: bold;
+	margin-bottom: 0.5rem;
+}
+
+.team-card .card-text {
+	font-style: italic;
+	color: #6c757d;
+}
+
+.card {
+	margin-top: 1rem;
+}
+
+.card-title {
+	font-weight: bold;
+}
+
+.card-text {
+	font-style: italic;
+}

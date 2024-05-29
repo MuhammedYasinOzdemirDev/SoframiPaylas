@@ -1,0 +1,134 @@
+.container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
+.meal-management {
+	background: #ffffff;
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	margin-bottom: 20px;
+	width: 100%;
+	max-width: 600px;
+}
+
+.meal-management h2 {
+	font-size: 2em;
+	margin-bottom: 20px;
+	color: #343a40;
+	text-align: center;
+}
+
+.meal-management .form-group {
+	margin-bottom: 20px;
+}
+
+.meal-management .form-group label {
+	font-weight: bold;
+	color: #343a40;
+	display: block;
+	margin-bottom: 10px;
+}
+
+.meal-management .form-group input,
+.meal-management .form-group textarea {
+	width: 100%;
+	padding: 10px;
+	border-radius: 5px;
+	border: 1px solid #ced4da;
+	margin-bottom: 10px;
+}
+
+.meal-management .form-group .btn {
+	padding: 10px 20px;
+	background-color: #007bff;
+	border-color: #007bff;
+	color: #fff;
+	cursor: pointer;
+	transition: background 0.3s ease-in-out, border-color 0.3s ease-in-out,
+		transform 0.3s;
+}
+
+.meal-management .form-group .btn:hover {
+	background-color: #0056b3;
+	border-color: #0056b3;
+	transform: translateY(-2px);
+}
+
+.meal-management .form-group .btn:active {
+	transform: translateY(1px);
+}
+
+.meal-list {
+	margin-top: 20px;
+}
+
+.meal-list h4 {
+	font-size: 1.5em;
+	margin-bottom: 10px;
+	color: #343a40;
+}
+
+.list-group {
+	padding: 0;
+	list-style: none;
+}
+
+.list-group-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px;
+	border: 1px solid #ced4da;
+	border-radius: 5px;
+	margin-bottom: 10px;
+}
+
+.meal-info {
+	display: flex;
+	flex-direction: column;
+}
+
+.meal-info .meal-name {
+	font-size: 1.1em;
+	font-weight: bold;
+	color: #343a40;
+}
+
+.meal-info .meal-description {
+	font-size: 0.9em;
+	color: #6c757d;
+}
+
+.button-group {
+	display: flex;
+	align-items: center;
+}
+
+.btn-update {
+	background-color: #17a2b8;
+	border-color: #17a2b8;
+	color: #fff;
+	padding: 5px 10px;
+	margin-right: 5px;
+}
+
+.btn-update:hover {
+	background-color: #138496;
+	border-color: #138496;
+}
+
+.btn-remove {
+	background-color: #dc3545;
+	border-color: #dc3545;
+	color: #fff;
+	padding: 5px 10px;
+}
+
+.btn-remove:hover {
+	background-color: #c82333;
+	border-color: #c82333;
+}

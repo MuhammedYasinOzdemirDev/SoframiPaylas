@@ -1,5 +1,5 @@
 @model PostEditViewModel
-
+<link rel="stylesheet" href="~/css/Post/edit.css">
 <div class="container">
     <div class="post-edit-form">
         <h4>Post Düzenle</h4>
@@ -47,119 +47,9 @@
     </div>
 </div>
 
-<style>
-    .container {
-        max-width: 800px;
-        ;
-    }
 
-    .post-edit-form {
-        background: #f8f9fa;
-        padding: 30px;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        margin-top: 20px;
-    }
-
-    .post-edit-form h4 {
-        margin-bottom: 20px;
-        font-size: 1.5em;
-        color: #343a40;
-        text-align: center;
-    }
-
-    .post-edit-form .form-group {
-        margin-bottom: 15px;
-    }
-
-    .post-edit-form .form-control,
-    .post-edit-form .form-control-file,
-    .post-edit-form .form-select {
-        border: 1px solid #e0e0e0;
-        border-radius: 5px;
-        padding: 10px;
-        transition: border-color 0.2s;
-    }
-
-    .post-edit-form .form-control:focus,
-    .post-edit-form .form-control-file:focus,
-    .post-edit-form .form-select:focus {
-        border-color: #007bff;
-        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-    }
-
-    .post-edit-form .btn {
-        color: #fff;
-        padding: 10px 20px;
-        border-radius: 5px;
-        font-size: 1em;
-        transition: background-color 0.2s, border-color 0.2s, transform 0.2s;
-    }
-
-    .post-edit-form .btn:hover {
-        transform: translateY(-2px);
-    }
-
-    .post-edit-form .btn:active {
-        transform: translateY(1px);
-    }
-
-    .post-edit-form .btn-primary {
-        background-color: #007bff;
-        border-color: #007bff;
-    }
-
-    .post-edit-form .btn-primary:hover {
-        background-color: #0056b3;
-        border-color: #0056b3;
-    }
-
-    .post-edit-form .btn-secondary {
-        background-color: #6c757d;
-        border-color: #6c757d;
-    }
-
-    .post-edit-form .btn-secondary:hover {
-        background-color: #5a6268;
-        border-color: #545b62;
-    }
-
-    .post-edit-form .button-group {
-        display: flex;
-        justify-content: center;
-        margin-top: 20px;
-    }
-
-    .button-group button {
-        margin: 0 10px;
-    }
-
-
-    #map {
-        height: 320px;
-        width: 100%;
-        margin-bottom: 20px;
-    }
-
-    .image-preview {
-        margin-top: 10px;
-        text-align: center;
-        /* Image center alignment */
-    }
-
-    .image-preview img {
-        max-width: 200px;
-        /* Standard width */
-        height: auto;
-        border: 1px solid #e0e0e0;
-        border-radius: 5px;
-    }
-</style>>
 @section Scripts {
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script type="module">
 
-</script>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";

@@ -1,0 +1,252 @@
+#loginPrompt {
+	display: none;
+	color: red;
+	font-size: 18px;
+	margin-top: 20px;
+}
+
+body {
+	font-family: "Arial", sans-serif;
+
+	box-sizing: border-box;
+}
+
+.container {
+	margin-top: 30px;
+}
+
+.post-detail {
+	background: #ffffff;
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	margin-bottom: 20px;
+	transition: all 0.3s ease-in-out;
+}
+
+.post-detail:hover {
+	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.post-detail h2 {
+	font-size: 2em;
+	margin-bottom: 20px;
+	color: #343a40;
+}
+
+.post-image img {
+	width: 100%;
+	height: auto;
+	max-height: 500px;
+	object-fit: cover;
+	border-radius: 10px;
+	margin-bottom: 20px;
+	transition: transform 0.3s ease-in-out;
+}
+
+.post-image img:hover {
+	transform: scale(1.05);
+}
+
+.post-info p {
+	margin-bottom: 10px;
+	font-size: 1.1em;
+	color: #555;
+}
+
+.menu,
+.participants {
+	background: #ffffff;
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	margin-bottom: 20px;
+	max-height: 300px;
+	/* Sabit yükseklik */
+	overflow-y: auto;
+	/* Dikey kaydırma */
+}
+
+.menu:hover,
+.participants:hover {
+	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.menu h4,
+.participants h4 {
+	margin-bottom: 20px;
+	font-size: 1.5em;
+	color: #343a40;
+}
+
+.list-group-item {
+	background: #f8f9fa;
+	border: none;
+	border-radius: 5px;
+	margin-bottom: 10px;
+	padding: 15px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	transition: background 0.3s ease-in-out;
+}
+
+.list-group-item:hover {
+	background: #e2e6ea;
+}
+
+.list-group-item div {
+	max-width: 70%;
+}
+
+.img-thumbnail {
+	border-radius: 5px;
+	margin-left: 10px;
+	max-width: 60px;
+	transition: transform 0.3s ease-in-out;
+}
+
+.img-thumbnail:hover {
+	transform: scale(1.1);
+}
+
+.btn-join {
+	background-color: #28a745;
+	color: #ffffff;
+	padding: 10px 20px;
+	border: none;
+	border-radius: 5px;
+	font-size: 1.1em;
+	cursor: pointer;
+	transition: background 0.3s ease-in-out;
+}
+
+.btn-join:hover {
+	background-color: #218838;
+}
+
+.btn-disabled {
+	background-color: grey;
+	cursor: not-allowed;
+}
+
+.comments-section {
+	background: #ffffff;
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	margin-top: 30px;
+}
+
+.comments-section h3 {
+	font-size: 1.8em;
+	margin-bottom: 20px;
+	color: #343a40;
+	text-align: center;
+}
+
+#comments-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+#comments-list .list-group-item {
+	background: #f1f1f1;
+	border: none;
+	border-radius: 5px;
+	margin-bottom: 10px;
+	padding: 15px;
+	display: flex;
+	justify-content: space-between;
+	transition: background 0.3s ease-in-out;
+}
+
+#comments-list .list-group-item:hover {
+	background: #e0e0e0;
+}
+
+#comments-list .list-group-item strong {
+	font-size: 1.1em;
+	color: #007bff;
+	margin-bottom: 5px;
+	align-self: flex-start;
+}
+
+#comments-list .list-group-item small {
+	color: #6c757d;
+	text-align: right;
+	align-self: flex-end;
+}
+
+.comment-input {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	margin-top: 20px;
+}
+
+.comment-input input {
+	flex: 1;
+	padding: 10px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+}
+
+.comment-input button {
+	padding: 10px 20px;
+	border: none;
+	border-radius: 4px;
+	background-color: #007bff;
+	color: white;
+	cursor: pointer;
+	transition: background 0.3s ease-in-out;
+}
+
+.comment-input button:hover {
+	background-color: #0056b3;
+}
+
+/* Bağlantı stilini tanımlayın */
+a.profile-link {
+	color: #007bff;
+	/* Bağlantı rengi */
+	text-decoration: none;
+	/* Alt çizgi yok */
+	font-weight: bold;
+	/* Kalın yazı tipi */
+	padding: 5px 10px;
+	/* İç boşluklar */
+	border-radius: 5px;
+	/* Köşe yuvarlama */
+	transition: background-color 0.3s ease;
+	/* Geçiş efekti */
+}
+
+/* Bağlantı üzerine gelindiğinde */
+a.profile-link:hover {
+	background-color: #e9ecef;
+	/* Arka plan rengi */
+	text-decoration: underline;
+	/* Alt çizgi */
+}
+
+/* Genel stil tanımları */
+p {
+	font-family: "Arial", sans-serif;
+	/* Yazı tipi */
+	line-height: 1.6;
+	/* Satır yüksekliği */
+	margin-bottom: 10px;
+	/* Alt boşluk */
+	color: #333;
+	/* Yazı rengi */
+}
+
+/* Başlık ve vurgulu metin stilini tanımlayın */
+p strong {
+	color: #000;
+	/* Kalın metin rengi */
+	font-weight: bold;
+	/* Kalın yazı tipi */
+}

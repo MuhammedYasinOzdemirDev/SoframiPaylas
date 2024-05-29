@@ -50,5 +50,96 @@
 </div>
 @section Scripts{
 
-<script src="~/js/Auth/register.js"></script>
+<script>
+    document.getElementById('registerForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        let isValid = true; // isValid başlangıçta true olarak tanımlanır
+
+        isValid = validateField('Name', 'Ad alanı gereklidir.', isValid);
+        isValid = validateField('Surname', 'Soyad alanı gereklidir.', isValid);
+        isValid = validateField('UserName', 'Kullanıcı adı gereklidir.', isValid);
+        isValid = validateField('Email', 'Geçerli bir e-posta adresi giriniz.', isValid);
+        isValid = validateField('Phone', 'Geçerli bir telefon numarası giriniz.', isValid);
+        isValid = validateField('Password', 'Şifre alanı gereklidir.', isValid);
+        isValid = validateConfirmPassword('Password', 'ConfirmPassword', 'Şifreler eşleşmiyor.', isValid);
+
+        if (isValid) {
+            NProgress.start();
+            var formData = new FormData(this);
+            fetch('@Url.Action("Register", "Auth")', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        NProgress.done();
+                        Swal.fire({
+                            title: 'Success!',
+                            text: data.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = data.redirectUrl;  // Başarılı kayıt sonrası yönlendirme
+                            }
+                        });
+                    } else {
+                        NProgress.done();
+                        Swal.fire({
+                            title: 'Error!',
+                            text: data.message || "An error occurred.",
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                })
+                .catch(error => {
+                    NProgress.done();
+                    console.error('Error:', error);
+                    alert('Bir hata oluştu, lütfen daha sonra tekrar deneyiniz.');
+                });
+        }
+    });
+
+
+    // Alanlara girilen bilgiyi sürekli kontrol etmek
+    document.querySelectorAll('#registerForm input').forEach(input => {
+        input.addEventListener('input', function () {
+            var errorSpan = this.nextElementSibling;
+            if (this.classList.contains('invalid')) {
+                this.classList.remove('invalid');
+                errorSpan.textContent = '';
+            }
+        });
+    });
+    function validateField(id, errorMessage, isValid) {
+        var input = document.getElementById(id);
+        var errorSpan = document.getElementById(id + 'Error');
+        if (!input.value.trim()) {
+            input.classList.add('invalid');
+            errorSpan.textContent = errorMessage;
+            return false; // Eğer hata varsa, isValid false olarak döner
+        } else {
+            input.classList.remove('invalid');
+            errorSpan.textContent = '';
+            return isValid; // Mevcut isValid değerini döndürür
+        }
+    }
+
+    function validateConfirmPassword(passwordId, confirmPasswordId, errorMessage, isValid) {
+        var password = document.getElementById(passwordId);
+        var confirmPassword = document.getElementById(confirmPasswordId);
+        var errorSpan = document.getElementById(confirmPasswordId + 'Error');
+        if (confirmPassword.value.trim() !== password.value.trim()) {
+            confirmPassword.classList.add('invalid');
+            errorSpan.textContent = errorMessage;
+            return false; // Eğer hata varsa, isValid false olarak döner
+        } else {
+            confirmPassword.classList.remove('invalid');
+            errorSpan.textContent = '';
+            return isValid; // Mevcut isValid değerini döndürür
+        }
+    }
+</script>
 }

@@ -1,0 +1,121 @@
+.text-center {
+	text-align: center;
+	color: #343a40;
+	margin-bottom: 30px;
+}
+
+.post-sharing-form {
+	background: #f8f9fa;
+	padding: 30px;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	margin-top: 20px;
+}
+
+.post-sharing-form h4 {
+	margin-bottom: 20px;
+	font-size: 1.5em;
+	color: #343a40;
+	text-align: center;
+}
+
+.post-sharing-form .form-group {
+	margin-bottom: 15px;
+}
+
+.post-sharing-form .form-control,
+.post-sharing-form .form-control-file,
+.post-sharing-form .form-select {
+	border: 1px solid #e0e0e0;
+	border-radius: 5px;
+	padding: 10px;
+	transition: border-color 0.2s;
+}
+
+.post-sharing-form .form-control:focus,
+.post-sharing-form .form-control-file:focus,
+.post-sharing-form .form-select:focus {
+	border-color: #007bff;
+	box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.post-sharing-form .btn {
+	background-color: #007bff;
+	border-color: #007bff;
+	color: #fff;
+	margin-top: 20px;
+	padding: 10px 20px;
+	border-radius: 5px;
+	font-size: 1em;
+	transition: background-color 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.post-sharing-form .btn:hover {
+	background-color: #0056b3;
+	border-color: #0056b3;
+	transform: translateY(-2px);
+}
+
+.post-sharing-form .btn:active {
+	transform: translateY(1px);
+}
+
+.post-sharing-form .btn-block {
+	width: 100%;
+}
+
+#map {
+	height: 320px;
+	width: 100%;
+	margin-bottom: 20px;
+}
+
+.food-list {
+	margin-top: 10px;
+}
+
+.food-list ul {
+	list-style-type: none;
+	padding: 0;
+}
+
+.pac-container {
+	z-index: 1050 !important;
+}
+
+.food-list ul li {
+	background: #fff;
+	margin: 5px 0;
+	padding: 10px 15px;
+	border-radius: 5px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	transition: background-color 0.2s, transform 0.2s;
+}
+
+.food-list ul li:hover {
+	background: #f8f9fa;
+	transform: translateY(-2px);
+}
+
+.food-name {
+	font-weight: bold;
+	color: #343a40;
+}
+
+.remove-food {
+	background: #dc3545;
+	border: none;
+	color: white;
+	border-radius: 5px;
+	padding: 5px 10px;
+	cursor: pointer;
+	transition: background 0.2s, transform 0.2s;
+}
+
+.remove-food:hover {
+	background: #c82333;
+	transform: scale(1.1);
+}
