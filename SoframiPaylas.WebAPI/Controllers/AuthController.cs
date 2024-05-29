@@ -17,7 +17,19 @@ namespace SoframiPaylas.WebAPI.Controllers
             _authService = authService;
 
         }
-
+        /// <summary>
+        /// Yeni kullanıcı kaydı oluşturur.
+        /// </summary>
+        /// <remarks>
+        /// Bu işlem, verilen kullanıcı bilgileri ve şifre ile yeni bir kullanıcı kaydı oluşturur.
+        /// </remarks>
+        /// <param name="user">Kullanıcı bilgilerini içeren DTO.</param>
+        /// <param name="password">Kullanıcının şifresi.</param>
+        /// <returns>Bir HTTP yanıtı döner ki bu, başarılı olursa yeni kullanıcının ID'sini ve başarılı mesajını, başarısız olursa hata mesajını içerir.</returns>
+        /// <response code="200">Kayıt başarılı.</response>
+        /// <response code="400">Email ve şifre gereklidir.</response>
+        /// <response code="409">Kullanıcı adı veya email zaten var.</response>
+        /// <response code="500">Kayıt sırasında bir hata meydana geldi.</response>
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] CreateUserDto user, string password)
         {
@@ -52,6 +64,16 @@ namespace SoframiPaylas.WebAPI.Controllers
                 return StatusCode(500, "Kullanıcı kaydı oluşturulamadı...");
             }
         }
+        /// <summary>
+        /// Kullanıcı giriş yapar ve bir token döner.
+        /// </summary>
+        /// <remarks>
+        /// Bu işlem, verilen email ve şifre ile kullanıcıyı kimlik doğrular ve bir JWT token döner.
+        /// </remarks>
+        /// <param name="request">Giriş bilgilerini içeren DTO.</param>
+        /// <returns>Bir HTTP yanıtı döner ki bu, başarılı olursa JWT tokenını, başarısız olursa hata mesajını içerir.</returns>
+        /// <response code="200">Giriş başarılı.</response>
+        /// <response code="400">Giriş sırasında bir hata meydana geldi.</response>
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto request)
         {
@@ -65,6 +87,16 @@ namespace SoframiPaylas.WebAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        /// <summary>
+        /// Kullanıcıyı doğrular.
+        /// </summary>
+        /// <remarks>
+        /// Bu işlem, verilen ID token ile kullanıcıyı doğrular ve kullanıcı bilgilerini döner.
+        /// </remarks>
+        /// <param name="idToken">Doğrulanacak ID token.</param>
+        /// <returns>Bir HTTP yanıtı döner ki bu, başarılı olursa kullanıcı bilgilerini, başarısız olursa hata mesajını içerir.</returns>
+        /// <response code="200">Kullanıcı doğrulandı.</response>
+        /// <response code="400">Doğrulama sırasında bir hata meydana geldi.</response>
         [HttpGet("verify-user")]
         public async Task<IActionResult> VerifyUser(string idToken)
         {
@@ -78,6 +110,16 @@ namespace SoframiPaylas.WebAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        /// <summary>
+        /// Kullanıcı şifresini değiştirir.
+        /// </summary>
+        /// <remarks>
+        /// Bu işlem, verilen bilgilerle kullanıcının şifresini değiştirir.
+        /// </remarks>
+        /// <param name="dto">Şifre değişikliği bilgilerini içeren DTO.</param>
+        /// <returns>Bir HTTP yanıtı döner ki bu, başarılı olursa başarı mesajını, başarısız olursa hata mesajını içerir.</returns>
+        /// <response code="200">Şifre başarıyla değiştirildi.</response>
+        /// <response code="400">Şifre değişikliği sırasında bir hata meydana geldi.</response>
         [HttpPost("change-password")]
         public async Task<IActionResult> ChangeUserPassword([FromBody] ChangeUserPasswordDto dto)
         {
