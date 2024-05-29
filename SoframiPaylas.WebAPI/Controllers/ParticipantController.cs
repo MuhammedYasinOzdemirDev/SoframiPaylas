@@ -106,6 +106,17 @@ namespace SoframiPaylas.WebAPI.Controllers
                 return StatusCode(500, "Katılımcı onaylama işlemi sırasında beklenmedik bir hata oluştuğunda bu hata dönülür.");
             }
         }
+        /// <summary>
+        /// Katılımcının durumunu reddeder.
+        /// </summary>
+        /// <remarks>
+        /// Bu işlem, verilen katılımcı bilgileri ile katılımcının durumunu reddeder.
+        /// </remarks>
+        /// <param name="declineRequest">Reddedilecek katılımcının detaylarını içeren DTO.</param>
+        /// <returns>Bir HTTP yanıtı döner ki bu, başarılı olursa başarı mesajını, başarısız olursa hata mesajını içerir.</returns>
+        /// <response code="200">Katılımcı başarıyla reddedildi.</response>
+        /// <response code="404">Belirtilen katılımcı veya gönderi bulunamadı.</response>
+        /// <response code="500">Katılımcı onaylama işlemi sırasında beklenmedik bir hata oluştuğunda bu hata dönülür.</response>
         [HttpPut("decline")]
         public async Task<IActionResult> DeclinedParticipant([FromBody] ParticipantDto declineRequest)
         {
@@ -126,6 +137,18 @@ namespace SoframiPaylas.WebAPI.Controllers
                 return StatusCode(500, "Katılımcı onaylama işlemi sırasında beklenmedik bir hata oluştuğunda bu hata dönülür.");
             }
         }
+        /// <summary>
+        /// Belirtilen gönderiye ait bekleyen katılımcıların listesini döner.
+        /// </summary>
+        /// <remarks>
+        /// Bu işlem, belirtilen gönderiye ait bekleyen katılımcıların listesini getirir.
+        /// Eğer kayıtlı hiç katılımcı yoksa, kullanıcıya 404 hatası ile bilgi verilir.
+        /// </remarks>
+        /// <param name="postId">Katılımcıları getirilecek gönderinin benzersiz tanımlayıcısı (ID).</param>
+        /// <returns>Bir HTTP yanıtı döner ki bu, başarılı olursa katılımcı listesini, başarısız olursa hata mesajını içerir.</returns>
+        /// <response code="200">Bekleyen katılımcılar başarıyla bulundu ve döndürüldü.</response>
+        /// <response code="404">Belirtilen ID'ye sahip gönderi bulunamadı.</response>
+        /// <response code="500">Katılımcı bilgileri getirilirken bir hata meydana geldi.</response>
         [HttpGet("pending-participants")]
         public async Task<IActionResult> PendingParticipants([FromQuery] string postId)
         {
@@ -141,6 +164,18 @@ namespace SoframiPaylas.WebAPI.Controllers
                 return StatusCode(500, "Katılımcı bilgileri getirilirken bir hata meydana geldi.");
             }
         }
+        /// <summary>
+        /// Belirtilen gönderiye ait onaylanmış katılımcıların listesini döner.
+        /// </summary>
+        /// <remarks>
+        /// Bu işlem, belirtilen gönderiye ait onaylanmış katılımcıların listesini getirir.
+        /// Eğer kayıtlı hiç katılımcı yoksa, kullanıcıya 404 hatası ile bilgi verilir.
+        /// </remarks>
+        /// <param name="postId">Katılımcıları getirilecek gönderinin benzersiz tanımlayıcısı (ID).</param>
+        /// <returns>Bir HTTP yanıtı döner ki bu, başarılı olursa katılımcı listesini, başarısız olursa hata mesajını içerir.</returns>
+        /// <response code="200">Onaylanmış katılımcılar başarıyla bulundu ve döndürüldü.</response>
+        /// <response code="404">Belirtilen ID'ye sahip gönderi bulunamadı.</response>
+        /// <response code="500">Katılımcı bilgileri getirilirken bir hata meydana geldi.</response>
         [HttpGet("confirm-participants")]
         public async Task<IActionResult> ConfirmedParticipants([FromQuery] string postId)
         {
@@ -156,6 +191,17 @@ namespace SoframiPaylas.WebAPI.Controllers
                 return StatusCode(500, "Katılımcı bilgileri getirilirken bir hata meydana geldi.");
             }
         }
+        /// <summary>
+        /// Belirtilen kullanıcı ve gönderi ID'sine sahip katılım isteğinin durumunu kontrol eder.
+        /// </summary>
+        /// <remarks>
+        /// Bu işlem, belirtilen kullanıcı ve gönderi ID'sine sahip katılım isteğinin durumunu kontrol eder.
+        /// </remarks>
+        /// <param name="postId">Katılım isteğinin kontrol edileceği gönderinin benzersiz tanımlayıcısı (ID).</param>
+        /// <param name="userId">Katılım isteğinin kontrol edileceği kullanıcının benzersiz tanımlayıcısı (ID).</param>
+        /// <returns>Bir HTTP yanıtı döner ki bu, başarılı olursa katılım isteğinin durumunu, başarısız olursa hata mesajını içerir.</returns>
+        /// <response code="200">Katılım isteğinin durumu başarıyla döndürüldü.</response>
+        /// <response code="500">Status bilgileri getirilirken bir hata meydana geldi.</response>
         [HttpGet("check-status")]
         public async Task<IActionResult> CheckIfRequestExistsAsync([FromQuery] string postId, [FromQuery] string userId)
         {
@@ -169,6 +215,17 @@ namespace SoframiPaylas.WebAPI.Controllers
                 return StatusCode(500, "Status bilgileri getirilirken bir hata meydana geldi.");
             }
         }
+        /// <summary>
+        /// Belirtilen katılımcıyı siler.
+        /// </summary>
+        /// <remarks>
+        /// Bu işlem, belirtilen katılımcıyı sistemden siler.
+        /// </remarks>
+        /// <param name="participantId">Silinecek katılımcının benzersiz tanımlayıcısı (ID).</param>
+        /// <returns>Bir HTTP yanıtı döner ki bu, başarılı olursa 204 No Content, başarısız olursa hata mesajını içerir.</returns>
+        /// <response code="204">Katılımcı başarıyla silindi.</response>
+        /// <response code="404">Belirtilen ID'ye sahip katılımcı bulunamadı.</response>
+        /// <response code="500">Katılımcı silme işlemi sırasında beklenmedik bir hata oluştuğunda bu hata dönülür.</response>
         [HttpDelete("remove-participant")]
         public async Task<IActionResult> Delete([FromQuery] string participantId)
         {
@@ -184,6 +241,18 @@ namespace SoframiPaylas.WebAPI.Controllers
                 return StatusCode(500, "Katılımcı silme işlemi sırasında beklenmedik bir hata oluştuğunda bu hata dönülür.");
             }
         }
+        /// <summary>
+        /// Belirtilen gönderiye ait tüm kullanıcıların listesini döner.
+        /// </summary>
+        /// <remarks>
+        /// Bu işlem, belirtilen gönderiye ait tüm kullanıcıların listesini getirir.
+        /// Eğer kayıtlı hiç kullanıcı yoksa, kullanıcıya 404 hatası ile bilgi verilir.
+        /// </remarks>
+        /// <param name="postId">Kullanıcıları getirilecek gönderinin benzersiz tanımlayıcısı (ID).</param>
+        /// <returns>Bir HTTP yanıtı döner ki bu, başarılı olursa kullanıcı listesini, başarısız olursa hata mesajını içerir.</returns>
+        /// <response code="200">Kullanıcılar başarıyla bulundu ve döndürüldü.</response>
+        /// <response code="404">Belirtilen ID'ye sahip gönderi bulunamadı.</response>
+        /// <response code="500">Kullanıcı getirme işlemi sırasında beklenmedik bir hata oluştuğunda bu hata dönülür.</response>
         [HttpGet("get-user-posts")]
         public async Task<IActionResult> GetPostIdAsync([FromQuery] string postId)
         {
@@ -200,6 +269,18 @@ namespace SoframiPaylas.WebAPI.Controllers
             }
 
         }
+        /// <summary>
+        /// Belirtilen gönderiden belirtilen kullanıcıyı ayrılır.
+        /// </summary>
+        /// <remarks>
+        /// Bu işlem, belirtilen gönderiden belirtilen kullanıcıyı sistemden çıkarır.
+        /// </remarks>
+        /// <param name="postId">Ayrılacak gönderinin benzersiz tanımlayıcısı (ID).</param>
+        /// <param name="userId">Ayrılacak kullanıcının benzersiz tanımlayıcısı (ID).</param>
+        /// <returns>Bir HTTP yanıtı döner ki bu, başarılı olursa 204 No Content, başarısız olursa hata mesajını içerir.</returns>
+        /// <response code="204">Katılımcı başarıyla ayrıldı.</response>
+        /// <response code="404">Belirtilen ID'ye sahip katılımcı bulunamadı.</response>
+        /// <response code="500">Katılımcı silme işlemi sırasında beklenmedik bir hata oluştuğunda bu hata dönülür.</response>
         [HttpDelete("leave-participant")]
         public async Task<IActionResult> Leave([FromQuery] string postId, [FromQuery] string userId)
         {
