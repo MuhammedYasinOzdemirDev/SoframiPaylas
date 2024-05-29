@@ -1,0 +1,105 @@
+<div class="container mt-5">
+    <div class="jumbotron">
+        <h1 class="display-4">İletişim</h1>
+        <p class="lead">Sorularınız, önerileriniz veya geri bildirimleriniz için bizimle iletişime geçebilirsiniz.</p>
+        <hr class="my-4">
+        <h2>İletişim Bilgilerimiz</h2>
+        <ul>
+            <li><strong>E-posta:</strong> info@sofranipaylas.com</li>
+            <li><strong>Telefon:</strong> +90 551 166 77 10</li>
+            <li><strong>Adres:</strong> Başıbüyük, Süreyyapaşa Başıbüyük Yolu Sk No:6, 34854 Maltepe/İstanbul</li>
+        </ul>
+        <h2>Bize Mesaj Gönderin</h2>
+        <hr>
+        <form id="contactForm">
+            <div class="form-group">
+                <label for="name" class="form-label">Adınız</label>
+                <input type="text" class="form-control" id="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email" class="form-label">E-posta</label>
+                <input type="email" class="form-control" id="email" required>
+            </div>
+            <div class="form-group">
+                <label for="message" class="form-label">Mesajınız</label>
+                <textarea class="form-control" id="message" rows="5" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Gönder</button>
+        </form>
+    </div>
+</div>
+@section Scripts{
+
+<script>
+    document.getElementById('contactForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const message = document.getElementById('message').value;
+
+        const mailtoLink = `mailto:info@sofranipaylas.com?subject=İletişim Formu Mesajı&body=Ad: ${name}%0DE-posta: ${email}%0DMesaj: ${message}`;
+        window.location.href = mailtoLink;
+    });
+</script>}
+<style>
+    .jumbotron {
+        background-color: #f8f9fa;
+        padding: 2rem 1rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .jumbotron h1,
+    .jumbotron h2 {
+        color: #343a40;
+    }
+
+    .jumbotron p,
+    .jumbotron ul,
+    .jumbotron li {
+        color: #6c757d;
+    }
+
+    .jumbotron .lead {
+        font-size: 1.25rem;
+        font-weight: 300;
+    }
+
+    .team-card {
+        margin-top: 1rem;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .team-card img {
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .team-card .card-body {
+        text-align: center;
+    }
+
+    .team-card .card-title {
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    .team-card .card-text {
+        font-style: italic;
+        color: #6c757d;
+    }
+
+    .card {
+        margin-top: 1rem;
+    }
+
+    .card-title {
+        font-weight: bold;
+    }
+
+    .card-text {
+        font-style: italic;
+    }
+</style>

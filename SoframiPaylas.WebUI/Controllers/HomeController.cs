@@ -18,11 +18,13 @@ namespace SoframiPaylas.WebUI.Controllers
 
         private readonly IPostApiService _apiService;
         private readonly IParticipantApiService _participantApiService;
+        private readonly IUserApiService _userApiService;
 
-        public HomeController(IPostApiService postApiService, IParticipantApiService participantApiService)
+        public HomeController(IPostApiService postApiService, IParticipantApiService participantApiService, IUserApiService userApiService)
         {
             _apiService = postApiService;
             _participantApiService = participantApiService;
+            _userApiService = userApiService;
         }
 
         public async Task<IActionResult> Index()
@@ -94,6 +96,16 @@ namespace SoframiPaylas.WebUI.Controllers
                     var participants = new List<ParticipantViewModel>();
                     ViewBag.Participants = participants;
                 }
+                var response4 = await _userApiService.GetUser(post.HostID);
+                if (response4.IsSuccessStatusCode)
+                {
+                    var host = await response4.Content.ReadFromJsonAsync<ProfileViewModel>();
+                    ViewBag.Host = host;
+                }
+                else
+                {
+                    ViewBag.Host = null;
+                }
                 return View(post);
             }
             catch (HttpRequestException ex)
@@ -108,6 +120,52 @@ namespace SoframiPaylas.WebUI.Controllers
                 Console.WriteLine(ex);
                 return View("Error");
             }
+        }
+        public async Task<IActionResult> Profile([FromQuery] string userId)
+        {
+            try
+            {
+                var response = await _userApiService.GetUser(userId);
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var user = JsonConvert.DeserializeObject<ProfileViewModel>(content);
+                    var response2 = await _apiService.GetByUserIdPostAllAsync(userId);
+                    if (response2.IsSuccessStatusCode)
+                    {
+                        var content2 = await response2.Content.ReadAsStringAsync();
+                        var posts = JsonConvert.DeserializeObject<List<PostViewModel>>(content2);
+                        ViewBag.CurrentPosts = posts.Where(p => p.PostStatus);
+                        ViewBag.PastPosts = posts.Where(p => !p.PostStatus);
+                    }
+                    else
+                    {
+                        ViewBag.CurrentPosts = new List<PostViewModel>();
+                        ViewBag.PastPosts = new List<PostViewModel>();
+                    }
+                    return View(user);
+                }
+                return View("Error");
+            }
+            catch (HttpRequestException ex)
+            {
+
+                return View("Error");
+            }
+            catch (Exception ex)
+            {
+
+                return View("Error");
+            }
+
+        }
+        public IActionResult About()
+        {
+            return View();
+        }
+        public IActionResult Contact()
+        {
+            return View();
         }
     }
 }
