@@ -109,6 +109,16 @@ namespace SoframiPaylas.WebAPI
                 return StatusCode(500, "Yorum silinirken bir hata meydana geldi.");
             }
         }
+        /// <summary>
+        /// Belirtilen kullanıcı ID'sine sahip tüm yorumların sayısını döner.
+        /// </summary>
+        /// <remarks>
+        /// Bu işlem, belirtilen kullanıcı ID'sine sahip tüm yorumların sayısını getirir.
+        /// </remarks>
+        /// <param name="userId">Yorum sayısı getirilecek kullanıcının benzersiz tanımlayıcısı (ID).</param>
+        /// <returns>Bir HTTP yanıtı döner ki bu, başarılı olursa yorum sayısını, başarısız olursa hata mesajını içerir.</returns>
+        /// <response code="200">Yorum sayısı başarıyla bulundu ve döndürüldü.</response>
+        /// <response code="500">Yorum sayısı getirilirken bir hata meydana geldi.</response>
         [HttpGet("count")]
         public async Task<IActionResult> CommentCount([FromQuery] string userId)
         {
