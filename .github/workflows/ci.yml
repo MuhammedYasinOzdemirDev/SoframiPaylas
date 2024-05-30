@@ -26,7 +26,7 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./
-          server-dir: /var/www/sofranipaylas/
+          server-dir: /var/www/sofrani2paylas/
           security: loose
 
       - name: Execute build and run commands on server
