@@ -22,7 +22,7 @@ jobs:
         run: dotnet restore
 
       - name: Build
-        run: dotnet publish --configuration Release --output ./publish
+        run: dotnet publish --configuration Release --output ./publish/
 
       - name: Deploy to FTP server
         uses: SamKirkland/FTP-Deploy-Action@4.1.0
@@ -30,5 +30,6 @@ jobs:
           server: ftp://8.209.70.189
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./publish
+          local-dir: ./publish/
+          server-dir: /var/www/sofranipaylas/
           security: loose
