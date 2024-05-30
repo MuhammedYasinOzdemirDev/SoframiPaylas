@@ -1,4 +1,5 @@
 # Sofranı Paylaş Platformu
+![image](https://github.com/MuhammedYasinOzdemirDev/SoframiPaylas/assets/94251353/6890af79-4723-4323-bcfb-73aff0ed974a)
 
 "Sofranı Paylaş" platformunun GitHub deposuna hoş geldiniz. Bu platform, gıda erişim zorlukları çeken bireyleri yemeklerini paylaşmaya gönüllü ev sahipleriyle buluşturan yenilikçi bir sosyal platformdur. Platform, yemek paylaşımı aracılığıyla topluluk bağlarını güçlendirirken gıda israfı ve güvenliğini de ele almayı hedeflemektedir.
 
@@ -11,51 +12,71 @@
 
 ## Teknolojiler
 
-- **.NET Core**: API ve sunucu tarafı işlemleri için. Güçlü, hızlı ve platformlar arası destek sunar.
+### Backend (Sunucu Tarafı)
+- **.NET Core**: API ve sunucu tarafı işlemler için. Güçlü, hızlı ve platformlar arası destek sunar.
 - **Firebase**: Veritabanı, kimlik doğrulama ve resim depolama işlemleri için kullanılır. Firebase, gerçek zamanlı veri tabanı hizmetleri ve kullanıcı yönetimi sağlar.
 - **Azure API Management**: API'lerin yayımlanması, yönetilmesi ve analiz edilmesi için kullanılır. Güvenli ve ölçeklenebilir API ağ geçitleri sağlar.
+- **Ali Baba Cloud**: Ek bulut hizmetleri ve veri depolama çözümleri için kullanılır.
+
+### Frontend (Kullanıcı Arayüzü)
 - **HTML, CSS, JavaScript**: Kullanıcı arayüzünün temel yapı taşları. Dinamik ve responsive web sayfaları için kullanılır.
 - **Bootstrap & jQuery**: Arayüz geliştirmede hız ve tutarlılık için kullanılan frameworkler. Bootstrap, responsive tasarım kolaylıkları sunar, jQuery ise DOM manipülasyonu ve event handling için kullanılır.
 - **HttpClient & Ajax**: Sunucu ile asenkron veri alışverişi için kullanılır. HttpClient .NET uygulamalarında RESTful API tüketimi için, Ajax ise JavaScript ile dinamik web sayfaları oluşturmak için tercih edilir.
+
+### Diğer Teknolojiler
 - **Docker**: Uygulamanın konteynerize edilmesi ve platformlar arası dağıtımını sağlar. Geliştirme, test ve üretim ortamları arasında tutarlılık sunar.
 
+## Proje Yapısı
 
-## API Dökümantasyonu
-![image](https://github.com/MuhammedYasinOzdemirDev/SoframiPaylas/assets/94251353/6c4dcd57-bb78-4114-a391-8ccb3eae5629)
+1. **Application Layer (Uygulama Katmanı)**
+   - **DTOs (Data Transfer Objects)**: Verileri taşımak için kullanılan nesneler.
+   - **Services (İş Mantığı)**: İş mantığını içeren hizmet sınıfları.
+   - **Interfaces (Hizmet Arayüzleri)**: Hizmetlerin arayüzleri.
 
-"Sofranı Paylaş" platformu, RESTful API'ler aracılığıyla bir dizi işlev sunar. İşte bazı önemli API endpoint'leri:
+2. **Domain Layer (Domain Katmanı)**
+   - **Entities (İş Modelleri ve Veritabanı Nesneleri)**: İş modelleri ve veritabanı nesneleri.
 
-### Food
-![image](https://github.com/MuhammedYasinOzdemirDev/SoframiPaylas/assets/94251353/6999eee1-e5df-4458-9f2a-545a575e3ccf)
-- `GET /api/Food/foods`: Tüm yiyecek öğelerinin listesini döner.
-- `POST /api/Food/food`: Sistemde yeni bir yiyecek öğesi oluşturur.
-- `PUT /api/Food/food/{foodId}`: Belirtilen yiyecek öğesini günceller.
-- `DELETE /api/Food/food/{foodId}`: Belirtilen yiyecek öğesini siler.
+3. **Infrastructure Layer (Altyapı Katmanı)**
+   - **Repositories and Interfaces (Veri Erişim Katmanı)**: Veri erişim katmanı.
 
-### Post
-![image](https://github.com/MuhammedYasinOzdemirDev/SoframiPaylas/assets/94251353/167ff2f3-6e6a-4bbe-84be-9659fd2bf70e)
-- `GET /api/Post/posts`: Sistemdeki tüm gönderileri listeler.
-- `POST /api/Post/post`: Yeni bir gönderi oluşturur.
-- `DELETE /api/Post/post/{postId}`: Belirtilen gönderiyi siler.
+4. **WebAPI Layer (API Katmanı)**
+   - **Controllers (API Kontrolcüler)**: API kontrolcüler.
+   - **Configurations and Launch Settings (Yapılandırma Dosyaları)**: Yapılandırma dosyaları.
 
-### User
-![image](https://github.com/MuhammedYasinOzdemirDev/SoframiPaylas/assets/94251353/fedd8079-52db-4878-9dcf-8fc66eca3628)
+5. **WebUI Layer (Kullanıcı Arayüzü Katmanı)**
+   - **Controllers and Views (MVC Yapı Taşları)**: MVC yapı taşları.
+   - **External Services (Oturum, Kimlik Doğrulama ve Depolama Hizmetleri)**: Oturum, kimlik doğrulama ve depolama hizmetleri.
 
-- `GET /api/User/users`: Tüm kullanıcıların listesini döner.
-- `POST /api/User/user`: Yeni bir kullanıcı oluşturur.
-- `DELETE /api/User/user/{userId}`: Belirtilen kullanıcıyı siler.
+## Önemli Dosyalar ve Fonksiyonları
 
+- **AuthService.cs**: Kimlik doğrulama ve kullanıcı kayıt işlemleri için kullanılan hizmet sınıfı.
+- **PostService.cs**: Gönderi oluşturma, silme ve güncelleme işlemleri için kullanılan hizmet sınıfı.
+- **User.cs**: Kullanıcı veritabanı nesnesi.
+- **AuthRepository.cs**: Firebase üzerinden kullanıcı kayıt ve kimlik doğrulama işlemlerini yapar.
+- **AuthController.cs**: API üzerinden kullanıcı kayıt, giriş ve şifre değiştirme işlemlerini yönetir.
+- **HomeController.cs**: Anasayfa ve gönderi detay sayfalarını yönetir.
+- **Index.cshtml**: Anasayfa görünümünü içerir, kullanıcıya özel mesajlar ve son eklenen gönderiler gösterilir.
+- **CustomJwtAuthenticationHandler.cs**: JWT token doğrulama işlemleri için kullanılır.
+- **Program.cs**: Uygulama hizmetlerini yapılandırır ve çalıştırır.
 ## Kurulum
 
 Projeyi yerel geliştirme ortamınızda çalıştırmak için aşağıdaki adımları izleyin:
 
-```bash
-git clone https://github.com/MuhammedYasinOzdemirDev/SoframiPaylas.git
-cd sofrani-paylas
-dotnet restore
-dotnet run
-```
-## Katkıda Bulunma
-Katkılarınızı bekliyoruz! Lütfen bu depoyu forklayın ve önerdiğiniz değişikliklerle pull request gönderin. Büyük değişiklikler için lütfen önce neyi değiştirmek istediğinizi tartışmak üzere bir issue açın.
-
-Testleri uygun şekilde güncellemeyi unutmayın.
+1. **Depoyu Klonlayın**:
+   ```bash
+   git clone https://github.com/MuhammedYasinOzdemirDev/SoframiPaylas.git
+   cd SoframiPaylas
+   dotnet restore
+   ```
+2. **WebApi**
+   ```bash
+    cd SoframiPaylas.WebAPI
+    dotnet restore
+    dotnet run
+   ```
+3. **WebUI**
+   ```bash
+    cd SoframiPaylas.WebUI
+    dotnet restore
+    dotnet run
+   ```  
