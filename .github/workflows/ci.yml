@@ -33,8 +33,13 @@ jobs:
       - name: Deploy to FTP server
         uses: SamKirkland/FTP-Deploy-Action@4.1.0
         with:
-          server: 8.209.70.189…
-[14:31, 30.05.2024] Eren: name: CD Pipeline
+          server: 8.209.70.189
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./publish/
+          server-dir: /var/www/sofranipaylas/
+          security: loose
+[14:39, 30.05.2024] Eren: name: CD Pipeline
 
 on:
   push:
@@ -49,29 +54,42 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: '8.0.x'
-
-      - name: Restore dependencies
-        run: dotnet restore
-
       - name: Install LibMan CLI
         run: dotnet tool install -g Microsoft.Web.LibraryManager.Cli
 
       - name: Restore client-side libraries with LibMan
         run: libman restore
 
-      - name: Build
-        run: dotnet publish --configuration Release --output ./publish/
-
-      - name: Deploy to FTP server
+      - name: Deploy source files to FTP server
         uses: SamKirkland/FTP-Deploy-Action@4.1.0
         with:
           server: 8.209.70.189
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./publish/
+          local-dir: ./
           server-dir: /var/www/sofranipaylas/
           security: loose
+
+      - name: Execute build and run commands on server
+        uses: appleboy/ssh-action@v0.1.2
+        with:
+          host: 8.209.70.189
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            cd /var/www/sofrani2paylas
+            dotnet restore
+            cd SoframiPaylas.WebAPI
+            dotnet run
+      - name: Execute build and run commands on server
+        uses: appleboy/ssh-action@v0.1.2
+        with:
+            host: 8.209.70.189
+            username: ${{ secrets.SSH_USERNAME }}
+            password: ${{ secrets.SSH_PASSWORD }}
+            script: |
+                cd /var/www/sofrani2paylas
+                dotnet restore
+                cd SoframiPaylas.WebUI
+                dotnet run
+                
