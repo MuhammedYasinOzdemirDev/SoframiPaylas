@@ -16,10 +16,52 @@ jobs:
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: "8.0.x"
+          dotnet-version: '8.0.x'
 
       - name: Restore dependencies
         run: dotnet restore
+
+      - name: Install LibMan CLI
+        run: dotnet tool install -g Microsoft.Web.LibraryManager.Cli
+
+      - name: Restore client-side libraries with LibMan
+        run: libman restore
+
+      - name: Build
+        run: dotnet publish --configuration Release --output ./publish/
+
+      - name: Deploy to FTP server
+        uses: SamKirkland/FTP-Deploy-Action@4.1.0
+        with:
+          server: 8.209.70.189…
+[14:31, 30.05.2024] Eren: name: CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Install LibMan CLI
+        run: dotnet tool install -g Microsoft.Web.LibraryManager.Cli
+
+      - name: Restore client-side libraries with LibMan
+        run: libman restore
 
       - name: Build
         run: dotnet publish --configuration Release --output ./publish/
