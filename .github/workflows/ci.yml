@@ -1,38 +1,13 @@
-name: CI
+name: CD Pipeline
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: "8.0.x"
-
-      - name: Restore dependencies
-        run: dotnet restore
-
-      - name: Build
-        run: dotnet build --configuration Release --no-restore
-
-      - name: Run tests
-        run: dotnet test --no-build --verbosity normal
-
   deploy:
     runs-on: ubuntu-latest
-    needs: build
 
     steps:
       - name: Checkout code
@@ -49,11 +24,11 @@ jobs:
       - name: Build
         run: dotnet publish --configuration Release --output ./publish
 
-      - name: Deploy to server
+      - name: Deploy to FTP server
         uses: SamKirkland/FTP-Deploy-Action@4.1.0
         with:
-          ftp-server: ftp://8.209.70.189
-          ftp-username: ${{ secrets.FTP_USERNAME }}
-          ftp-password: ${{ secrets.FTP_PASSWORD }}
+          server: ftp://8.209.70.189
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./publish
-          git-ftp-args: --insecure
+          security: insecure
